@@ -35,6 +35,7 @@ const PHASES = [
           { id: "d2t5", text: "Review the team's current active project board" },
         ],
         resources: [{ label: "ClickUp University", url: "#" }, { label: "Aiola ClickUp SOP", url: "#" }],
+        videos: [{ label: "ClickUp Workspace Setup Walkthrough", embedId: "dQw4w9WgXcQ" }],
         quiz: {
           question: "In Aiola's ClickUp workflow, what status should a task be moved to when you've completed your work but it needs a manager review?",
           options: ["Done", "In Review", "Closed", "Pending Client"],
@@ -52,6 +53,7 @@ const PHASES = [
           { id: "d3t5", text: "Understand escalation paths: when to loop in a senior advisor" },
         ],
         resources: [{ label: "Front Academy", url: "#" }, { label: "Email Template Library", url: "#" }, { label: "Communication Tone Guide", url: "#" }],
+        videos: [{ label: "Front Inbox Management Demo", embedId: "dQw4w9WgXcQ" }],
         quiz: {
           question: "When should you escalate a client email to a senior advisor?",
           options: ["Whenever you're unsure about anything", "Only when the client explicitly asks for a manager", "When the issue involves tax strategy decisions, compliance risk, or client dissatisfaction", "Never — handle everything independently"],
@@ -69,6 +71,7 @@ const PHASES = [
           { id: "d4t5", text: "Review the 2026 firm goals and quarterly milestones" },
         ],
         resources: [{ label: "Service Package Overview", url: "#" }, { label: "Org Chart & Team Directory", url: "#" }, { label: "2026 Firm Goals", url: "#" }],
+        videos: [{ label: "Meet the Aiola CPA Team", embedId: "dQw4w9WgXcQ" }, { label: "Advisory Engagement Overview", embedId: "dQw4w9WgXcQ" }],
         quiz: {
           question: "What is the correct order of the advisory engagement lifecycle?",
           options: ["ISM → Onboarding → TSR → Checkups", "Onboarding → ISM → TSR → Checkups", "TSR → ISM → Onboarding → Checkups", "Onboarding → TSR → ISM → Checkups"],
@@ -159,6 +162,7 @@ const PHASES = [
           { id: "w5t5", text: "Review your mock ISM scorecard with your manager" },
         ],
         resources: [{ label: "ISM Meeting Framework", url: "#" }, { label: "Mock ISM Tool (Link)", url: "#" }, { label: "Scoring Rubric", url: "#" }],
+        videos: [{ label: "Sample ISM Recording — How a Great Meeting Looks", embedId: "dQw4w9WgXcQ" }],
         quiz: { question: "What is the FIRST thing a strong advisor does at the beginning of an ISM?", options: ["Jump straight into the tax return review", "Build rapport with small talk and set expectations for the meeting structure", "Ask the client to list all their tax questions", "Present the fee schedule"], correct: 1 },
       },
       {
@@ -380,15 +384,20 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [newTrack, setNewTrack] = useState("Advisory");
   const [trainees, setTrainees] = useState(MOCK_TRAINEES);
+  const [trackFilter, setTrackFilter] = useState("All");
+  const [adminTab, setAdminTab] = useState("training");
 
   const handleAdd = () => {
     if(!newName.trim()||!newEmail.trim()) return;
     const id = newName.toLowerCase().replace(/\s/g,"_")+"_"+Date.now();
     const initials = newName.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
-    setTrainees(p=>[...p,{id,name:newName,email:newEmail,role:"trainee",startDate:new Date().toISOString().slice(0,10),track:"Advisory",avatar:initials}]);
-    setNewName(""); setNewEmail(""); setShowAdd(false);
+    setTrainees(p=>[...p,{id,name:newName,email:newEmail,role:"trainee",startDate:new Date().toISOString().slice(0,10),track:newTrack,avatar:initials}]);
+    setNewName(""); setNewEmail(""); setNewTrack("Advisory"); setShowAdd(false);
   };
+
+  const filteredTrainees = trackFilter === "All" ? trainees : trainees.filter(t => t.track === trackFilter);
 
   return (
     <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:B.bg,color:B.t1}}>
@@ -404,6 +413,42 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
         </div>
       </header>
       <div style={{padding:"28px 32px",maxWidth:1100,margin:"0 auto"}}>
+        {/* Admin Tabs */}
+        <div style={{display:"flex",gap:24,marginBottom:24,borderBottom:`1px solid ${B.bdr}`}}>
+          {[{key:"training",label:"Training Portal"},{key:"client",label:"Client Portal"}].map(tab=>(
+            <button key={tab.key} onClick={()=>setAdminTab(tab.key)} style={{padding:"10px 4px",border:"none",borderBottom:adminTab===tab.key?`2px solid ${B.blue}`:"2px solid transparent",background:"none",cursor:"pointer",fontSize:14,fontWeight:600,color:adminTab===tab.key?B.blue:B.t3,fontFamily:"inherit",transition:"color .2s"}}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        {adminTab==="client"&&(
+          <div>
+            <div style={{textAlign:"center",padding:"40px 20px",marginBottom:28}}>
+              <div style={{display:"inline-flex",alignItems:"center",gap:12,marginBottom:16}}><Logo size={40}/><div style={{textAlign:"left"}}><div style={{fontSize:20,fontWeight:700,color:B.navy}}>Client Advisory Portal</div><div style={{fontSize:13,color:B.t3,marginTop:2}}>Replace your welcome packet with an interactive client dashboard</div></div></div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:28}}>
+              {[
+                {emoji:"👋",title:"Welcome & Onboarding",desc:"Engagement overview, team contacts, calendar link"},
+                {emoji:"🎬",title:"Recordings & Deliverables",desc:"TSR documents, meeting recordings, strategy roadmaps"},
+                {emoji:"✅",title:"Action Items & Checklist",desc:"Interactive to-do list with client tasks and deadlines"},
+                {emoji:"📄",title:"Templates & Tools",desc:"Time log template, estimated payment calculator, entity docs"},
+                {emoji:"🤝",title:"Trusted Partners",desc:"Referral network: attorneys, cost seg providers, lenders"},
+                {emoji:"📚",title:"Resources & Education",desc:"Blog posts, videos, tax planning guides"},
+              ].map((c,i)=>(
+                <div key={i} style={{background:"#fff",border:`1px solid ${B.bdr}`,borderRadius:12,padding:20,cursor:"default",transition:"background .2s"}}
+                  onMouseEnter={e=>e.currentTarget.style.background=B.blueL} onMouseLeave={e=>e.currentTarget.style.background="#fff"}>
+                  <div style={{fontSize:24,marginBottom:8}}>{c.emoji}</div>
+                  <div style={{fontSize:14,fontWeight:700,color:B.navy,marginBottom:4}}>{c.title}</div>
+                  <div style={{fontSize:12,color:B.t2,lineHeight:1.4}}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{background:`linear-gradient(135deg,${B.blue},${B.blueD})`,borderRadius:12,padding:"24px 32px",textAlign:"center",color:"#fff"}}>
+              <p style={{margin:0,fontSize:14,fontWeight:500,lineHeight:1.6}}>This portal will replace DACA and give every advisory client their own dashboard. Target launch: Q3 2026.</p>
+            </div>
+          </div>
+        )}
+        {adminTab==="training"&&<>
         {/* Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
           {[
@@ -421,6 +466,14 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
             </div>
           ))}
         </div>
+        {/* Track Filter */}
+        <div style={{display:"flex",gap:8,marginBottom:16}}>
+          {["All","Advisory","Tax Prep","Admin"].map(f=>(
+            <button key={f} onClick={()=>setTrackFilter(f)} style={{padding:"5px 14px",borderRadius:20,border:trackFilter===f?"none":`1px solid ${B.bdr}`,background:trackFilter===f?B.blue:"#fff",color:trackFilter===f?"#fff":B.t2,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+              {f}
+            </button>
+          ))}
+        </div>
         {/* Table */}
         <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden"}}>
           <div style={{padding:"18px 24px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -431,6 +484,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
             <div style={{padding:"16px 24px",borderBottom:`1px solid ${B.bdr}`,background:B.blueL,display:"flex",gap:12,alignItems:"flex-end"}}>
               <div style={{flex:1}}><label style={{fontSize:11,fontWeight:600,color:B.t2,display:"block",marginBottom:4}}>Full Name</label><input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="e.g. Chris Martinez" style={{width:"100%",padding:"8px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:13,fontFamily:"inherit",boxSizing:"border-box"}}/></div>
               <div style={{flex:1}}><label style={{fontSize:11,fontWeight:600,color:B.t2,display:"block",marginBottom:4}}>Email</label><input value={newEmail} onChange={e=>setNewEmail(e.target.value)} placeholder="e.g. chris@aiolacpa.com" style={{width:"100%",padding:"8px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:13,fontFamily:"inherit",boxSizing:"border-box"}}/></div>
+              <div style={{flex:.7}}><label style={{fontSize:11,fontWeight:600,color:B.t2,display:"block",marginBottom:4}}>Track</label><select value={newTrack} onChange={e=>setNewTrack(e.target.value)} style={{width:"100%",padding:"8px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:13,fontFamily:"inherit",boxSizing:"border-box",background:"#fff"}}><option>Advisory</option><option>Tax Prep</option><option>Admin</option></select></div>
               <button onClick={handleAdd} style={{padding:"9px 20px",border:"none",borderRadius:6,background:B.ok,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>Add</button>
               <button onClick={()=>setShowAdd(false)} style={{padding:"9px 16px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
             </div>
@@ -438,10 +492,9 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
           <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr 100px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
             <span>Name</span><span>Track</span><span>Start Date</span><span>Progress</span><span>Quizzes</span><span></span>
           </div>
-          {trainees.map(t=>{
+          {filteredTrainees.map(t=>{
             const prog=calcProg(allData[t.id]?.tasks,allData[t.id]?.quizzes);
             const days=daysSince(t.startDate);
-            const phase=days<=30?"Days 1–30":days<=60?"Days 31–60":"Days 61–90";
             const phaseColor=days<=30?B.blue:days<=60?B.purple:B.ok;
             return(
               <div key={t.id} style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr 100px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
@@ -450,7 +503,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
                   <div style={{width:36,height:36,borderRadius:18,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{t.avatar}</div>
                   <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{t.name}</div><div style={{fontSize:11,color:B.t3}}>{t.email}</div></div>
                 </div>
-                <span style={{fontSize:12,fontWeight:500,color:phaseColor}}>{phase}</span>
+                <span style={{fontSize:12,fontWeight:500,color:phaseColor}}>{t.track || "Advisory"}</span>
                 <span style={{fontSize:12,color:B.t2}}>{new Date(t.startDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
                   <div style={{flex:1,height:6,borderRadius:3,background:B.blueL,overflow:"hidden",maxWidth:80}}><div style={{height:"100%",borderRadius:3,width:`${prog.pct}%`,background:prog.pct===100?B.ok:B.blue,transition:"width .4s"}}/></div>
@@ -462,6 +515,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
             );
           })}
         </div>
+        </>}
       </div>
     </div>
   );
@@ -575,6 +629,25 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                   {cIt.resources.map((r,i)=><span key={i} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:18,fontSize:11,fontWeight:500,background:B.blueL,color:B.blue,border:`1px solid ${B.blueM}`,cursor:"pointer"}}>
                     <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 1.5h4.59L10.5 4.91V10.5h-8v-9z" stroke={B.blue} strokeWidth="1.2"/><path d="M7 1.5V5h3.5" stroke={B.blue} strokeWidth="1.2"/></svg>{r.label}
                   </span>)}
+                </div>
+              </div>
+            )}
+            {/* Videos */}
+            {cIt.videos?.length>0&&(
+              <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+                <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:6}}>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 2.5v11l10-5.5L3 2.5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/></svg>
+                  <span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Videos</span>
+                </div>
+                <div style={{padding:18,display:"grid",gridTemplateColumns:cIt.videos.length>1?"repeat(auto-fit,minmax(260px,1fr))":"1fr",gap:16}}>
+                  {cIt.videos.map((v,i)=>(
+                    <div key={i} style={{maxWidth:560}}>
+                      <div style={{position:"relative",paddingBottom:"56.25%",height:0,overflow:"hidden",borderRadius:8,border:`1px solid ${B.bdr}`}}>
+                        <iframe src={`https://www.youtube.com/embed/${v.embedId}`} title={v.label} style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",border:"none"}} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen/>
+                      </div>
+                      <p style={{margin:"8px 0 0",fontSize:12,fontWeight:600,color:B.t1}}>{v.label}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
