@@ -377,6 +377,388 @@ function LoginScreen({ onLogin }) {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// CLIENT PORTAL DEMO
+// ═════════════════════════════════════════════════════════════════════════════
+
+const CLIENT_TODO_ITEMS = [
+  { id: "ct1", text: "Accept invitation to our client portal", schedule: false },
+  { id: "ct2", text: "Complete our Advisory Onboarding Questionnaire", schedule: false },
+  { id: "ct3", text: "Schedule onboarding meeting with Sam", schedule: true },
+  { id: "ct4", text: "Schedule initial strategy meeting with Nick & Sam", schedule: true },
+  { id: "ct5", text: "Schedule follow up tax planning meeting with Sam", schedule: true },
+  { id: "ct6", text: "Schedule check up meeting with Sam", schedule: true },
+  { id: "ct7", text: "Time log review", schedule: false },
+  { id: "ct8", text: "Year to date review of books", schedule: false },
+];
+
+const CLIENT_ENGAGEMENT_PHASES = [
+  { id: "cp1", title: "Phase 1: Onboarding", items: ["Accept portal invitation", "Complete questionnaire", "Schedule onboarding meeting"], total: 3 },
+  { id: "cp2", title: "Phase 2: Tax Planning & Strategy", items: [], total: 0 },
+  { id: "cp3", title: "Phase 3: Ongoing Support & Implementation", items: [], total: 0 },
+];
+
+function ClientPortalDemo() {
+  const [cpTab, setCpTab] = useState("home");
+  const [cpTodos, setCpTodos] = useState({});
+  const [cpPhases, setCpPhases] = useState({ cp1: true });
+
+  const todoCount = Object.values(cpTodos).filter(Boolean).length;
+
+  const cpTabs = [
+    { key: "home", label: "Home", icon: "🏠" },
+    { key: "recordings", label: "Recordings & Deliverables", icon: "🎬" },
+    { key: "templates", label: "Templates & Documents", icon: "📄" },
+    { key: "partners", label: "Trusted Partners", icon: "🤝" },
+    { key: "resources", label: "Resources", icon: "📚" },
+  ];
+
+  const cardS = { background: "#fff", border: `1px solid ${B.bdr}`, borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,.04)", overflow: "hidden" };
+  const sectionTitle = { margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: B.navy };
+  const pillBtn = (bg, color, border) => ({ padding: "6px 16px", borderRadius: 20, border: border || "none", background: bg, color, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" });
+
+  return (
+    <div>
+      {/* Client name banner */}
+      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20, padding: "16px 20px", ...cardS }}>
+        <div style={{ width: 44, height: 44, borderRadius: 22, background: B.blue, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, flexShrink: 0 }}>BK</div>
+        <div><div style={{ fontSize: 18, fontWeight: 700, color: B.navy }}>Brandon & Jessica Kim</div><div style={{ fontSize: 12, color: B.t3, marginTop: 2 }}>Advisory Client — Aiola CPA, PLLC</div></div>
+        <div style={{ marginLeft: "auto" }}><Logo size={32} /></div>
+      </div>
+
+      {/* Client Portal Tabs */}
+      <div style={{ display: "flex", gap: 20, marginBottom: 24, borderBottom: `1px solid ${B.bdr}`, overflowX: "auto" }}>
+        {cpTabs.map(tab => (
+          <button key={tab.key} onClick={() => setCpTab(tab.key)} style={{ padding: "10px 4px", border: "none", borderBottom: cpTab === tab.key ? `2px solid ${B.blue}` : "2px solid transparent", background: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: cpTab === tab.key ? B.blue : B.t3, fontFamily: "inherit", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 6, transition: "color .2s" }}>
+            <span style={{ fontSize: 14 }}>{tab.icon}</span> {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── HOME TAB ── */}
+      {cpTab === "home" && (
+        <div>
+          {/* Three-column layout */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 28 }}>
+            {/* Left: Welcome */}
+            <div style={{ ...cardS, padding: 24 }}>
+              <h3 style={{ margin: "0 0 12px", fontSize: 18, fontWeight: 700, color: B.navy }}>Welcome!</h3>
+              <p style={{ margin: "0 0 12px", fontSize: 12, color: B.t2, lineHeight: 1.7 }}>
+                Thank you for partnering with and placing your trust in Aiola CPA. We greatly appreciate our clients and take great pride in the services we provide. We'll do everything we can to exceed your expectations.
+              </p>
+              <p style={{ margin: 0, fontSize: 12, color: B.t2, lineHeight: 1.7 }}>
+                Our focus is providing high-quality, proactive tax advisory services to real estate investors, and we value the importance of relationships and reliability. We are committed to being available year-round as your trusted tax advisors.
+              </p>
+            </div>
+
+            {/* Middle: Table of Contents + Software */}
+            <div style={{ ...cardS, padding: 24 }}>
+              <h4 style={{ margin: "0 0 10px", fontSize: 13, fontWeight: 700, color: B.navy, textTransform: "uppercase", letterSpacing: .8 }}>Table of Contents</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 18 }}>
+                {cpTabs.map(t => (
+                  <button key={t.key} onClick={() => setCpTab(t.key)} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12, color: B.blue, fontWeight: 500, textAlign: "left", padding: "3px 0", display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: 12 }}>{t.icon}</span> {t.label}
+                  </button>
+                ))}
+              </div>
+              <h4 style={{ margin: "0 0 8px", fontSize: 13, fontWeight: 700, color: B.navy, textTransform: "uppercase", letterSpacing: .8 }}>Add us to your software</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {[
+                  { name: "QuickBooks Online", role: "accountant" },
+                  { name: "Stessa", role: "team member" },
+                  { name: "Wave", role: "accountant" },
+                  { name: "Baselane", role: "accountant" },
+                  { name: "Buildium", role: "accountant" },
+                ].map((s, i) => (
+                  <div key={i} style={{ fontSize: 12, color: B.t2 }}>
+                    <span style={{ color: B.blue, fontWeight: 500, cursor: "pointer" }}>{s.name}</span>{" "}
+                    <span style={{ fontSize: 11, color: B.t3 }}>(add us as {s.role})</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: Helpful Links + Social */}
+            <div style={{ ...cardS, padding: 24 }}>
+              <h4 style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: B.navy, textTransform: "uppercase", letterSpacing: .8 }}>Helpful Links</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 16 }}>
+                {["Client Document Portal (Soraban)", "Billing & Payment", "Schedule a Meeting", "Blog", "Linktree", "Leave a Review!"].map((link, i) => (
+                  <button key={i} style={{ width: "100%", padding: "10px 14px", border: "none", borderRadius: 8, background: B.navy, color: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", textAlign: "left", transition: "opacity .15s" }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = ".85"} onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+                    {link}
+                  </button>
+                ))}
+              </div>
+              <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+                {[
+                  { label: "IG", title: "Instagram" },
+                  { label: "FB", title: "Facebook" },
+                  { label: "in", title: "LinkedIn" },
+                  { label: "X", title: "X" },
+                  { label: "YT", title: "YouTube" },
+                ].map((s, i) => (
+                  <div key={i} title={s.title} style={{ width: 30, height: 30, borderRadius: 15, background: B.blue, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, cursor: "pointer", transition: "transform .15s" }}
+                    onMouseEnter={e => e.currentTarget.style.transform = "scale(1.1)"} onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>
+                    {s.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Your Aiola CPA Team */}
+          <h3 style={sectionTitle}>Your Aiola CPA Team</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 28 }}>
+            {[
+              { initials: "SO", name: "Sam Ortiz", title: "Senior Tax Advisor", role: "Main Point of Contact", email: "sam@aiolacpa.com", phone: "(555) 123-4567", calendar: true },
+              { initials: "NM", name: "Natalie Marcum", title: "Firm Administrator", role: "Admin/Billing Contact", email: "natalie@aiolacpa.com", phone: "(555) 234-5678", calendar: false },
+              { initials: "NA", name: "Nick Aiola", title: "CEO", role: "Senior Relationship Contact", email: "nick@aiolacpa.com", phone: "(555) 345-6789", calendar: false },
+            ].map((m, i) => (
+              <div key={i} style={{ ...cardS, padding: 24, textAlign: "center" }}>
+                <div style={{ width: 56, height: 56, borderRadius: 28, background: B.blue, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 700, margin: "0 auto 12px" }}>{m.initials}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: B.navy }}>{m.name}</div>
+                <div style={{ fontSize: 12, color: B.t2, marginTop: 2 }}>{m.title}</div>
+                <div style={{ fontSize: 11, color: B.t3, marginTop: 2, marginBottom: 12 }}>{m.role}</div>
+                <div style={{ display: "flex", gap: 6, justifyContent: "center", flexWrap: "wrap" }}>
+                  <button style={pillBtn(B.blue, "#fff")}>Email</button>
+                  <button style={pillBtn("#fff", B.blue, `1px solid ${B.blue}`)}>Phone</button>
+                  {m.calendar && <button style={pillBtn(B.blueL, B.blue, `1px solid ${B.blueM}`)}>Calendar</button>}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Your To Do List */}
+          <div style={{ ...cardS, marginBottom: 28 }}>
+            <div style={{ padding: "16px 20px", borderBottom: `1px solid ${B.bdr}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: B.navy }}>Your To Do List</h3>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: B.t2 }}>{todoCount}/{CLIENT_TODO_ITEMS.length}</span>
+                <div style={{ width: 60, height: 6, borderRadius: 3, background: B.blueL, overflow: "hidden" }}>
+                  <div style={{ height: "100%", borderRadius: 3, background: todoCount === CLIENT_TODO_ITEMS.length ? B.ok : B.blue, width: `${CLIENT_TODO_ITEMS.length ? (todoCount / CLIENT_TODO_ITEMS.length) * 100 : 0}%`, transition: "width .4s" }} />
+                </div>
+              </div>
+            </div>
+            {CLIENT_TODO_ITEMS.map((item, idx) => {
+              const done = !!cpTodos[item.id];
+              return (
+                <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: idx < CLIENT_TODO_ITEMS.length - 1 ? `1px solid ${B.bdr}` : "none", cursor: "pointer", transition: "background .15s", background: done ? B.okBg : "transparent" }}
+                  onClick={() => setCpTodos(p => ({ ...p, [item.id]: !p[item.id] }))}
+                  onMouseEnter={e => { if (!done) e.currentTarget.style.background = "#fafbfc" }} onMouseLeave={e => { e.currentTarget.style.background = done ? B.okBg : "transparent" }}>
+                  <div style={{ width: 20, height: 20, borderRadius: 5, flexShrink: 0, border: done ? "none" : `2px solid ${B.bdr}`, background: done ? B.ok : "#fff", display: "flex", alignItems: "center", justifyContent: "center", transition: "all .2s" }}>{done && <Chk />}</div>
+                  <span style={{ flex: 1, fontSize: 13, color: done ? B.t3 : B.t1, textDecoration: done ? "line-through" : "none" }}>{item.text}</span>
+                  <span style={{ fontSize: 10, fontWeight: 600, padding: "3px 10px", borderRadius: 10, background: done ? B.okL : "#f1f5f9", color: done ? B.ok : B.t3 }}>{done ? "Complete" : "To-do"}</span>
+                  {item.schedule && <button onClick={e => e.stopPropagation()} style={pillBtn(B.blue, "#fff")}>Schedule</button>}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Tax Advisory Engagement */}
+          <div style={{ ...cardS, marginBottom: 28 }}>
+            <div style={{ padding: "16px 20px", borderBottom: `1px solid ${B.bdr}` }}>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: B.navy }}>Tax Advisory Engagement</h3>
+            </div>
+            {CLIENT_ENGAGEMENT_PHASES.map((phase, idx) => {
+              const isOpen = !!cpPhases[phase.id];
+              const done = phase.total === 0 ? phase.total : 0;
+              return (
+                <div key={phase.id} style={{ borderBottom: idx < CLIENT_ENGAGEMENT_PHASES.length - 1 ? `1px solid ${B.bdr}` : "none" }}>
+                  <button onClick={() => setCpPhases(p => ({ ...p, [phase.id]: !p[phase.id] }))}
+                    style={{ width: "100%", display: "flex", alignItems: "center", gap: 10, padding: "14px 20px", border: "none", background: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>
+                    <Chev open={isOpen} />
+                    <span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: B.navy }}>{phase.title}</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: phase.total === 0 ? B.ok : B.t3 }}>{done}/{phase.total}</span>
+                    <div style={{ width: 50, height: 5, borderRadius: 3, background: B.blueL, overflow: "hidden" }}>
+                      <div style={{ height: "100%", borderRadius: 3, background: phase.total === 0 ? B.ok : B.blue, width: phase.total === 0 ? "100%" : `${(done / phase.total) * 100}%`, transition: "width .4s" }} />
+                    </div>
+                  </button>
+                  {isOpen && phase.items.length > 0 && (
+                    <div style={{ padding: "0 20px 14px 46px" }}>
+                      {phase.items.map((item, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", fontSize: 12, color: B.t2 }}>
+                          <div style={{ width: 16, height: 16, borderRadius: 4, border: `2px solid ${B.bdr}`, background: "#fff", flexShrink: 0 }} />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {isOpen && phase.items.length === 0 && (
+                    <div style={{ padding: "0 20px 14px 46px", fontSize: 12, color: B.t3, fontStyle: "italic" }}>No items yet — coming soon</div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── RECORDINGS & DELIVERABLES TAB ── */}
+      {cpTab === "recordings" && (
+        <div>
+          {/* Header banner */}
+          <div style={{ background: B.navy, borderRadius: 12, padding: "28px 32px", marginBottom: 24, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 16, right: 24, opacity: .15 }}><Logo size={60} /></div>
+            <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#fff" }}>Recordings & Deliverables</h3>
+            <p style={{ margin: "6px 0 0", fontSize: 13, color: "rgba(255,255,255,.6)" }}>Brandon & Jessica Kim — Advisory Engagement</p>
+          </div>
+
+          {/* Meeting Recordings */}
+          <h4 style={sectionTitle}>Meeting Recordings</h4>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 28 }}>
+            {[
+              { title: "Onboarding Meeting", date: "Apr 28, 2026", duration: "45 min" },
+              { title: "Initial Strategy Meeting", date: "May 12, 2026", duration: "60 min" },
+            ].map((rec, i) => (
+              <div key={i} style={{ ...cardS, padding: "16px 20px", display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 20, background: B.blueL, color: B.blue, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 2.5v11l9-5.5L4 2.5z" fill={B.blue} /></svg>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: B.navy }}>{rec.title}</div>
+                  <div style={{ fontSize: 11, color: B.t3, marginTop: 2 }}>{rec.date} · {rec.duration}</div>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 600, color: B.blue, background: B.blueL, padding: "4px 10px", borderRadius: 10 }}>Recording available</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Deliverables */}
+          <h4 style={sectionTitle}>Deliverables</h4>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {[
+              { title: "Tax Strategy Roadmap (TSR)", tag: "PDF", tagColor: B.blue, tagBg: B.blueL, icon: "dl" },
+              { title: "Entity Structure Memo", tag: "Pending", tagColor: B.warn, tagBg: B.warnL, icon: "pending" },
+            ].map((d, i) => (
+              <div key={i} style={{ ...cardS, padding: "16px 20px", display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 20, background: d.icon === "dl" ? B.blueL : B.warnL, color: d.icon === "dl" ? B.blue : B.warn, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  {d.icon === "dl" ? <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" stroke={B.blue} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    : <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke={B.warn} strokeWidth="1.5" /><path d="M8 5v3.5l2 1.5" stroke={B.warn} strokeWidth="1.5" strokeLinecap="round" /></svg>}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: B.navy }}>{d.title}</div>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 600, color: d.tagColor, background: d.tagBg, padding: "4px 10px", borderRadius: 10 }}>{d.tag}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── TEMPLATES & DOCUMENTS TAB ── */}
+      {cpTab === "templates" && (
+        <div>
+          <h3 style={sectionTitle}>Templates & Documents</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {[
+              { title: "Time Log Template", desc: "Track your material participation hours" },
+              { title: "Estimated Tax Payment Calculator", desc: "Calculate quarterly 1040-ES payments" },
+              { title: "Entity Structure Checklist", desc: "LLC, S-Corp, and partnership setup guide" },
+              { title: "Cost Segregation Worksheet", desc: "Evaluate cost seg study ROI" },
+              { title: "Rental Property Analyzer", desc: "Analyze STR investment returns" },
+              { title: "Mileage & Expense Tracker", desc: "Track deductible business expenses" },
+            ].map((t, i) => (
+              <div key={i} style={{ ...cardS, padding: 20, display: "flex", alignItems: "flex-start", gap: 14 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: B.blueL, color: B.blue, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5.59L13 4.91V14.5H4V1.5z" stroke={B.blue} strokeWidth="1.3" /><path d="M9.5 1.5V5H13" stroke={B.blue} strokeWidth="1.3" /></svg>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: B.navy, marginBottom: 4 }}>{t.title}</div>
+                  <div style={{ fontSize: 12, color: B.t3, lineHeight: 1.4 }}>{t.desc}</div>
+                </div>
+                <button style={pillBtn(B.blue, "#fff")}>Download</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── TRUSTED PARTNERS TAB ── */}
+      {cpTab === "partners" && (
+        <div>
+          <h3 style={sectionTitle}>Trusted Partners</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {[
+              { name: "Madison SPECS", specialty: "Cost Segregation Studies" },
+              { name: "Anderson Legal Group", specialty: "Real Estate Attorney" },
+              { name: "Pinnacle Lending", specialty: "Investment Property Financing" },
+              { name: "SecureEntity LLC", specialty: "LLC Formation & Registered Agent" },
+              { name: "BookRight Pro", specialty: "Bookkeeping Services" },
+              { name: "InsureWell Advisors", specialty: "Rental Property Insurance" },
+            ].map((p, i) => (
+              <div key={i} style={{ ...cardS, padding: 20, display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 20, background: B.blueL, color: B.blue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, flexShrink: 0 }}>{p.name[0]}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: B.navy }}>{p.name}</div>
+                  <div style={{ fontSize: 12, color: B.t3, marginTop: 2 }}>{p.specialty}</div>
+                </div>
+                <button style={pillBtn("#fff", B.blue, `1px solid ${B.blue}`)}>Learn More</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── RESOURCES TAB ── */}
+      {cpTab === "resources" && (
+        <div>
+          {/* Blog Posts */}
+          <h3 style={sectionTitle}>Blog Posts & Articles</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 28 }}>
+            {[
+              { title: "The STR Loophole: How to Offset W-2 Income with Rental Losses", date: "Mar 2026" },
+              { title: "S-Corp vs LLC: When Does the Election Make Sense?", date: "Feb 2026" },
+              { title: "Year-End Tax Planning Checklist for Real Estate Investors", date: "Dec 2025" },
+            ].map((post, i) => (
+              <div key={i} style={{ ...cardS, padding: "16px 20px", display: "flex", alignItems: "center", gap: 14 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 8, background: B.blueL, color: B.blue, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 2h4.5c1 0 1.5.5 1.5 1.5v10c0-.83-.67-1.5-1.5-1.5H2V2z" stroke={B.blue} strokeWidth="1.5" /><path d="M14 2H9.5C8.5 2 8 2.5 8 3.5v10c0-.83.67-1.5 1.5-1.5H14V2z" stroke={B.blue} strokeWidth="1.5" /></svg>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: B.navy }}>{post.title}</div>
+                  <div style={{ fontSize: 11, color: B.t3, marginTop: 2 }}>{post.date}</div>
+                </div>
+                <button style={pillBtn("#fff", B.blue, `1px solid ${B.blue}`)}>Read</button>
+              </div>
+            ))}
+          </div>
+
+          {/* Video Library */}
+          <h3 style={sectionTitle}>Video Library</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 28 }}>
+            {[
+              { title: "Understanding Material Participation for STR Owners", embedId: "dQw4w9WgXcQ" },
+              { title: "How Cost Segregation Can Save You Thousands", embedId: "dQw4w9WgXcQ" },
+            ].map((v, i) => (
+              <div key={i} style={{ ...cardS, overflow: "hidden" }}>
+                <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+                  <iframe src={`https://www.youtube.com/embed/${v.embedId}`} title={v.title} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                </div>
+                <div style={{ padding: "12px 16px" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: B.navy }}>{v.title}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Soraban Tutorial */}
+          <h3 style={sectionTitle}>Soraban Tutorial</h3>
+          <div style={{ ...cardS, padding: 24, display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ width: 48, height: 48, borderRadius: 12, background: B.blueL, color: B.blue, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <svg width="22" height="22" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5.59L13 4.91V14.5H4V1.5z" stroke={B.blue} strokeWidth="1.3" /><path d="M9.5 1.5V5H13" stroke={B.blue} strokeWidth="1.3" /></svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: B.navy }}>Client Document Portal (Soraban)</div>
+              <p style={{ margin: "4px 0 0", fontSize: 12, color: B.t2, lineHeight: 1.5 }}>Upload tax documents, download deliverables, and securely share files with your Aiola CPA team. Click below to access your personalized document portal.</p>
+            </div>
+            <button style={pillBtn(B.blue, "#fff")}>Open Portal</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 // ADMIN DASHBOARD
 // ═════════════════════════════════════════════════════════════════════════════
 
@@ -421,33 +803,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
             </button>
           ))}
         </div>
-        {adminTab==="client"&&(
-          <div>
-            <div style={{textAlign:"center",padding:"40px 20px",marginBottom:28}}>
-              <div style={{display:"inline-flex",alignItems:"center",gap:12,marginBottom:16}}><Logo size={40}/><div style={{textAlign:"left"}}><div style={{fontSize:20,fontWeight:700,color:B.navy}}>Client Advisory Portal</div><div style={{fontSize:13,color:B.t3,marginTop:2}}>Replace your welcome packet with an interactive client dashboard</div></div></div>
-            </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:28}}>
-              {[
-                {emoji:"👋",title:"Welcome & Onboarding",desc:"Engagement overview, team contacts, calendar link"},
-                {emoji:"🎬",title:"Recordings & Deliverables",desc:"TSR documents, meeting recordings, strategy roadmaps"},
-                {emoji:"✅",title:"Action Items & Checklist",desc:"Interactive to-do list with client tasks and deadlines"},
-                {emoji:"📄",title:"Templates & Tools",desc:"Time log template, estimated payment calculator, entity docs"},
-                {emoji:"🤝",title:"Trusted Partners",desc:"Referral network: attorneys, cost seg providers, lenders"},
-                {emoji:"📚",title:"Resources & Education",desc:"Blog posts, videos, tax planning guides"},
-              ].map((c,i)=>(
-                <div key={i} style={{background:"#fff",border:`1px solid ${B.bdr}`,borderRadius:12,padding:20,cursor:"default",transition:"background .2s"}}
-                  onMouseEnter={e=>e.currentTarget.style.background=B.blueL} onMouseLeave={e=>e.currentTarget.style.background="#fff"}>
-                  <div style={{fontSize:24,marginBottom:8}}>{c.emoji}</div>
-                  <div style={{fontSize:14,fontWeight:700,color:B.navy,marginBottom:4}}>{c.title}</div>
-                  <div style={{fontSize:12,color:B.t2,lineHeight:1.4}}>{c.desc}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{background:`linear-gradient(135deg,${B.blue},${B.blueD})`,borderRadius:12,padding:"24px 32px",textAlign:"center",color:"#fff"}}>
-              <p style={{margin:0,fontSize:14,fontWeight:500,lineHeight:1.6}}>This portal will replace DACA and give every advisory client their own dashboard. Target launch: Q3 2026.</p>
-            </div>
-          </div>
-        )}
+        {adminTab==="client"&&<ClientPortalDemo />}
         {adminTab==="training"&&<>
         {/* Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
