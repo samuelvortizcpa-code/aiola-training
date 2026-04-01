@@ -18,11 +18,11 @@ const PHASES = [
           { id: "d1t6", text: "Review the Aiola CPA Employee Handbook (link in Resources)" },
         ],
         resources: [{ label: "Employee Handbook", url: "#" }, { label: "IT Setup Checklist", url: "#" }],
-        quiz: {
-          question: "What is the first thing you should do after receiving your laptop?",
-          options: ["Start reviewing client files", "Change all default passwords and enable MFA", "Set up your email signature", "Join Slack channels"],
-          correct: 1,
-        },
+        quiz: { questions: [
+          { id: "d1q1", type: "multiple_choice", question: "What is the first thing you should do after receiving your laptop?", options: ["Start reviewing client files", "Change all default passwords and enable MFA", "Set up your email signature", "Join Slack channels"], correct: 1 },
+          { id: "d1q2", type: "multiple_choice", question: "Which of the following is NOT part of Day 1 setup?", options: ["Configure multi-factor authentication", "Join required Slack/Teams channels", "Complete a practice tax return", "Review the Employee Handbook"], correct: 2 },
+          { id: "d1q3", type: "free_text", question: "In your own words, why is multi-factor authentication important for a CPA firm?", modelAnswer: "MFA adds an extra layer of security beyond passwords, which is critical for CPA firms because we handle sensitive client financial data. A compromised account could expose SSNs, tax returns, and bank information." },
+        ]},
       },
       {
         id: "d2", title: "Day 2 — ClickUp Mastery",
@@ -36,11 +36,11 @@ const PHASES = [
         ],
         resources: [{ label: "ClickUp University", url: "#" }, { label: "Aiola ClickUp SOP", url: "#" }],
         videos: [{ label: "ClickUp Workspace Setup Walkthrough", embedId: "dQw4w9WgXcQ" }],
-        quiz: {
-          question: "In Aiola's ClickUp workflow, what status should a task be moved to when you've completed your work but it needs a manager review?",
-          options: ["Done", "In Review", "Closed", "Pending Client"],
-          correct: 1,
-        },
+        quiz: { questions: [
+          { id: "d2q1", type: "multiple_choice", question: "In Aiola's ClickUp workflow, what status should a task be moved to when you've completed your work but it needs a manager review?", options: ["Done", "In Review", "Closed", "Pending Client"], correct: 1 },
+          { id: "d2q2", type: "multiple_choice", question: "What is the correct Aiola naming convention for client tasks?", options: ["[Client Last] - Task Description", "[Client First Last] - [Category] - Task Description", "Task Description - Client Name", "No specific convention is required"], correct: 1 },
+          { id: "d2q3", type: "free_text", question: "Describe a situation where you would use a ClickUp subtask vs. a separate task. Give an example relevant to a CPA firm.", modelAnswer: "Subtasks work best for breaking down a larger deliverable — for example, a 'Prepare Q1 Tax Filing for Smith LLC' task might have subtasks like 'Gather K-1 documents', 'Review prior year return', and 'Draft return for manager review'. Separate tasks are better for independent work items that need their own tracking." },
+        ]},
       },
       {
         id: "d3", title: "Day 3 — Front (Client Communication)",
@@ -54,11 +54,10 @@ const PHASES = [
         ],
         resources: [{ label: "Front Academy", url: "#" }, { label: "Email Template Library", url: "#" }, { label: "Communication Tone Guide", url: "#" }],
         videos: [{ label: "Front Inbox Management Demo", embedId: "dQw4w9WgXcQ" }],
-        quiz: {
-          question: "When should you escalate a client email to a senior advisor?",
-          options: ["Whenever you're unsure about anything", "Only when the client explicitly asks for a manager", "When the issue involves tax strategy decisions, compliance risk, or client dissatisfaction", "Never — handle everything independently"],
-          correct: 2,
-        },
+        quiz: { questions: [
+          { id: "d3q1", type: "multiple_choice", question: "When should you escalate a client email to a senior advisor?", options: ["Whenever you're unsure about anything", "Only when the client explicitly asks for a manager", "When the issue involves tax strategy decisions, compliance risk, or client dissatisfaction", "Never — handle everything independently"], correct: 2 },
+          { id: "d3q2", type: "free_text", question: "Draft a brief, professional email response to a client who asks: 'Can I deduct my home office if I'm a W-2 employee?' Keep your tone friendly but accurate.", modelAnswer: "Hi [Client Name], great question! Unfortunately, the home office deduction is generally not available for W-2 employees under current tax law (since the 2017 Tax Cuts and Jobs Act). However, if you also have self-employment income, you may qualify. I'd love to review your full situation — want me to schedule a quick call? Best, [Your Name]" },
+        ]},
       },
       {
         id: "d4", title: "Day 4 — The Aiola Way",
@@ -256,18 +255,99 @@ const PHASES = [
 // ─── Demo Users ──────────────────────────────────────────────────────────────
 
 const MOCK_TRAINEES = [
-  { id: "chris_m", name: "Chris Martinez", email: "chris.martinez@aiolacpa.com", role: "trainee", startDate: "2026-04-21", track: "Advisory", avatar: "CM" },
-  { id: "sarah_k", name: "Sarah Kim", email: "sarah.kim@aiolacpa.com", role: "trainee", startDate: "2026-04-21", track: "Advisory", avatar: "SK" },
-  { id: "james_p", name: "James Powell", email: "james.powell@aiolacpa.com", role: "trainee", startDate: "2026-05-05", track: "Advisory", avatar: "JP" },
+  { id: "chris_m", name: "Chris Martinez", email: "chris@aiolacpa.com", role: "trainee", startDate: "2026-04-21", track: "Advisory", avatar: "CM" },
+  { id: "mary_c", name: "Mary Chen", email: "mary@aiolacpa.com", role: "trainee", startDate: "2026-02-23", track: "Advisory", avatar: "MC" },
 ];
 const MOCK_ADMINS = [
   { id: "nick_a", name: "Nick Aiola", email: "nick@aiolacpa.com", role: "admin", avatar: "NA" },
-  { id: "sam_o", name: "Sam Ortiz", email: "sam@aiolacpa.com", role: "admin", avatar: "SO" },
+];
+const MOCK_CLIENTS = [
+  { id: "alex_r", name: "Alex Rivera", email: "alex.rivera@email.com", role: "client", avatar: "AR" },
 ];
 
 const SEED_DATA = {
   chris_m: { tasks: { d1t1:true,d1t2:true,d1t3:true,d1t4:true,d1t5:true,d1t6:true,d2t1:true,d2t2:true,d2t3:true,d3t1:true,d3t2:true }, quizzes: { d1:true, d2:true } },
+  mary_c: { tasks: { d1t1:true,d1t2:true,d1t3:true,d1t4:true,d1t5:true,d1t6:true,d2t1:true,d2t2:true,d2t3:true,d2t4:true,d2t5:true,d3t1:true,d3t2:true,d3t3:true,d3t4:true,d3t5:true,d4t1:true,d4t2:true,d4t3:true,d4t4:true,d4t5:true,d5t1:true,d5t2:true,d5t3:true,d5t4:true,d5t5:true,w2t1:true,w2t2:true,w2t3:true,w2t4:true,w2t5:true,w2t6:true,w3t1:true,w3t2:true,w3t3:true,w3t4:true,w3t5:true,w3t6:true }, quizzes: { d1:true,d2:true,d3:true,d4:true,d5:true,w2:true,w3:true } },
   sarah_k: { tasks: { d1t1:true,d1t2:true,d1t3:true }, quizzes: { d1:true } },
+};
+
+// ─── KPI Data ─────────────────────────────────────────────────────────────────
+
+const ONBOARDING_KPIS = [
+  {
+    id: "communication",
+    category: "Communication & Responsiveness",
+    description: "Weekly manager score (1-5) for response time, effectiveness of communication, clarity/completeness of messages, and frequency/quality of questions asked.",
+    targets: { day30: 4.0, day60: 4.2, day90: 4.5 },
+    frequency: "Weekly",
+    source: "Manager submission",
+  },
+  {
+    id: "teamwork",
+    category: "Teamwork & Culture Fit",
+    description: "Team pulse score (1-5) on teamwork, collaboration, professionalism, approachability, initiative, energy. Sent on Day 25, 55, 85.",
+    targets: { day30: 4.0, day60: 4.2, day90: 4.5 },
+    frequency: "Day 25, 55, 85",
+    source: "Team pulse survey",
+  },
+];
+
+const KPI_SEED_DATA = {
+  chris_m: {
+    communication: [
+      { week: 1, score: 3.8, manager: "Nick Aiola", date: "2026-04-28", comment: "Good start, responsive on Slack" },
+      { week: 2, score: 4.0, manager: "Nick Aiola", date: "2026-05-05", comment: "Improving clarity in emails" },
+      { week: 3, score: 4.2, manager: "Nick Aiola", date: "2026-05-12", comment: "Proactive follow-ups" },
+    ],
+    teamwork: [
+      { week: 4, score: 4.1, manager: "Team Survey", date: "2026-05-16", comment: "Day 25 pulse — strong collaborator" },
+    ],
+  },
+  mary_c: {
+    communication: [
+      { week: 1, score: 3.5, manager: "Nick Aiola", date: "2026-03-02", comment: "Needs to ask more questions" },
+      { week: 2, score: 3.7, manager: "Nick Aiola", date: "2026-03-09", comment: "Better follow-through" },
+      { week: 3, score: 3.9, manager: "Nick Aiola", date: "2026-03-16", comment: "Communication improving" },
+      { week: 4, score: 4.0, manager: "Nick Aiola", date: "2026-03-23", comment: "Hitting stride" },
+      { week: 5, score: 4.1, manager: "Nick Aiola", date: "2026-03-30", comment: "Excellent week" },
+    ],
+    teamwork: [
+      { week: 4, score: 3.8, manager: "Team Survey", date: "2026-03-22", comment: "Day 25 pulse" },
+      { week: 8, score: 4.0, manager: "Team Survey", date: "2026-04-21", comment: "Day 55 pulse — good improvement" },
+    ],
+  },
+};
+
+// ─── Notes & Badges Data ──────────────────────────────────────────────────────
+
+const BADGE_PRESETS = [
+  { id: "communicator", label: "Great Communicator", icon: "💬" },
+  { id: "learner", label: "Quick Learner", icon: "⚡" },
+  { id: "teamplayer", label: "Team Player", icon: "🤝" },
+  { id: "detail", label: "Detail Oriented", icon: "🔍" },
+  { id: "starter", label: "Self-Starter", icon: "🚀" },
+];
+
+const NOTES_SEED_DATA = {
+  chris_m: {
+    notes: [
+      { id: "n1", date: "2026-04-28", author: "Nick Aiola", text: "Needs to improve response time on Slack — discussed in 1-on-1", visibility: "admin" },
+      { id: "n2", date: "2026-05-02", author: "Nick Aiola", text: "Great job completing Week 1 tasks ahead of schedule!", visibility: "shared" },
+    ],
+    badges: [
+      { id: "b1", badgeId: "learner", label: "Quick Learner", icon: "⚡", date: "2026-05-02", awardedBy: "Nick Aiola" },
+    ],
+  },
+  mary_c: {
+    notes: [
+      { id: "n3", date: "2026-03-10", author: "Nick Aiola", text: "Excellent questions during onboarding — shows deep curiosity", visibility: "shared" },
+      { id: "n4", date: "2026-03-18", author: "Nick Aiola", text: "Needs to work on time management — missed two task deadlines this week", visibility: "admin" },
+    ],
+    badges: [
+      { id: "b2", badgeId: "communicator", label: "Great Communicator", icon: "💬", date: "2026-03-15", awardedBy: "Nick Aiola" },
+      { id: "b3", badgeId: "detail", label: "Detail Oriented", icon: "🔍", date: "2026-03-25", awardedBy: "Nick Aiola" },
+    ],
+  },
 };
 
 // ─── Brand Tokens ────────────────────────────────────────────────────────────
@@ -305,11 +385,65 @@ const Ring = ({ pct, size = 44, stroke = 4 }) => {
   return <svg width={size} height={size} style={{transform:"rotate(-90deg)"}}><circle cx={size/2} cy={size/2} r={r} fill="none" stroke={B.bdr} strokeWidth={stroke}/><circle cx={size/2} cy={size/2} r={r} fill="none" stroke={pct===100?B.ok:B.blue} strokeWidth={stroke} strokeDasharray={c} strokeDashoffset={c*(1-pct/100)} strokeLinecap="round" style={{transition:"stroke-dashoffset .5s"}}/></svg>;
 };
 
+// ─── Milestone & Badge Icons ────────────────────────────────────────────────
+
+const TrophySvg = ({ size = 22, color = "#d1d5db", glow = false }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={glow ? {filter:`drop-shadow(0 0 6px ${color})`,transition:"filter .5s"} : {transition:"filter .5s"}}>
+    <path d="M7 4h10v6a5 5 0 01-10 0V4z" fill={color} opacity=".2"/>
+    <path d="M7 4h10v6a5 5 0 01-10 0V4z" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+    <path d="M7 6H4.5a1 1 0 00-1 1v1a3.5 3.5 0 003.5 3.5" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M17 6h2.5a1 1 0 011 1v1A3.5 3.5 0 0117 11.5" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1="12" y1="15" x2="12" y2="18" stroke={color} strokeWidth="1.5"/>
+    <line x1="8" y1="18" x2="16" y2="18" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+const BADGE_ICONS = {
+  communicator: (sz=16,cl=B.blue)=><svg width={sz} height={sz} viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="9" rx="2" stroke={cl} strokeWidth="1.3"/><path d="M1 5l7 4 7-4" stroke={cl} strokeWidth="1.3"/></svg>,
+  learner: (sz=16,cl=B.warn)=><svg width={sz} height={sz} viewBox="0 0 16 16" fill="none"><path d="M9 1L6 8h4l-3 7" stroke={cl} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  teamplayer: (sz=16,cl=B.purple)=><svg width={sz} height={sz} viewBox="0 0 16 16" fill="none"><path d="M8 1l1.76 3.56L14 5.27l-3 2.93.71 4.13L8 10.27l-3.71 2.06.71-4.13-3-2.93 4.24-.71L8 1z" stroke={cl} strokeWidth="1.3" strokeLinejoin="round"/></svg>,
+  detail: (sz=16,cl=B.blue)=><svg width={sz} height={sz} viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke={cl} strokeWidth="1.3"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke={cl} strokeWidth="1.5" strokeLinecap="round"/></svg>,
+  starter: (sz=16,cl=B.ok)=><svg width={sz} height={sz} viewBox="0 0 16 16" fill="none"><path d="M8 1v4M8 11v4M1 8h4M11 8h4M3.5 3.5l2.8 2.8M9.7 9.7l2.8 2.8M3.5 12.5l2.8-2.8M9.7 6.3l2.8-2.8" stroke={cl} strokeWidth="1.3" strokeLinecap="round"/></svg>,
+};
+
+const MILESTONES = [
+  { id: "day30", label: "30-Day Milestone", color: "#CD7F32", phaseIds: ["week1","week2","week3","week4"] },
+  { id: "day60", label: "60-Day Milestone", color: "#C0C0C0", phaseIds: ["week5_8"] },
+  { id: "day90", label: "90-Day Graduation", color: "#FFD700", phaseIds: ["week9_12"] },
+];
+
+const getMilestoneStatus = (completedTasks) => {
+  return MILESTONES.map(m => {
+    const phases = PHASES.filter(p => m.phaseIds.includes(p.id));
+    const allTasks = phases.flatMap(p => p.items.flatMap(i => i.tasks));
+    const done = allTasks.filter(t => completedTasks?.[t.id]).length;
+    return { ...m, done, total: allTasks.length, unlocked: allTasks.length > 0 && done === allTasks.length };
+  });
+};
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const totalTasks = PHASES.reduce((a,p)=>a+p.items.reduce((b,i)=>b+i.tasks.length,0),0);
-const totalQuizzes = PHASES.reduce((a,p)=>a+p.items.length,0);
-const calcProg = (ts,qs) => { const d=Object.values(ts||{}).filter(Boolean).length,p=Object.values(qs||{}).filter(Boolean).length; return{doneTasks:d,passedQuizzes:p,pct:totalTasks>0?Math.round(d/totalTasks*100):0}; };
+const totalQuizzes = PHASES.reduce((a,p)=>a+p.items.filter(i=>i.quiz).length,0);
+
+// Normalize old single-question quiz format to new multi-question format
+const normalizeQuiz = (quiz) => {
+  if (!quiz) return null;
+  if (quiz.questions) return quiz;
+  return { questions: [{ id: "q1", type: "multiple_choice", question: quiz.question, options: quiz.options, correct: quiz.correct }] };
+};
+
+// Check if quiz is passed — handles both old (true) and new ({passed:true,...}) formats
+const isQuizPassed = (qs, itemId) => {
+  const r = qs?.[itemId];
+  return r === true || r?.passed === true;
+};
+
+const calcProg = (ts,qs) => {
+  const d = Object.values(ts||{}).filter(Boolean).length;
+  const p = Object.keys(qs||{}).filter(k => isQuizPassed(qs, k)).length;
+  return { doneTasks: d, passedQuizzes: p, pct: totalTasks > 0 ? Math.round(d/totalTasks*100) : 0 };
+};
 const phaseProg = (phase,ts) => { const a=phase.items.flatMap(i=>i.tasks),d=a.filter(t=>ts?.[t.id]).length; return a.length?Math.round(d/a.length*100):0; };
 const itemProg = (item,ts) => { const d=item.tasks.filter(t=>ts?.[t.id]).length; return item.tasks.length?Math.round(d/item.tasks.length*100):0; };
 const daysSince = s => Math.max(0,Math.floor((new Date()-new Date(s))/864e5));
@@ -320,7 +454,28 @@ const pMeta = [{ids:["week1","week2","week3","week4"],label:"Days 1–30",color:
 // ═════════════════════════════════════════════════════════════════════════════
 
 function LoginScreen({ onLogin }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showDemo, setShowDemo] = useState(false);
+  const [error, setError] = useState("");
+
+  const allAccounts = [...MOCK_ADMINS, ...MOCK_TRAINEES, ...MOCK_CLIENTS];
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const found = allAccounts.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
+    if (found) { setError(""); onLogin(found); }
+    else { setError("No account found with that email."); }
+  };
+
+  const inputStyle = {width:"100%",padding:"12px 14px",border:`1px solid ${B.bdr}`,borderRadius:10,background:"#fff",fontFamily:"inherit",fontSize:14,color:B.t1,outline:"none",transition:"border-color .2s",boxSizing:"border-box"};
+  const roleBadge = (role) => {
+    const colors = { admin: { bg: B.blueL, color: B.blue }, trainee: { bg: B.purpleL, color: B.purple }, client: { bg: B.okBg, color: B.ok } };
+    const c = colors[role] || colors.trainee;
+    return { fontSize:10, fontWeight:600, color:c.color, background:c.bg, padding:"3px 8px", borderRadius:6, textTransform:"uppercase" };
+  };
+  const avatarBg = (role) => role === "admin" ? B.navy : role === "client" ? B.ok : B.blue;
+
   return (
     <div style={{minHeight:"100vh",background:`linear-gradient(135deg,${B.navy} 0%,#0f172a 50%,#1e293b 100%)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",padding:24}}>
       <div style={{position:"fixed",inset:0,opacity:.03,backgroundImage:`linear-gradient(${B.blue} 1px,transparent 1px),linear-gradient(90deg,${B.blue} 1px,transparent 1px)`,backgroundSize:"40px 40px"}}/>
@@ -330,17 +485,30 @@ function LoginScreen({ onLogin }) {
             <Logo size={44}/>
             <div style={{textAlign:"left"}}>
               <div style={{fontWeight:700,fontSize:18,color:"#fff",letterSpacing:.5}}>AIOLA CPA, PLLC</div>
-              <div style={{fontSize:12,color:B.blueM,marginTop:2}}>Advisory Training Portal</div>
+              <div style={{fontSize:12,color:B.blueM,marginTop:2}}>Portal</div>
             </div>
           </div>
         </div>
         <div style={{background:"#fff",borderRadius:16,padding:"36px 32px",boxShadow:"0 25px 50px rgba(0,0,0,.25)"}}>
           <h2 style={{margin:"0 0 6px",fontSize:22,fontWeight:700,color:B.navy,textAlign:"center"}}>Welcome Back</h2>
           <p style={{margin:"0 0 28px",fontSize:13,color:B.t3,textAlign:"center"}}>Sign in with your Aiola CPA credentials</p>
-          <button onClick={()=>setShowDemo(true)} style={{width:"100%",padding:"14px 20px",border:`1px solid ${B.bdr}`,borderRadius:10,background:"#fff",cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:600,color:B.t1,display:"flex",alignItems:"center",justifyContent:"center",gap:12,transition:"all .2s",boxShadow:"0 1px 3px rgba(0,0,0,.06)"}}
-            onMouseEnter={e=>{e.currentTarget.style.background="#f8f9fa";e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
-            <MsftIc/> Sign in with Microsoft
-          </button>
+          <form onSubmit={handleSubmit} style={{display:"flex",flexDirection:"column",gap:14}}>
+            <div>
+              <label style={{display:"block",fontSize:12,fontWeight:600,color:B.t2,marginBottom:6}}>Email</label>
+              <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@aiolacpa.com" style={inputStyle}
+                onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
+            </div>
+            <div>
+              <label style={{display:"block",fontSize:12,fontWeight:600,color:B.t2,marginBottom:6}}>Password</label>
+              <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter your password" style={inputStyle}
+                onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
+            </div>
+            {error && <div style={{fontSize:12,color:B.err,textAlign:"center"}}>{error}</div>}
+            <button type="submit" style={{width:"100%",padding:"14px 20px",border:"none",borderRadius:10,background:B.blue,cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:600,color:"#fff",transition:"all .2s",boxShadow:"0 2px 8px rgba(59,141,208,.3)"}}
+              onMouseEnter={e=>{e.currentTarget.style.background=B.blueD}} onMouseLeave={e=>{e.currentTarget.style.background=B.blue}}>
+              Sign In
+            </button>
+          </form>
           <div style={{display:"flex",alignItems:"center",gap:12,margin:"20px 0"}}>
             <div style={{flex:1,height:1,background:B.bdr}}/><span style={{fontSize:11,color:B.t3,textTransform:"uppercase",letterSpacing:1}}>Demo Access</span><div style={{flex:1,height:1,background:B.bdr}}/>
           </div>
@@ -354,17 +522,27 @@ function LoginScreen({ onLogin }) {
               {MOCK_ADMINS.map(u=>(
                 <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
                   onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
-                  <div style={{width:36,height:36,borderRadius:18,background:B.navy,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
+                  <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
                   <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
-                  <div style={{marginLeft:"auto",fontSize:10,fontWeight:600,color:B.blue,background:B.blueL,padding:"3px 8px",borderRadius:6}}>ADMIN</div>
+                  <div style={{marginLeft:"auto",...roleBadge(u.role)}}>ADMIN</div>
                 </button>
               ))}
-              <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"12px 0 4px"}}>Trainees</div>
+              <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"12px 0 4px"}}>Trainee</div>
               {MOCK_TRAINEES.map(u=>(
                 <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
                   onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
-                  <div style={{width:36,height:36,borderRadius:18,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
+                  <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
                   <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
+                  <div style={{marginLeft:"auto",...roleBadge(u.role)}}>TRAINEE</div>
+                </button>
+              ))}
+              <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"12px 0 4px"}}>Client</div>
+              {MOCK_CLIENTS.map(u=>(
+                <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
+                  onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
+                  <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
+                  <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
+                  <div style={{marginLeft:"auto",...roleBadge(u.role)}}>CLIENT</div>
                 </button>
               ))}
             </div>
@@ -395,6 +573,14 @@ const CLIENT_ENGAGEMENT_PHASES = [
   { id: "cp1", title: "Phase 1: Onboarding", items: ["Accept portal invitation", "Complete questionnaire", "Schedule onboarding meeting"], total: 3 },
   { id: "cp2", title: "Phase 2: Tax Planning & Strategy", items: [], total: 0 },
   { id: "cp3", title: "Phase 3: Ongoing Support & Implementation", items: [], total: 0 },
+];
+
+const ADVISORY_CLIENTS = [
+  { id: "F-1001", name: "Alex Rivera", tier: "Premium", email: "alex.rivera@email.com", phase: "Tax Planning", completedTodos: 5, totalTodos: 8 },
+  { id: "F-1002", name: "Michael Tjahjadi", tier: "Premium", email: "michael.t@email.com", phase: "Onboarding", completedTodos: 2, totalTodos: 8 },
+  { id: "F-1003", name: "Sarah Johnson", tier: "Standard", email: "sarah.j@email.com", phase: "Ongoing Support", completedTodos: 7, totalTodos: 8 },
+  { id: "F-1004", name: "Diana Lillo", tier: "Standard", email: "diana.l@email.com", phase: "Onboarding", completedTodos: 1, totalTodos: 8 },
+  { id: "F-1005", name: "Joy Nickel", tier: "Premium", email: "joy.n@email.com", phase: "Tax Planning", completedTodos: 4, totalTodos: 8 },
 ];
 
 function ClientPortalDemo() {
@@ -759,10 +945,181 @@ function ClientPortalDemo() {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// ADMIN CLIENT LIST
+// ═════════════════════════════════════════════════════════════════════════════
+
+function AdminClientList() {
+  const [clients, setClients] = useState(ADVISORY_CLIENTS);
+  const [archived, setArchived] = useState([]);
+  const [showArchived, setShowArchived] = useState(false);
+  const [viewingClient, setViewingClient] = useState(null);
+  const [confirmOffboard, setConfirmOffboard] = useState(null);
+
+  const active = clients;
+  const avgCompletion = active.length > 0 ? Math.round(active.reduce((a, c) => a + (c.completedTodos / c.totalTodos * 100), 0) / active.length) : 0;
+  const onboarding = active.filter(c => c.phase === "Onboarding").length;
+  const needsAttention = active.filter(c => (c.completedTodos / c.totalTodos) < 0.4).length;
+
+  const offboard = (client) => {
+    setClients(p => p.filter(c => c.id !== client.id));
+    setArchived(p => [...p, client]);
+    setConfirmOffboard(null);
+  };
+  const restore = (client) => {
+    setArchived(p => p.filter(c => c.id !== client.id));
+    setClients(p => [...p, client]);
+  };
+
+  if (viewingClient) {
+    return (
+      <div>
+        <button onClick={() => setViewingClient(null)} style={{padding:"8px 18px",border:`1px solid ${B.blue}`,borderRadius:8,background:"#fff",color:B.blue,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",marginBottom:20}}>← Back to Client List</button>
+        <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,padding:"18px 24px",marginBottom:20,display:"flex",alignItems:"center",gap:16,boxShadow:"0 1px 3px rgba(0,0,0,.04)"}}>
+          <div style={{width:44,height:44,borderRadius:22,background:viewingClient.tier==="Premium"?B.purple:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700}}>{viewingClient.name.split(" ").map(w=>w[0]).join("")}</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:16,fontWeight:700,color:B.navy}}>{viewingClient.name}</div>
+            <div style={{fontSize:12,color:B.t3}}>{viewingClient.email} · {viewingClient.id} · {viewingClient.phase}</div>
+          </div>
+          <span style={{fontSize:10,fontWeight:600,padding:"3px 10px",borderRadius:10,color:viewingClient.tier==="Premium"?B.purple:B.blue,background:viewingClient.tier==="Premium"?B.purpleL:B.blueL}}>{viewingClient.tier}</span>
+        </div>
+        <ClientPortalDemo />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {/* Stats */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
+        <div style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",borderLeft:`4px solid ${B.blue}`}}>
+          <div style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3,marginBottom:8}}>Active Clients</div>
+          <div style={{fontSize:28,fontWeight:700,color:B.blue}}>{active.length}</div>
+        </div>
+        <div style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",borderLeft:`4px solid ${B.ok}`}}>
+          <div style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3,marginBottom:8}}>Avg Completion</div>
+          <div style={{fontSize:28,fontWeight:700,color:B.ok}}>{avgCompletion}%</div>
+        </div>
+        <div style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",borderLeft:`4px solid ${B.purple}`}}>
+          <div style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3,marginBottom:8}}>In Onboarding</div>
+          <div style={{fontSize:28,fontWeight:700,color:B.purple}}>{onboarding}</div>
+        </div>
+        <div style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${needsAttention>0?"#fecaca":B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",borderLeft:`4px solid ${needsAttention>0?B.err:B.ok}`}}>
+          <div style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3,marginBottom:8}}>Needs Attention</div>
+          <div style={{fontSize:28,fontWeight:700,color:needsAttention>0?B.err:B.ok}}>{needsAttention}</div>
+          <div style={{fontSize:10,color:B.t3,marginTop:2}}>&lt; 40% complete</div>
+        </div>
+      </div>
+      {/* Client Table */}
+      <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden"}}>
+        <div style={{padding:"18px 24px",borderBottom:`1px solid ${B.bdr}`}}>
+          <h2 style={{margin:0,fontSize:16,fontWeight:700,color:B.navy}}>Advisory Clients</h2>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"80px 2fr 0.8fr 1.5fr 1fr 140px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
+          <span>Fathom ID</span><span>Client Name</span><span>Tier</span><span>Email</span><span>% Complete</span><span></span>
+        </div>
+        {active.length===0&&<div style={{padding:"32px 24px",textAlign:"center",fontSize:13,color:B.t3}}>No active clients.</div>}
+        {active.map(c=>{
+          const pct=Math.round(c.completedTodos/c.totalTodos*100);
+          const pctColor=pct>=80?B.ok:pct>=50?B.blue:pct>=30?B.warn:B.err;
+          return(
+            <div key={c.id} style={{display:"grid",gridTemplateColumns:"80px 2fr 0.8fr 1.5fr 1fr 140px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
+              onMouseEnter={e=>e.currentTarget.style.background="#fafbfc"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+              <span style={{fontSize:11,fontWeight:600,color:B.t2,fontFamily:"monospace"}}>{c.id}</span>
+              <div style={{display:"flex",alignItems:"center",gap:10}}>
+                <div style={{width:32,height:32,borderRadius:16,background:c.tier==="Premium"?B.purple:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700,flexShrink:0}}>{c.name.split(" ").map(w=>w[0]).join("")}</div>
+                <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{c.name}</div><div style={{fontSize:10,color:B.t3}}>{c.phase}</div></div>
+              </div>
+              <span style={{fontSize:10,fontWeight:600,padding:"3px 10px",borderRadius:10,display:"inline-block",textAlign:"center",color:c.tier==="Premium"?B.purple:B.blue,background:c.tier==="Premium"?B.purpleL:B.blueL}}>{c.tier}</span>
+              <span style={{fontSize:12,color:B.t2}}>{c.email}</span>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <div style={{flex:1,height:6,borderRadius:3,background:"#f1f5f9",overflow:"hidden",maxWidth:70}}><div style={{height:"100%",borderRadius:3,width:`${pct}%`,background:pctColor,transition:"width .4s"}}/></div>
+                <span style={{fontSize:12,fontWeight:600,color:pctColor}}>{pct}%</span>
+              </div>
+              <div style={{display:"flex",gap:6}}>
+                <button onClick={()=>setViewingClient(c)} style={{padding:"5px 10px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>View</button>
+                <button onClick={()=>setConfirmOffboard(c)} style={{padding:"5px 10px",border:`1px solid ${B.err}`,borderRadius:6,background:"#fff",color:B.err,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Off-board</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {/* Archived Section */}
+      {archived.length>0&&(
+        <div style={{marginTop:20}}>
+          <button onClick={()=>setShowArchived(!showArchived)} style={{display:"flex",alignItems:"center",gap:8,border:"none",background:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:B.t3,fontFamily:"inherit",padding:"8px 0"}}>
+            <Chev open={showArchived}/> Archived Clients ({archived.length})
+          </button>
+          {showArchived&&(
+            <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden",opacity:.7}}>
+              {archived.map(c=>(
+                <div key={c.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`}}>
+                  <div style={{display:"flex",alignItems:"center",gap:10}}>
+                    <span style={{fontSize:11,fontWeight:600,color:B.t3,fontFamily:"monospace"}}>{c.id}</span>
+                    <span style={{fontSize:13,color:B.t3}}>{c.name}</span>
+                    <span style={{fontSize:10,color:B.t3}}>{c.email}</span>
+                  </div>
+                  <button onClick={()=>restore(c)} style={{padding:"5px 12px",border:`1px solid ${B.ok}`,borderRadius:6,background:"#fff",color:B.ok,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Restore</button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+      {/* Off-board Confirmation Modal */}
+      {confirmOffboard&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.4)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,fontFamily:"'DM Sans',sans-serif"}} onClick={()=>setConfirmOffboard(null)}>
+          <div style={{background:"#fff",borderRadius:16,padding:"28px 32px",maxWidth:440,width:"90%",boxShadow:"0 25px 50px rgba(0,0,0,.2)"}} onClick={e=>e.stopPropagation()}>
+            <h3 style={{margin:"0 0 12px",fontSize:18,fontWeight:700,color:B.navy}}>Off-board Client</h3>
+            <p style={{margin:"0 0 20px",fontSize:13,color:B.t2,lineHeight:1.6}}>Are you sure you want to off-board <strong>{confirmOffboard.name}</strong>? This will archive their portal.</p>
+            <div style={{display:"flex",gap:8,justifyContent:"flex-end"}}>
+              <button onClick={()=>setConfirmOffboard(null)} style={{padding:"8px 18px",border:`1px solid ${B.bdr}`,borderRadius:7,background:"#fff",color:B.t3,fontSize:12,fontWeight:500,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+              <button onClick={()=>offboard(confirmOffboard)} style={{padding:"8px 18px",border:"none",borderRadius:7,background:B.err,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Off-board</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 // ADMIN DASHBOARD
 // ═════════════════════════════════════════════════════════════════════════════
 
-function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
+// Phase deadlines: how many days into the 90-day program each phase should be complete
+const PHASE_DEADLINES = { week1: 7, week2: 14, week3: 21, week4: 30, week5_8: 60, week9_12: 90 };
+
+// Get overdue tasks for a trainee: tasks in phases whose deadline has passed but aren't completed
+const getOverdueTasks = (trainee, taskData) => {
+  const days = daysSince(trainee.startDate);
+  const overdue = [];
+  for (const phase of PHASES) {
+    const deadline = PHASE_DEADLINES[phase.id];
+    if (days < deadline) continue;
+    for (const item of phase.items) {
+      for (const task of item.tasks) {
+        if (!taskData?.[task.id]) overdue.push({ phase: phase.label, item: item.title, task: task.text, deadline });
+      }
+    }
+  }
+  return overdue;
+};
+
+// Get overdue quizzes for a trainee
+const getOverdueQuizzes = (trainee, quizData) => {
+  const days = daysSince(trainee.startDate);
+  const overdue = [];
+  for (const phase of PHASES) {
+    const deadline = PHASE_DEADLINES[phase.id];
+    if (days < deadline) continue;
+    for (const item of phase.items) {
+      if (item.quiz && !quizData?.[item.id]) overdue.push({ phase: phase.label, item: item.title, question: item.quiz.question, deadline });
+    }
+  }
+  return overdue;
+};
+
+function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
@@ -770,6 +1127,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
   const [trainees, setTrainees] = useState(MOCK_TRAINEES);
   const [trackFilter, setTrackFilter] = useState("All");
   const [adminTab, setAdminTab] = useState("training");
+  const [drillDown, setDrillDown] = useState(null); // {type:"deadlines"|"quizzes"|"kpi", data:[...]}
 
   const handleAdd = () => {
     if(!newName.trim()||!newEmail.trim()) return;
@@ -781,12 +1139,24 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
 
   const filteredTrainees = trackFilter === "All" ? trainees : trainees.filter(t => t.track === trackFilter);
 
+  // Pain-point computations
+  const allOverdue = trainees.flatMap(t => getOverdueTasks(t, allData[t.id]?.tasks).map(o => ({...o, trainee: t.name})));
+  const allOverdueQuizzes = trainees.flatMap(t => getOverdueQuizzes(t, allData[t.id]?.quizzes).map(o => ({...o, trainee: t.name})));
+  const kpiScores = trainees.map(t => {
+    const prog = calcProg(allData[t.id]?.tasks, allData[t.id]?.quizzes);
+    const days = daysSince(t.startDate);
+    const timelinePct = Math.min(100, Math.round(days / 90 * 100));
+    const kpi = timelinePct > 0 ? Math.min(100, Math.round(prog.pct / timelinePct * 100)) : 100;
+    return { trainee: t.name, progressPct: prog.pct, timelinePct, kpi };
+  });
+  const avgKpi = kpiScores.length ? Math.round(kpiScores.reduce((a, k) => a + k.kpi, 0) / kpiScores.length) : 0;
+
   return (
     <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:B.bg,color:B.t1}}>
       <header style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
         <div style={{display:"flex",alignItems:"center",gap:14}}>
           <Logo size={32}/>
-          <div><div style={{fontWeight:700,fontSize:15,color:B.navy}}>Advisory Training Portal</div><div style={{fontSize:11,color:B.t3}}>Admin Dashboard</div></div>
+          <div><div style={{fontWeight:700,fontSize:15,color:B.navy}}>Aiola Portal</div><div style={{fontSize:11,color:B.t3}}>Admin Dashboard</div></div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:16}}>
           <div style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{user.name}</div><div style={{fontSize:11,color:B.t3}}>Administrator</div></div>
@@ -803,25 +1173,107 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
             </button>
           ))}
         </div>
-        {adminTab==="client"&&<ClientPortalDemo />}
+        {adminTab==="client"&&<AdminClientList />}
         {adminTab==="training"&&<>
-        {/* Stats */}
+        {/* Pain-Point Stats */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
-          {[
-            {label:"Active Trainees",val:trainees.length,color:B.blue,icon:"👥"},
-            {label:"Avg. Completion",val:(()=>{const ps=trainees.map(t=>calcProg(allData[t.id]?.tasks,allData[t.id]?.quizzes).pct);return ps.length?Math.round(ps.reduce((a,b)=>a+b,0)/ps.length):0})()+"%",color:B.ok,icon:"📊"},
-            {label:"Quizzes Passed",val:trainees.reduce((a,t)=>a+calcProg(allData[t.id]?.tasks,allData[t.id]?.quizzes).passedQuizzes,0),color:B.purple,icon:"✅"},
-            {label:"Tasks Completed",val:trainees.reduce((a,t)=>a+calcProg(allData[t.id]?.tasks,allData[t.id]?.quizzes).doneTasks,0),color:B.warn,icon:"📋"},
-          ].map((s,i)=>(
-            <div key={i} style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
-                <span style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>{s.label}</span>
-                <span style={{fontSize:18}}>{s.icon}</span>
-              </div>
-              <div style={{fontSize:28,fontWeight:700,color:s.color}}>{s.val}</div>
+          <div onClick={()=>setDrillDown({type:"deadlines",data:allOverdue})} style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${allOverdue.length>0?"#fecaca":B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",cursor:"pointer",transition:"all .15s",borderLeft:`4px solid ${allOverdue.length>0?B.err:B.ok}`}}
+            onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 12px rgba(0,0,0,.08)"} onMouseLeave={e=>e.currentTarget.style.boxShadow="0 1px 3px rgba(0,0,0,.04)"}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+              <span style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>Missed Deadlines</span>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke={allOverdue.length>0?B.err:B.ok} strokeWidth="1.5"/><path d="M10 6v5l3 2" stroke={allOverdue.length>0?B.err:B.ok} strokeWidth="1.5" strokeLinecap="round"/></svg>
             </div>
-          ))}
+            <div style={{fontSize:28,fontWeight:700,color:allOverdue.length>0?B.err:B.ok}}>{allOverdue.length}</div>
+            <div style={{fontSize:10,color:B.t3,marginTop:4}}>{allOverdue.length>0?"Click to view overdue items":"All on track"}</div>
+          </div>
+          <div onClick={()=>setDrillDown({type:"quizzes",data:allOverdueQuizzes})} style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${allOverdueQuizzes.length>0?"#fed7aa":B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",cursor:"pointer",transition:"all .15s",borderLeft:`4px solid ${allOverdueQuizzes.length>0?B.warn:B.ok}`}}
+            onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 12px rgba(0,0,0,.08)"} onMouseLeave={e=>e.currentTarget.style.boxShadow="0 1px 3px rgba(0,0,0,.04)"}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+              <span style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>Quizzes Overdue</span>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke={allOverdueQuizzes.length>0?B.warn:B.ok} strokeWidth="1.5"/><text x="10" y="14" textAnchor="middle" fontSize="12" fontWeight="700" fill={allOverdueQuizzes.length>0?B.warn:B.ok}>?</text></svg>
+            </div>
+            <div style={{fontSize:28,fontWeight:700,color:allOverdueQuizzes.length>0?B.warn:B.ok}}>{allOverdueQuizzes.length}</div>
+            <div style={{fontSize:10,color:B.t3,marginTop:4}}>{allOverdueQuizzes.length>0?"Click to view details":"All quizzes passed on time"}</div>
+          </div>
+          <div onClick={()=>setDrillDown({type:"kpi",data:kpiScores})} style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",cursor:"pointer",transition:"all .15s",borderLeft:`4px solid ${avgKpi>=80?B.ok:avgKpi>=60?B.warn:B.err}`}}
+            onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 12px rgba(0,0,0,.08)"} onMouseLeave={e=>e.currentTarget.style.boxShadow="0 1px 3px rgba(0,0,0,.04)"}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+              <span style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>KPI Tracker</span>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3" y="10" width="3" height="7" rx="1" fill={B.blue} opacity=".4"/><rect x="8.5" y="6" width="3" height="11" rx="1" fill={B.blue} opacity=".7"/><rect x="14" y="3" width="3" height="14" rx="1" fill={B.blue}/></svg>
+            </div>
+            <div style={{display:"flex",alignItems:"baseline",gap:6}}>
+              <span style={{fontSize:28,fontWeight:700,color:avgKpi>=80?B.ok:avgKpi>=60?B.warn:B.err}}>{avgKpi}%</span>
+              <span style={{fontSize:11,color:B.t3}}>/ 100% target</span>
+            </div>
+            <div style={{height:5,borderRadius:3,background:B.blueL,overflow:"hidden",marginTop:8}}><div style={{height:"100%",borderRadius:3,width:`${avgKpi}%`,background:avgKpi>=80?B.ok:avgKpi>=60?B.warn:B.err,transition:"width .4s"}}/></div>
+          </div>
+          <div style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",borderLeft:`4px solid ${B.blue}`}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+              <span style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>Active Trainees</span>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="7" cy="7" r="3" stroke={B.blue} strokeWidth="1.5"/><circle cx="13" cy="7" r="3" stroke={B.blue} strokeWidth="1.5"/><path d="M1 17c0-3 2.5-5 6-5s6 2 6 5" stroke={B.blue} strokeWidth="1.5"/><path d="M11 17c0-3 2.5-5 6-5s4 2 4 5" stroke={B.blue} strokeWidth="1.5" opacity=".5"/></svg>
+            </div>
+            <div style={{fontSize:28,fontWeight:700,color:B.blue}}>{trainees.length}</div>
+            <div style={{fontSize:10,color:B.t3,marginTop:4}}>{trainees.filter(t=>daysSince(t.startDate)<=30).length} in first 30 days</div>
+          </div>
         </div>
+
+        {/* Drill-Down Modal */}
+        {drillDown && (
+          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.4)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,fontFamily:"'DM Sans',sans-serif"}} onClick={()=>setDrillDown(null)}>
+            <div style={{background:"#fff",borderRadius:16,padding:"28px 32px",maxWidth:640,width:"90%",maxHeight:"80vh",overflowY:"auto",boxShadow:"0 25px 50px rgba(0,0,0,.2)"}} onClick={e=>e.stopPropagation()}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
+                <h3 style={{margin:0,fontSize:18,fontWeight:700,color:B.navy}}>
+                  {drillDown.type==="deadlines"?"Missed Deadlines":drillDown.type==="quizzes"?"Overdue Quizzes":"KPI Breakdown"}
+                </h3>
+                <button onClick={()=>setDrillDown(null)} style={{border:"none",background:"none",cursor:"pointer",fontSize:20,color:B.t3,padding:4,lineHeight:1}}>×</button>
+              </div>
+              {drillDown.type==="deadlines"&&(drillDown.data.length===0
+                ? <p style={{fontSize:13,color:B.ok,textAlign:"center",padding:20}}>No missed deadlines — all trainees are on track!</p>
+                : <div style={{display:"flex",flexDirection:"column",gap:8}}>{drillDown.data.map((d,i)=>(
+                    <div key={i} style={{padding:"12px 16px",border:`1px solid #fecaca`,borderRadius:8,background:"#fef2f2"}}>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+                        <span style={{fontSize:13,fontWeight:600,color:B.err}}>{d.trainee}</span>
+                        <span style={{fontSize:10,color:B.t3}}>Due by Day {d.deadline}</span>
+                      </div>
+                      <div style={{fontSize:12,color:B.t1}}>{d.task}</div>
+                      <div style={{fontSize:10,color:B.t3,marginTop:2}}>{d.phase} · {d.item}</div>
+                    </div>
+                  ))}</div>
+              )}
+              {drillDown.type==="quizzes"&&(drillDown.data.length===0
+                ? <p style={{fontSize:13,color:B.ok,textAlign:"center",padding:20}}>All quizzes passed on time!</p>
+                : <div style={{display:"flex",flexDirection:"column",gap:8}}>{drillDown.data.map((d,i)=>(
+                    <div key={i} style={{padding:"12px 16px",border:`1px solid #fed7aa`,borderRadius:8,background:"#fffbeb"}}>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+                        <span style={{fontSize:13,fontWeight:600,color:B.warn}}>{d.trainee}</span>
+                        <span style={{fontSize:10,color:B.t3}}>Due by Day {d.deadline}</span>
+                      </div>
+                      <div style={{fontSize:12,color:B.t1}}>{d.question}</div>
+                      <div style={{fontSize:10,color:B.t3,marginTop:2}}>{d.phase} · {d.item}</div>
+                    </div>
+                  ))}</div>
+              )}
+              {drillDown.type==="kpi"&&(
+                <div style={{display:"flex",flexDirection:"column",gap:10}}>{drillDown.data.map((k,i)=>{
+                  const kColor = k.kpi>=80?B.ok:k.kpi>=60?B.warn:B.err;
+                  return(
+                    <div key={i} style={{padding:"14px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff"}}>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+                        <span style={{fontSize:13,fontWeight:600,color:B.t1}}>{k.trainee}</span>
+                        <span style={{fontSize:14,fontWeight:700,color:kColor}}>{k.kpi}%</span>
+                      </div>
+                      <div style={{display:"flex",gap:16,fontSize:11,color:B.t3,marginBottom:6}}>
+                        <span>Progress: {k.progressPct}%</span><span>Timeline: {k.timelinePct}%</span>
+                      </div>
+                      <div style={{height:5,borderRadius:3,background:B.blueL,overflow:"hidden"}}><div style={{height:"100%",borderRadius:3,width:`${k.kpi}%`,background:kColor,transition:"width .4s"}}/></div>
+                    </div>
+                  );
+                })}</div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Track Filter */}
         <div style={{display:"flex",gap:8,marginBottom:16}}>
           {["All","Advisory","Tax Prep","Admin"].map(f=>(
@@ -845,28 +1297,39 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
               <button onClick={()=>setShowAdd(false)} style={{padding:"9px 16px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
             </div>
           )}
-          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr 100px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
-            <span>Name</span><span>Track</span><span>Start Date</span><span>Progress</span><span>Quizzes</span><span></span>
+          <div style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 150px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
+            <span>Name</span><span>Phase</span><span>Start Date</span><span>Timeline</span><span>Progress</span><span>Quizzes</span><span></span>
           </div>
           {filteredTrainees.map(t=>{
             const prog=calcProg(allData[t.id]?.tasks,allData[t.id]?.quizzes);
             const days=daysSince(t.startDate);
+            const timelinePct=Math.min(100,Math.round(days/90*100));
+            const phaseLbl=days<=30?"Days 1–30":days<=60?"Days 31–60":"Days 61–90";
             const phaseColor=days<=30?B.blue:days<=60?B.purple:B.ok;
+            const diff=timelinePct-prog.pct;
+            const tlColor=diff<=0?B.ok:diff<=10?B.warn:B.err;
             return(
-              <div key={t.id} style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr 100px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
+              <div key={t.id} style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 150px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
                 onMouseEnter={e=>e.currentTarget.style.background="#fafbfc"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                 <div style={{display:"flex",alignItems:"center",gap:12}}>
                   <div style={{width:36,height:36,borderRadius:18,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{t.avatar}</div>
                   <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{t.name}</div><div style={{fontSize:11,color:B.t3}}>{t.email}</div></div>
                 </div>
-                <span style={{fontSize:12,fontWeight:500,color:phaseColor}}>{t.track || "Advisory"}</span>
+                <span style={{fontSize:11,fontWeight:600,color:phaseColor,background:days<=30?B.blueL:days<=60?B.purpleL:B.okL,padding:"3px 8px",borderRadius:6,display:"inline-block",textAlign:"center",whiteSpace:"nowrap"}}>{phaseLbl}</span>
                 <span style={{fontSize:12,color:B.t2}}>{new Date(t.startDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <div style={{flex:1,height:6,borderRadius:3,background:B.blueL,overflow:"hidden",maxWidth:80}}><div style={{height:"100%",borderRadius:3,width:`${prog.pct}%`,background:prog.pct===100?B.ok:B.blue,transition:"width .4s"}}/></div>
+                  <div style={{flex:1,height:6,borderRadius:3,background:"#f1f5f9",overflow:"hidden",maxWidth:70}}><div style={{height:"100%",borderRadius:3,width:`${timelinePct}%`,background:tlColor,transition:"width .4s"}}/></div>
+                  <span style={{fontSize:12,fontWeight:600,color:tlColor}}>{timelinePct}%</span>
+                </div>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <div style={{flex:1,height:6,borderRadius:3,background:B.blueL,overflow:"hidden",maxWidth:70}}><div style={{height:"100%",borderRadius:3,width:`${prog.pct}%`,background:prog.pct===100?B.ok:B.blue,transition:"width .4s"}}/></div>
                   <span style={{fontSize:12,fontWeight:600,color:prog.pct===100?B.ok:B.t1}}>{prog.pct}%</span>
                 </div>
                 <span style={{fontSize:12,color:B.t2}}>{prog.passedQuizzes}/{totalQuizzes}</span>
-                <button onClick={()=>onViewTrainee(t)} style={{padding:"6px 14px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>View Portal</button>
+                <div style={{display:"flex",gap:6}}>
+                  <button onClick={()=>onViewTrainee(t)} style={{padding:"5px 10px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>View</button>
+                  <button onClick={()=>onViewKpi(t)} style={{padding:"5px 10px",border:`1px solid ${B.purple}`,borderRadius:6,background:"#fff",color:B.purple,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>KPI</button>
+                </div>
               </div>
             );
           })}
@@ -881,24 +1344,42 @@ function AdminDashboard({ user, allData, onViewTrainee, onLogout }) {
 // TRAINEE PORTAL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin }) {
+function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, notes, badges, onAddNote, onAddBadge, kpiData }) {
   const [aP, setAP] = useState("week1");
   const [aI, setAI] = useState("d1");
-  const [qM, setQM] = useState(null);
-  const [qS, setQS] = useState(null);
-  const [qSub, setQSub] = useState(false);
+  const [qM, setQM] = useState(null); // which item's quiz is open
+  const [qIdx, setQIdx] = useState(0); // current question index
+  const [qAns, setQAns] = useState({}); // {questionId: selectedIndex | freeText}
+  const [qSubs, setQSubs] = useState({}); // {questionId: true} submitted
+  const [qDone, setQDone] = useState(false); // showing summary
   const [sO, setSO] = useState(true);
   const [eP, setEP] = useState({week1:true});
   const mR = useRef(null);
   const prog = calcProg(completedTasks, quizResults);
   const cPh = PHASES.find(p=>p.id===aP);
   const cIt = cPh?.items.find(i=>i.id===aI)||cPh?.items[0];
+  const milestones = getMilestoneStatus(completedTasks);
+  const days = daysSince(user.startDate);
+  const currentPhaseIdx = days <= 30 ? 0 : days <= 60 ? 1 : 2;
+  const phaseEnd = [30, 60, 90][currentPhaseIdx];
+  const daysRemaining = Math.max(0, phaseEnd - days);
 
-  const sel = (pid,iid) => { setAP(pid); setAI(iid); setEP(p=>({...p,[pid]:true})); setQM(null); setQS(null); setQSub(false); if(mR.current)mR.current.scrollTop=0; };
-  const hQS = (itemId,correct) => { setQSub(true); if(qS===correct)onPassQuiz(itemId); };
+  const sel = (pid,iid) => { setAP(pid); setAI(iid); setEP(p=>({...p,[pid]:true})); setQM(null); setQIdx(0); setQAns({}); setQSubs({}); setQDone(false); if(mR.current)mR.current.scrollTop=0; };
+  const resetQuiz = () => { setQM(null); setQIdx(0); setQAns({}); setQSubs({}); setQDone(false); };
+
+  // KPI averages for snapshot
+  const kpi = kpiData || {};
+  const commEntries = kpi.communication || [];
+  const teamEntries = kpi.teamwork || [];
+  const commAvg = commEntries.length > 0 ? commEntries.reduce((a,e)=>a+e.score,0)/commEntries.length : 0;
+  const teamAvg = teamEntries.length > 0 ? teamEntries.reduce((a,e)=>a+e.score,0)/teamEntries.length : 0;
+
+  // Shared notes for trainee view
+  const sharedNotes = (notes || []).filter(n => n.visibility === "shared");
 
   return (
     <div style={{fontFamily:"'DM Sans',sans-serif",display:"flex",height:"100vh",width:"100%",background:B.bg,color:B.t1,overflow:"hidden"}}>
+      <style>{`@keyframes milestoneGlow{0%,100%{filter:drop-shadow(0 0 4px currentColor) brightness(1)}50%{filter:drop-shadow(0 0 10px currentColor) brightness(1.15)}}`}</style>
       <aside style={{width:sO?280:0,minWidth:sO?280:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
         <div style={{padding:"18px 20px 14px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:10}}>
           <Logo size={30}/><div><div style={{fontWeight:700,fontSize:13,color:B.navy,letterSpacing:.5}}>AIOLA CPA, PLLC</div><div style={{fontSize:10,color:B.t3,marginTop:1}}>Training Portal</div></div>
@@ -907,6 +1388,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
           <div style={{width:32,height:32,borderRadius:16,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,flexShrink:0}}>{user.avatar}</div>
           <div><div style={{fontSize:12,fontWeight:600,color:B.t1}}>{user.name}</div><div style={{fontSize:10,color:B.t3}}>{user.track||"Advisory"} Track</div></div>
         </div>
+        {/* Progress Summary Card */}
         <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
             <span style={{fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>Overall</span>
@@ -914,7 +1396,81 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
           </div>
           <div style={{height:5,borderRadius:3,background:B.blueL,overflow:"hidden"}}><div style={{height:"100%",width:`${prog.pct}%`,borderRadius:3,background:prog.pct===100?B.ok:`linear-gradient(90deg,${B.blue},${B.blueD})`,transition:"width .5s"}}/></div>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:10,color:B.t3}}><span>{prog.doneTasks}/{totalTasks} tasks</span><span>{prog.passedQuizzes}/{totalQuizzes} quizzes</span></div>
+          {/* Phase indicator + days remaining */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
+            <span style={{fontSize:10,fontWeight:600,color:pMeta[currentPhaseIdx].color,background:currentPhaseIdx===0?B.blueL:currentPhaseIdx===1?B.purpleL:B.okL,padding:"2px 8px",borderRadius:6}}>{pMeta[currentPhaseIdx].label}</span>
+            <span style={{fontSize:10,color:B.t3}}>{daysRemaining > 0 ? `${daysRemaining}d remaining` : "Phase complete"}</span>
+          </div>
+          {/* Milestone trophies inline */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:12,marginTop:10,padding:"6px 0"}}>
+            {milestones.map(m => (
+              <div key={m.id} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2}} title={m.unlocked?`${m.label} — Unlocked!`:m.label}>
+                <div style={m.unlocked?{animation:"milestoneGlow 2s ease-in-out infinite"}:{}}>
+                  <TrophySvg size={20} color={m.unlocked ? m.color : "#d1d5db"} glow={m.unlocked}/>
+                </div>
+                <span style={{fontSize:8,fontWeight:600,color:m.unlocked?m.color:B.t3}}>{m.done}/{m.total}</span>
+              </div>
+            ))}
+          </div>
         </div>
+        {/* Your Performance — KPI Snapshot */}
+        {!isAdminView && (commEntries.length > 0 || teamEntries.length > 0) && (
+          <div style={{padding:"12px 20px",borderBottom:`1px solid ${B.bdr}`}}>
+            <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,marginBottom:8}}>Your Performance</div>
+            <div style={{display:"flex",gap:12,justifyContent:"center"}}>
+              {commEntries.length > 0 && (
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+                  <Ring pct={Math.round(commAvg/5*100)} size={36} stroke={3}/>
+                  <span style={{fontSize:10,fontWeight:700,color:B.navy}}>{commAvg.toFixed(1)}</span>
+                  <span style={{fontSize:8,color:B.t3}}>Communication</span>
+                </div>
+              )}
+              {teamEntries.length > 0 && (
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+                  <Ring pct={Math.round(teamAvg/5*100)} size={36} stroke={3}/>
+                  <span style={{fontSize:10,fontWeight:700,color:B.navy}}>{teamAvg.toFixed(1)}</span>
+                  <span style={{fontSize:8,color:B.t3}}>Teamwork</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {/* My Achievements — badges from managers */}
+        {!isAdminView && (badges || []).length > 0 && (
+          <div style={{padding:"12px 20px",borderBottom:`1px solid ${B.bdr}`}}>
+            <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,marginBottom:8}}>My Achievements</div>
+            <div style={{display:"flex",flexDirection:"column",gap:6}}>
+              {(badges||[]).map(b => {
+                const iconFn = BADGE_ICONS[b.badgeId];
+                return (
+                  <div key={b.id} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",background:B.blueL,borderRadius:8}}>
+                    <div style={{width:24,height:24,borderRadius:12,background:"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,border:`1px solid ${B.blueM}`}}>
+                      {iconFn ? iconFn(14, B.blue) : <span style={{fontSize:12}}>{b.icon}</span>}
+                    </div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{fontSize:11,fontWeight:600,color:B.t1}}>{b.label}</div>
+                      <div style={{fontSize:9,color:B.t3}}>{b.awardedBy} · {new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {/* Feedback from shared notes */}
+        {!isAdminView && sharedNotes.length > 0 && (
+          <div style={{padding:"12px 20px",borderBottom:`1px solid ${B.bdr}`}}>
+            <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,marginBottom:8}}>Feedback & Areas of Improvement</div>
+            <div style={{display:"flex",flexDirection:"column",gap:6}}>
+              {sharedNotes.slice(0,3).map(n => (
+                <div key={n.id} style={{padding:"6px 8px",background:"#fafbfc",borderRadius:6,borderLeft:`3px solid ${B.blue}`}}>
+                  <div style={{fontSize:11,color:B.t1,lineHeight:1.4}}>{n.text}</div>
+                  <div style={{fontSize:9,color:B.t3,marginTop:2}}>{n.author} · {new Date(n.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <nav style={{flex:1,overflowY:"auto",padding:"6px 0"}}>
           {pMeta.map(meta=>(
             <div key={meta.label}>
@@ -1008,39 +1564,146 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               </div>
             )}
             {/* Quiz */}
-            {cIt.quiz&&(
-              <div style={{background:B.card,border:`1px solid ${quizResults[cIt.id]?B.ok:B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
-                <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",background:quizResults[cIt.id]?B.okBg:"transparent"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6}}>{quizResults[cIt.id]?<Trophy/>:<QuizIc/>}<span style={{fontSize:12,fontWeight:700,color:quizResults[cIt.id]?B.ok:B.navy,textTransform:"uppercase",letterSpacing:.8}}>{quizResults[cIt.id]?"Quiz Passed":"Knowledge Check"}</span></div>
-                  {quizResults[cIt.id]&&<span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Complete</span>}
+            {cIt.quiz&&(()=>{
+              const nQuiz = normalizeQuiz(cIt.quiz);
+              const qs = nQuiz.questions;
+              const passed = isQuizPassed(quizResults, cIt.id);
+              const curQ = qs[qIdx];
+              const isSub = !!qSubs[curQ?.id];
+              const mcQuestions = qs.filter(q=>q.type==="multiple_choice");
+              const mcCorrectCount = mcQuestions.filter(q=>qAns[q.id]===q.correct).length;
+              const allMcCorrect = mcQuestions.length>0 ? mcCorrectCount===mcQuestions.length : true;
+
+              // Finish quiz: save results
+              const finishQuiz = () => {
+                const qResults = {};
+                for(const q of qs){
+                  if(q.type==="multiple_choice") qResults[q.id]={type:"multiple_choice",answer:qAns[q.id],correct:qAns[q.id]===q.correct,attempts:1};
+                  else qResults[q.id]={type:"free_text",answer:qAns[q.id]||"",status:"pending_review"};
+                }
+                onPassQuiz(cIt.id, {passed:allMcCorrect, questions:qResults});
+                setQDone(true);
+              };
+
+              return(
+              <div style={{background:B.card,border:`1px solid ${passed?B.ok:B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+                <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",background:passed?B.okBg:"transparent"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}>{passed?<Trophy/>:<QuizIc/>}<span style={{fontSize:12,fontWeight:700,color:passed?B.ok:B.navy,textTransform:"uppercase",letterSpacing:.8}}>{passed?"Quiz Passed":"Knowledge Check"}</span></div>
+                  {passed&&<span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Complete</span>}
+                  {!passed&&qM===cIt.id&&!qDone&&<span style={{fontSize:10,color:B.t3}}>Question {qIdx+1} of {qs.length}</span>}
                 </div>
-                {quizResults[cIt.id]?<div style={{padding:"16px 18px",color:B.t2,fontSize:12}}>You've already passed this quiz.</div>
-                :qM===cIt.id?(
+                {passed?(
+                  <div style={{padding:"16px 18px",color:B.t2,fontSize:12}}>You've already passed this quiz. ({qs.length} question{qs.length!==1?"s":""})</div>
+                ):qDone?(
+                  /* Summary screen */
                   <div style={{padding:18}}>
-                    <p style={{fontSize:13,fontWeight:600,color:B.navy,lineHeight:1.5,marginTop:0,marginBottom:14}}>{cIt.quiz.question}</p>
-                    {cIt.quiz.options.map((opt,idx)=>{
-                      const isSel=qS===idx,isCor=idx===cIt.quiz.correct;
-                      let bg="#fff",bd=B.bdr,cl=B.t1;
-                      if(qSub){if(isCor){bg=B.okBg;bd=B.ok;cl=B.ok}else if(isSel&&!isCor){bg="#fef2f2";bd=B.err;cl=B.err}}
-                      else if(isSel){bg=B.blueL;bd=B.blue;cl=B.blue}
-                      return <div key={idx} onClick={()=>{if(!qSub)setQS(idx)}} style={{padding:"10px 14px",border:`2px solid ${bd}`,borderRadius:7,marginBottom:6,cursor:qSub?"default":"pointer",background:bg,color:cl,fontSize:12,fontWeight:isSel?600:400,transition:"all .2s",display:"flex",alignItems:"center",gap:10}}>
-                        <span style={{width:20,height:20,borderRadius:10,flexShrink:0,border:`2px solid ${isSel?bd:B.bdr}`,background:isSel?(qSub?(isCor?B.ok:B.err):B.blue):"#fff",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s"}}>{isSel&&<div style={{width:6,height:6,borderRadius:3,background:"#fff"}}/>}</span>{opt}
-                      </div>;
-                    })}
-                    <div style={{display:"flex",gap:6,marginTop:14}}>
-                      {!qSub?<button disabled={qS===null} onClick={()=>hQS(cIt.id,cIt.quiz.correct)} style={{padding:"8px 20px",border:"none",borderRadius:7,background:qS!==null?B.blue:B.bdr,color:"#fff",fontSize:12,fontWeight:600,cursor:qS!==null?"pointer":"default",fontFamily:"inherit"}}>Submit</button>
-                      :<>{qS!==cIt.quiz.correct&&<button onClick={()=>{setQS(null);setQSub(false)}} style={{padding:"8px 20px",border:`1px solid ${B.blue}`,borderRadius:7,background:"#fff",color:B.blue,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Try Again</button>}
-                        <button onClick={()=>{setQM(null);setQS(null);setQSub(false)}} style={{padding:"8px 16px",border:`1px solid ${B.bdr}`,borderRadius:7,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Close</button></>}
+                    <div style={{textAlign:"center",padding:"10px 0 16px"}}>
+                      <div style={{fontSize:18,fontWeight:700,color:allMcCorrect?B.ok:B.navy,marginBottom:4}}>
+                        {allMcCorrect?"All correct!":"Quiz Complete"}
+                      </div>
+                      <div style={{fontSize:13,color:B.t2}}>
+                        You got {mcCorrectCount} out of {mcQuestions.length} multiple choice correct
+                        {qs.length>mcQuestions.length&&<span> · {qs.length-mcQuestions.length} free-text submitted for review</span>}
+                      </div>
+                    </div>
+                    {/* Per-question results */}
+                    <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:16}}>
+                      {qs.map((q,i)=>{
+                        const isCorrect = q.type==="multiple_choice"&&qAns[q.id]===q.correct;
+                        const isFt = q.type==="free_text";
+                        return(
+                          <div key={q.id} style={{padding:"10px 14px",borderRadius:7,border:`1px solid ${isCorrect?B.ok:isFt?B.blue:B.err}`,background:isCorrect?B.okBg:isFt?B.blueL:"#fef2f2",display:"flex",alignItems:"center",gap:10}}>
+                            <span style={{width:20,height:20,borderRadius:10,flexShrink:0,background:isCorrect?B.ok:isFt?B.blue:B.err,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700}}>
+                              {isCorrect?"✓":isFt?"✎":"✗"}
+                            </span>
+                            <div style={{flex:1,minWidth:0}}>
+                              <div style={{fontSize:11,fontWeight:600,color:B.t1}}>Q{i+1}: {q.question.slice(0,80)}{q.question.length>80?"...":""}</div>
+                              <div style={{fontSize:10,color:B.t3,marginTop:1}}>{isCorrect?"Correct":isFt?"Pending Review":"Incorrect"}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {!allMcCorrect&&(
+                      <button onClick={()=>{setQIdx(0);setQAns({});setQSubs({});setQDone(false)}} style={{padding:"8px 20px",border:`1px solid ${B.blue}`,borderRadius:7,background:"#fff",color:B.blue,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",marginRight:6}}>Retry Quiz</button>
+                    )}
+                    <button onClick={resetQuiz} style={{padding:"8px 16px",border:`1px solid ${B.bdr}`,borderRadius:7,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Close</button>
+                  </div>
+                ):qM===cIt.id&&curQ?(
+                  /* Active question */
+                  <div style={{padding:18}}>
+                    {/* Progress dots */}
+                    <div style={{display:"flex",gap:4,marginBottom:14}}>
+                      {qs.map((_,i)=>(
+                        <div key={i} style={{flex:1,height:3,borderRadius:2,background:i<qIdx?B.ok:i===qIdx?B.blue:B.bdr,transition:"background .3s"}}/>
+                      ))}
+                    </div>
+                    <div style={{fontSize:10,fontWeight:600,color:B.t3,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>
+                      {curQ.type==="multiple_choice"?"Multiple Choice":"Free Response"}
+                    </div>
+                    <p style={{fontSize:13,fontWeight:600,color:B.navy,lineHeight:1.5,marginTop:0,marginBottom:14}}>{curQ.question}</p>
+
+                    {curQ.type==="multiple_choice"&&(
+                      <>
+                        {curQ.options.map((opt,idx)=>{
+                          const isSel=qAns[curQ.id]===idx,isCor=idx===curQ.correct;
+                          let bg="#fff",bd=B.bdr,cl=B.t1;
+                          if(isSub){if(isCor){bg=B.okBg;bd=B.ok;cl=B.ok}else if(isSel&&!isCor){bg="#fef2f2";bd=B.err;cl=B.err}}
+                          else if(isSel){bg=B.blueL;bd=B.blue;cl=B.blue}
+                          return <div key={idx} onClick={()=>{if(!isSub)setQAns(p=>({...p,[curQ.id]:idx}))}} style={{padding:"10px 14px",border:`2px solid ${bd}`,borderRadius:7,marginBottom:6,cursor:isSub?"default":"pointer",background:bg,color:cl,fontSize:12,fontWeight:isSel?600:400,transition:"all .2s",display:"flex",alignItems:"center",gap:10}}>
+                            <span style={{width:20,height:20,borderRadius:10,flexShrink:0,border:`2px solid ${isSel?bd:B.bdr}`,background:isSel?(isSub?(isCor?B.ok:B.err):B.blue):"#fff",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s"}}>{isSel&&<div style={{width:6,height:6,borderRadius:3,background:"#fff"}}/>}</span>{opt}
+                          </div>;
+                        })}
+                      </>
+                    )}
+
+                    {curQ.type==="free_text"&&(
+                      <>
+                        <textarea value={qAns[curQ.id]||""} onChange={e=>{if(!isSub)setQAns(p=>({...p,[curQ.id]:e.target.value}))}} placeholder="Type your answer here..." rows={4}
+                          style={{width:"100%",padding:"10px 14px",border:`1px solid ${isSub?B.ok:B.bdr}`,borderRadius:7,fontSize:12,fontFamily:"'DM Sans',sans-serif",color:B.t1,resize:"vertical",outline:"none",boxSizing:"border-box",background:isSub?"#fafbfc":"#fff",transition:"border-color .2s"}}
+                          onFocus={e=>{if(!isSub)e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=isSub?B.ok:B.bdr}} readOnly={isSub}/>
+                        {isSub&&curQ.modelAnswer&&(
+                          <div style={{marginTop:10,padding:"12px 14px",border:`1px solid ${B.blueM}`,borderRadius:7,background:B.blueL}}>
+                            <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:B.blue,marginBottom:4}}>Model Answer</div>
+                            <div style={{fontSize:12,color:B.t1,lineHeight:1.6}}>{curQ.modelAnswer}</div>
+                          </div>
+                        )}
+                        {isSub&&<div style={{marginTop:8,fontSize:11,color:B.blue,fontWeight:500,display:"flex",alignItems:"center",gap:4}}>
+                          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke={B.blue} strokeWidth="1.3"/><path d="M8 5v3M8 10v.5" stroke={B.blue} strokeWidth="1.5" strokeLinecap="round"/></svg>
+                          Your response has been submitted for manager review.
+                        </div>}
+                      </>
+                    )}
+
+                    <div style={{display:"flex",gap:6,marginTop:14,alignItems:"center"}}>
+                      {!isSub?(
+                        <button disabled={qAns[curQ.id]==null||(curQ.type==="free_text"&&!(qAns[curQ.id]||"").trim())} onClick={()=>setQSubs(p=>({...p,[curQ.id]:true}))}
+                          style={{padding:"8px 20px",border:"none",borderRadius:7,background:(qAns[curQ.id]!=null&&(curQ.type!=="free_text"||(qAns[curQ.id]||"").trim()))?B.blue:B.bdr,color:"#fff",fontSize:12,fontWeight:600,cursor:(qAns[curQ.id]!=null&&(curQ.type!=="free_text"||(qAns[curQ.id]||"").trim()))?"pointer":"default",fontFamily:"inherit"}}>Submit</button>
+                      ):(
+                        <>
+                          {curQ.type==="multiple_choice"&&qAns[curQ.id]!==curQ.correct&&(
+                            <button onClick={()=>{setQAns(p=>{const n={...p};delete n[curQ.id];return n});setQSubs(p=>{const n={...p};delete n[curQ.id];return n})}}
+                              style={{padding:"8px 20px",border:`1px solid ${B.blue}`,borderRadius:7,background:"#fff",color:B.blue,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Try Again</button>
+                          )}
+                          {qIdx<qs.length-1?(
+                            <button onClick={()=>setQIdx(i=>i+1)} style={{padding:"8px 20px",border:"none",borderRadius:7,background:B.blue,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Next Question →</button>
+                          ):(
+                            <button onClick={finishQuiz} style={{padding:"8px 20px",border:"none",borderRadius:7,background:B.ok,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Finish Quiz</button>
+                          )}
+                        </>
+                      )}
+                      <button onClick={resetQuiz} style={{padding:"8px 16px",border:`1px solid ${B.bdr}`,borderRadius:7,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit",marginLeft:"auto"}}>Close</button>
                     </div>
                   </div>
                 ):(
                   <div style={{padding:"16px 18px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                    <p style={{margin:0,fontSize:12,color:B.t2}}>Test your knowledge before moving on.</p>
-                    <button onClick={()=>setQM(cIt.id)} style={{padding:"7px 16px",border:"none",borderRadius:7,background:B.blue,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>Start Quiz</button>
+                    <p style={{margin:0,fontSize:12,color:B.t2}}>Test your knowledge before moving on. ({qs.length} question{qs.length!==1?"s":""})</p>
+                    <button onClick={()=>{setQIdx(0);setQAns({});setQSubs({});setQDone(false);setQM(cIt.id)}} style={{padding:"7px 16px",border:"none",borderRadius:7,background:B.blue,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>Start Quiz</button>
                   </div>
                 )}
               </div>
-            )}
+              );
+            })()}
             {/* Nav */}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:6,paddingBottom:32}}>
               {(()=>{
@@ -1052,9 +1715,387 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                   :<div style={{padding:"8px 16px",borderRadius:7,background:B.okBg,color:B.ok,fontSize:12,fontWeight:600,display:"flex",alignItems:"center",gap:6}}><Trophy/> Final Section</div>}</>;
               })()}
             </div>
+            {/* Notes & Badges Panel */}
+            <NotesAndBadgesPanel notes={notes} badges={badges} isAdminView={isAdminView} onAddNote={onAddNote} onAddBadge={onAddBadge} userId={user.id}/>
           </div>
         )}
       </main>
+    </div>
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// NOTES & BADGES PANEL
+// ═════════════════════════════════════════════════════════════════════════════
+
+function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge, userId }) {
+  const [noteText, setNoteText] = useState("");
+  const [noteShared, setNoteShared] = useState(false);
+  const [showBadgeForm, setShowBadgeForm] = useState(false);
+  const [customBadge, setCustomBadge] = useState("");
+
+  const allNotes = notes || [];
+  const allBadges = badges || [];
+  const visibleNotes = isAdminView ? allNotes : allNotes.filter(n => n.visibility === "shared");
+  const sorted = [...visibleNotes].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const handleAddNote = () => {
+    if (!noteText.trim() || !onAddNote) return;
+    onAddNote(userId, {
+      id: "n_" + Date.now(),
+      date: new Date().toISOString().slice(0, 10),
+      author: "Nick Aiola",
+      text: noteText.trim(),
+      visibility: noteShared ? "shared" : "admin",
+    });
+    setNoteText("");
+    setNoteShared(false);
+  };
+
+  const handleAddBadge = (preset) => {
+    if (!onAddBadge) return;
+    onAddBadge(userId, {
+      id: "b_" + Date.now(),
+      badgeId: preset.id,
+      label: preset.label,
+      icon: preset.icon,
+      date: new Date().toISOString().slice(0, 10),
+      awardedBy: "Nick Aiola",
+    });
+  };
+
+  const handleAddCustomBadge = () => {
+    if (!customBadge.trim() || !onAddBadge) return;
+    onAddBadge(userId, {
+      id: "b_" + Date.now(),
+      badgeId: "custom_" + Date.now(),
+      label: customBadge.trim(),
+      icon: "🏅",
+      date: new Date().toISOString().slice(0, 10),
+      awardedBy: "Nick Aiola",
+    });
+    setCustomBadge("");
+    setShowBadgeForm(false);
+  };
+
+  return (
+    <div style={{marginTop:8,paddingBottom:32}}>
+      {/* Badges Section */}
+      {(allBadges.length > 0 || isAdminView) && (
+        <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+          <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Badges & Awards</span>
+            {isAdminView && (
+              <button onClick={()=>setShowBadgeForm(!showBadgeForm)} style={{padding:"4px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,background:showBadgeForm?"#f1f5f9":"#fff",color:B.t2,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
+                {showBadgeForm ? "Done" : "+ Award Badge"}
+              </button>
+            )}
+          </div>
+          <div style={{padding:"14px 18px"}}>
+            {allBadges.length > 0 ? (
+              <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:showBadgeForm?14:0}}>
+                {allBadges.map(b => (
+                  <div key={b.id} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"6px 14px",borderRadius:20,background:B.blueL,border:`1px solid ${B.blueM}`,fontSize:12,fontWeight:500,color:B.blue}}>
+                    <span style={{fontSize:15}}>{b.icon}</span>
+                    <span>{b.label}</span>
+                    {isAdminView && <span style={{fontSize:9,color:B.t3,marginLeft:2}}>— {b.awardedBy}, {new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{fontSize:12,color:B.t3,marginBottom:showBadgeForm?14:0}}>No badges awarded yet.</div>
+            )}
+            {isAdminView && showBadgeForm && (
+              <div style={{borderTop:`1px solid ${B.bdr}`,paddingTop:14}}>
+                <div style={{fontSize:10,fontWeight:600,color:B.t3,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>Select a badge to award:</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
+                  {BADGE_PRESETS.filter(p => !allBadges.some(b => b.badgeId === p.id)).map(preset => (
+                    <button key={preset.id} onClick={()=>handleAddBadge(preset)} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:8,border:`1px solid ${B.bdr}`,background:"#fff",cursor:"pointer",fontSize:11,fontWeight:500,color:B.t1,fontFamily:"inherit",transition:"all .15s"}}
+                      onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
+                      <span>{preset.icon}</span> {preset.label}
+                    </button>
+                  ))}
+                </div>
+                <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                  <input value={customBadge} onChange={e=>setCustomBadge(e.target.value)} placeholder="Or type a custom badge..." style={{flex:1,padding:"7px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:12,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}
+                    onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}} onKeyDown={e=>{if(e.key==="Enter")handleAddCustomBadge()}}/>
+                  <button onClick={handleAddCustomBadge} disabled={!customBadge.trim()} style={{padding:"7px 14px",border:"none",borderRadius:6,background:customBadge.trim()?B.blue:B.bdr,color:"#fff",fontSize:11,fontWeight:600,cursor:customBadge.trim()?"pointer":"default",fontFamily:"inherit"}}>Add</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Notes Section */}
+      {(sorted.length > 0 || isAdminView) && (
+        <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden"}}>
+          <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}>
+            <span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>
+              {isAdminView ? "Manager Notes & Concerns" : "Feedback & Areas of Improvement"}
+            </span>
+          </div>
+
+          {/* Add Note Form — admin only */}
+          {isAdminView && (
+            <div style={{padding:"14px 18px",borderBottom:`1px solid ${B.bdr}`,background:"#fafbfc"}}>
+              <textarea value={noteText} onChange={e=>setNoteText(e.target.value)} placeholder="Add a note about this trainee..." rows={3}
+                style={{width:"100%",padding:"10px 12px",border:`1px solid ${B.bdr}`,borderRadius:8,fontSize:13,fontFamily:"'DM Sans',sans-serif",color:B.t1,resize:"vertical",outline:"none",boxSizing:"border-box",transition:"border-color .2s"}}
+                onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
+                <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:12,color:B.t2,userSelect:"none"}}>
+                  <div onClick={()=>setNoteShared(!noteShared)} style={{width:36,height:20,borderRadius:10,background:noteShared?B.blue:B.bdr,cursor:"pointer",position:"relative",transition:"background .2s"}}>
+                    <div style={{width:16,height:16,borderRadius:8,background:"#fff",position:"absolute",top:2,left:noteShared?18:2,transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}/>
+                  </div>
+                  Visible to trainee
+                  {noteShared && <span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"1px 6px",borderRadius:4}}>Shared</span>}
+                </label>
+                <button onClick={handleAddNote} disabled={!noteText.trim()} style={{padding:"7px 18px",border:"none",borderRadius:7,background:noteText.trim()?B.blue:B.bdr,color:"#fff",fontSize:12,fontWeight:600,cursor:noteText.trim()?"pointer":"default",fontFamily:"inherit",transition:"background .2s"}}>
+                  Add Note
+                </button>
+              </div>
+              {/* Preview when shared */}
+              {noteShared && noteText.trim() && (
+                <div style={{marginTop:10,padding:"10px 14px",border:`1px dashed ${B.ok}`,borderRadius:8,background:B.okBg}}>
+                  <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.ok,marginBottom:4}}>Trainee will see:</div>
+                  <div style={{fontSize:12,color:B.t1,lineHeight:1.5}}>{noteText}</div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Notes List */}
+          {sorted.length === 0 ? (
+            <div style={{padding:"24px 18px",textAlign:"center",fontSize:13,color:B.t3}}>
+              {isAdminView ? "No notes yet. Add your first note above." : "No feedback yet."}
+            </div>
+          ) : (
+            <div>
+              {sorted.map((note, i) => (
+                <div key={note.id} style={{padding:"14px 18px",borderBottom:i<sorted.length-1?`1px solid ${B.bdr}`:"none"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                    <span style={{fontSize:11,fontWeight:600,color:B.t1}}>{note.author}</span>
+                    <span style={{fontSize:10,color:B.t3}}>{new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
+                    {isAdminView && (
+                      <span style={{fontSize:9,fontWeight:600,padding:"2px 7px",borderRadius:4,marginLeft:"auto",
+                        color:note.visibility==="shared"?B.ok:B.t3,
+                        background:note.visibility==="shared"?B.okL:"#f1f5f9",
+                      }}>
+                        {note.visibility==="shared"?"Shared with Trainee":"Admin Only"}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{fontSize:13,color:B.t1,lineHeight:1.6}}>{note.text}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// TRAINEE KPI DASHBOARD
+// ═════════════════════════════════════════════════════════════════════════════
+
+function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogout }) {
+  const [showForm, setShowForm] = useState(false);
+  const [formKpi, setFormKpi] = useState("communication");
+  const [formScore, setFormScore] = useState("");
+  const [formComment, setFormComment] = useState("");
+  const [formDate, setFormDate] = useState(new Date().toISOString().slice(0,10));
+
+  const days = daysSince(user.startDate);
+  const currentPhase = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
+  const phaseLbl = days <= 30 ? "Day 30" : days <= 60 ? "Day 60" : "Day 90";
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const s = parseFloat(formScore);
+    if (isNaN(s) || s < 1 || s > 5) return;
+    const entries = kpiData?.[formKpi] || [];
+    const maxWeek = entries.length > 0 ? Math.max(...entries.map(e => e.week)) : 0;
+    onAddScore(user.id, formKpi, { week: maxWeek + 1, score: s, manager: "Nick Aiola", date: formDate, comment: formComment });
+    setFormScore(""); setFormComment(""); setShowForm(false);
+  };
+
+  const inputSt = {width:"100%",padding:"10px 12px",border:`1px solid ${B.bdr}`,borderRadius:8,fontSize:13,fontFamily:"'DM Sans',sans-serif",color:B.t1,boxSizing:"border-box",outline:"none",transition:"border-color .2s"};
+
+  return (
+    <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:B.bg,color:B.t1}}>
+      <header style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
+        <div style={{display:"flex",alignItems:"center",gap:14}}>
+          <Logo size={32}/>
+          <div><div style={{fontWeight:700,fontSize:15,color:B.navy}}>KPI & Performance</div><div style={{fontSize:11,color:B.t3}}>{user.name} · {user.track || "Advisory"} Track</div></div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <button onClick={onBackToAdmin} style={{padding:"6px 14px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>← Back to Admin</button>
+          <button onClick={onLogout} style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
+        </div>
+      </header>
+      <div style={{padding:"28px 32px",maxWidth:900,margin:"0 auto"}}>
+        {/* Trainee Info Bar */}
+        <div style={{background:"#fff",borderRadius:12,padding:"18px 24px",border:`1px solid ${B.bdr}`,marginBottom:24,display:"flex",alignItems:"center",gap:16,boxShadow:"0 1px 3px rgba(0,0,0,.04)"}}>
+          <div style={{width:48,height:48,borderRadius:24,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:700}}>{user.avatar}</div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:16,fontWeight:700,color:B.navy}}>{user.name}</div>
+            <div style={{fontSize:12,color:B.t3}}>{user.email} · Started {new Date(user.startDate).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</div>
+          </div>
+          <div style={{textAlign:"right"}}>
+            <div style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>Day {days} of 90</div>
+            <div style={{height:5,borderRadius:3,background:B.blueL,overflow:"hidden",width:120,marginTop:6}}><div style={{height:"100%",borderRadius:3,width:`${Math.min(100,Math.round(days/90*100))}%`,background:B.blue,transition:"width .4s"}}/></div>
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        {ONBOARDING_KPIS.map(kpi => {
+          const entries = kpiData?.[kpi.id] || [];
+          const avg = entries.length > 0 ? (entries.reduce((a, e) => a + e.score, 0) / entries.length) : 0;
+          const target = kpi.targets[currentPhase];
+          const pct = target > 0 ? Math.min(100, Math.round(avg / target * 100)) : 0;
+          const status = avg >= target ? "on-track" : avg >= target - 0.3 ? "at-risk" : "behind";
+          const statusColor = status === "on-track" ? B.ok : status === "at-risk" ? B.warn : B.err;
+          const statusLabel = status === "on-track" ? "On Track" : status === "at-risk" ? "At Risk" : "Behind";
+          // Trend: compare last two entries
+          const trend = entries.length >= 2 ? (entries[entries.length-1].score >= entries[entries.length-2].score ? "up" : "down") : "flat";
+
+          return (
+            <div key={kpi.id} style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,marginBottom:20,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden"}}>
+              {/* Card Header */}
+              <div style={{padding:"20px 24px",borderBottom:`1px solid ${B.bdr}`}}>
+                <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:12}}>
+                  <div style={{flex:1}}>
+                    <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
+                      <h3 style={{margin:0,fontSize:15,fontWeight:700,color:B.navy}}>{kpi.category}</h3>
+                      <span style={{fontSize:10,fontWeight:600,color:statusColor,background:status==="on-track"?B.okL:status==="at-risk"?B.warnL:"#fef2f2",padding:"2px 8px",borderRadius:10}}>{statusLabel}</span>
+                      {trend !== "flat" && (
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{transform:trend==="down"?"rotate(180deg)":"none"}}>
+                          <path d="M7 2L12 9H2L7 2Z" fill={trend==="up"?B.ok:B.err}/>
+                        </svg>
+                      )}
+                    </div>
+                    <p style={{margin:0,fontSize:12,color:B.t3,lineHeight:1.5,maxWidth:500}}>{kpi.description}</p>
+                  </div>
+                  <div style={{textAlign:"right",marginLeft:24}}>
+                    <div style={{fontSize:32,fontWeight:700,color:statusColor,lineHeight:1}}>{entries.length > 0 ? avg.toFixed(1) : "—"}</div>
+                    <div style={{fontSize:11,color:B.t3,marginTop:2}}>Target: {target.toFixed(1)} ({phaseLbl})</div>
+                  </div>
+                </div>
+                {/* Progress gauge */}
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <div style={{flex:1,height:8,borderRadius:4,background:"#f1f5f9",overflow:"hidden",position:"relative"}}>
+                    <div style={{height:"100%",borderRadius:4,width:`${entries.length>0?pct:0}%`,background:statusColor,transition:"width .5s"}}/>
+                    {/* Target marker */}
+                    <div style={{position:"absolute",top:-2,bottom:-2,left:"100%",width:2,background:B.navy,borderRadius:1,transform:"translateX(-1px)"}}/>
+                  </div>
+                  <span style={{fontSize:12,fontWeight:600,color:statusColor,minWidth:40,textAlign:"right"}}>{entries.length > 0 ? `${pct}%` : "N/A"}</span>
+                </div>
+                <div style={{display:"flex",gap:16,marginTop:8,fontSize:10,color:B.t3}}>
+                  <span>Frequency: {kpi.frequency}</span><span>Source: {kpi.source}</span><span>{entries.length} score{entries.length !== 1 ? "s" : ""} recorded</span>
+                </div>
+              </div>
+              {/* Score History */}
+              <div style={{padding:"16px 24px"}}>
+                <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3,marginBottom:10}}>Score History</div>
+                {entries.length === 0 ? (
+                  <div style={{padding:"20px 0",textAlign:"center",fontSize:13,color:B.t3}}>No scores recorded yet</div>
+                ) : (
+                  <div>
+                    <div style={{display:"grid",gridTemplateColumns:"60px 70px 1fr 140px 1fr",padding:"8px 0",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>
+                      <span>Week</span><span>Score</span><span>Visual</span><span>Submitted By</span><span>Comment</span>
+                    </div>
+                    {entries.map((entry, i) => {
+                      const barW = Math.round(entry.score / 5 * 100);
+                      const barColor = entry.score >= target ? B.ok : entry.score >= target - 0.3 ? B.warn : B.err;
+                      return (
+                        <div key={i} style={{display:"grid",gridTemplateColumns:"60px 70px 1fr 140px 1fr",padding:"10px 0",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",fontSize:12}}>
+                          <span style={{color:B.t2,fontWeight:600}}>Week {entry.week}</span>
+                          <span style={{fontWeight:700,color:barColor}}>{entry.score.toFixed(1)}</span>
+                          <div style={{paddingRight:12}}>
+                            <div style={{height:6,borderRadius:3,background:"#f1f5f9",overflow:"hidden"}}>
+                              <div style={{height:"100%",borderRadius:3,width:`${barW}%`,background:barColor,transition:"width .3s"}}/>
+                            </div>
+                          </div>
+                          <span style={{fontSize:11,color:B.t3}}>{entry.manager}<br/><span style={{fontSize:10}}>{new Date(entry.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span></span>
+                          <span style={{fontSize:11,color:B.t2,fontStyle:entry.comment?"italic":"normal"}}>{entry.comment || "—"}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Add Score Form */}
+        <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden"}}>
+          <div style={{padding:"18px 24px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <h3 style={{margin:0,fontSize:15,fontWeight:700,color:B.navy}}>Submit New Score</h3>
+            <button onClick={()=>setShowForm(!showForm)} style={{padding:"6px 16px",border:"none",borderRadius:8,background:showForm?B.bdr:B.blue,color:showForm?B.t2:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
+              {showForm ? "Cancel" : "+ Add Score"}
+            </button>
+          </div>
+          {showForm && (
+            <form onSubmit={handleSubmit} style={{padding:"20px 24px",display:"flex",flexDirection:"column",gap:14}}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+                <div>
+                  <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>KPI Category</label>
+                  <select value={formKpi} onChange={e=>setFormKpi(e.target.value)} style={{...inputSt,background:"#fff"}}>
+                    {ONBOARDING_KPIS.map(k=><option key={k.id} value={k.id}>{k.category}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Score (1.0 – 5.0)</label>
+                  <input type="number" min="1" max="5" step="0.1" value={formScore} onChange={e=>setFormScore(e.target.value)} placeholder="e.g. 4.2" required style={inputSt}
+                    onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
+                </div>
+              </div>
+              <div>
+                <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Date</label>
+                <input type="date" value={formDate} onChange={e=>setFormDate(e.target.value)} style={inputSt}
+                  onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
+              </div>
+              <div>
+                <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Comment (optional)</label>
+                <input type="text" value={formComment} onChange={e=>setFormComment(e.target.value)} placeholder="Brief note about this score..." style={inputSt}
+                  onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
+              </div>
+              <button type="submit" style={{padding:"12px 24px",border:"none",borderRadius:8,background:B.blue,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit",alignSelf:"flex-start",transition:"background .2s"}}
+                onMouseEnter={e=>{e.currentTarget.style.background=B.blueD}} onMouseLeave={e=>{e.currentTarget.style.background=B.blue}}>
+                Submit Score
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// CLIENT PORTAL SHELL (standalone view for client role)
+// ═════════════════════════════════════════════════════════════════════════════
+
+function ClientPortalShell({ user, onLogout }) {
+  return (
+    <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:B.bg,color:B.t1}}>
+      <header style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
+        <div style={{display:"flex",alignItems:"center",gap:14}}>
+          <Logo size={32}/>
+          <div><div style={{fontWeight:700,fontSize:15,color:B.navy}}>Client Advisory Portal</div><div style={{fontSize:11,color:B.t3}}>Welcome, {user.name}</div></div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:16}}>
+          <div style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{user.name}</div><div style={{fontSize:11,color:B.t3}}>Client</div></div>
+          <div style={{width:36,height:36,borderRadius:18,background:B.ok,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700}}>{user.avatar}</div>
+          <button onClick={onLogout} style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
+        </div>
+      </header>
+      <div style={{padding:"28px 32px",maxWidth:1100,margin:"0 auto"}}>
+        <ClientPortalDemo />
+      </div>
     </div>
   );
 }
@@ -1072,15 +2113,33 @@ export default function App() {
   useEffect(()=>{ (async()=>{ try{ const d=await window.storage.get("aiola-portal-v2"); if(d){ const p=JSON.parse(d.value); setAllUserData(prev=>{const m={...prev};for(const uid in p){m[uid]={tasks:{...(prev[uid]?.tasks||{}),...(p[uid]?.tasks||{})},quizzes:{...(prev[uid]?.quizzes||{}),...(p[uid]?.quizzes||{})}}}return m}); }}catch{}})(); },[]);
   useEffect(()=>{ (async()=>{ try{await window.storage.set("aiola-portal-v2",JSON.stringify(allUserData))}catch{}})(); },[allUserData]);
 
-  const handleLogin = u => { setCurrentUser(u); setView(u.role==="admin"?"admin":"trainee"); };
+  const handleLogin = u => { setCurrentUser(u); setView(u.role==="admin"?"admin":u.role==="client"?"client":"trainee"); };
   const handleLogout = () => { setCurrentUser(null); setView("login"); setViewingTrainee(null); };
   const toggleTask = uid => tid => setAllUserData(p=>({...p,[uid]:{tasks:{...(p[uid]?.tasks||{}),[tid]:!(p[uid]?.tasks?.[tid])},quizzes:p[uid]?.quizzes||{}}}));
-  const passQuiz = uid => iid => setAllUserData(p=>({...p,[uid]:{tasks:p[uid]?.tasks||{},quizzes:{...(p[uid]?.quizzes||{}),[iid]:true}}}));
+  const passQuiz = uid => (iid, result) => {
+    // result can be: undefined (legacy single-question pass) or {passed, questions}
+    const val = result || true;
+    setAllUserData(p=>({...p,[uid]:{tasks:p[uid]?.tasks||{},quizzes:{...(p[uid]?.quizzes||{}),[iid]:val}}}));
+  };
+  const [kpiData, setKpiData] = useState({...KPI_SEED_DATA});
+  const [notesData, setNotesData] = useState({...NOTES_SEED_DATA});
   const viewTrainee = t => { setViewingTrainee(t); setView("trainee-admin"); };
+  const viewTraineeKpi = t => { setViewingTrainee(t); setView("trainee-kpi"); };
+  const addKpiScore = (uid, kpiId, entry) => {
+    setKpiData(prev => ({...prev, [uid]: {...(prev[uid]||{}), [kpiId]: [...((prev[uid]||{})[kpiId]||[]), entry]}}));
+  };
+  const addNote = (uid, note) => {
+    setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), notes: [...((prev[uid]||{}).notes||[]), note]}}));
+  };
+  const addBadge = (uid, badge) => {
+    setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), badges: [...((prev[uid]||{}).badges||[]), badge]}}));
+  };
 
   if(view==="login") return <LoginScreen onLogin={handleLogin}/>;
-  if(view==="admin") return <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onLogout={handleLogout}/>;
-  if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; return <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")}/>; }
-  if(view==="trainee"&&currentUser){ const uid=currentUser.id; return <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null}/>; }
+  if(view==="admin") return <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onLogout={handleLogout}/>;
+  if(view==="trainee-kpi"&&viewingTrainee) return <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
+  if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; return <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} kpiData={kpiData[uid]||{}}/>; }
+  if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; return <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}}/>; }
+  if(view==="client"&&currentUser) return <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
   return null;
 }
