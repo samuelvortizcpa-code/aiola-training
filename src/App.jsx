@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo, createContext, useContext } from "react";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { applyPlugin } from "jspdf-autotable";
+applyPlugin(jsPDF);
 
 // ─── Responsive CSS ─────────────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
@@ -1780,7 +1781,7 @@ const getOverdueQuizzes = (trainee, quizData) => {
 // PDF REPORT GENERATION
 // ═════════════════════════════════════════════════════════════════════════════
 
-function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
+function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dateFrom, dateTo, isTraineeReport } = {}) {
   try {
   const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter" });
   const pageW = doc.internal.pageSize.getWidth();
@@ -1792,38 +1793,50 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
   const gray = [90, 101, 119];
   const lightGray = [248, 249, 250];
 
+  // Date range filtering helpers
+  const rangeFrom = dateFrom ? new Date(dateFrom + "T00:00:00") : null;
+  const rangeTo = dateTo ? new Date(dateTo + "T23:59:59") : null;
+  const inRange = (dateVal) => {
+    if (!dateVal) return true;
+    const d = new Date(dateVal);
+    if (rangeFrom && d < rangeFrom) return false;
+    if (rangeTo && d > rangeTo) return false;
+    return true;
+  };
+  const rangeLbl = (rangeFrom && rangeTo) ? `${rangeFrom.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})} – ${rangeTo.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}` : "";
+
   const tasks = traineeData?.tasks || {};
   const quizzes = traineeData?.quizzes || {};
   const kpi = kpiData || {};
-  const notes = notesData?.notes || [];
-  const badges = notesData?.badges || [];
+  const allNotes = notesData?.notes || [];
+  const notes = isTraineeReport
+    ? allNotes.filter(n => n.visibility === "shared" && inRange(n.date))
+    : allNotes.filter(n => inRange(n.date));
+  const allBadges = notesData?.badges || [];
+  const badges = allBadges.filter(b => !b.removed && inRange(b.date));
   const prog = calcProg(tasks, quizzes);
   const days = daysSince(trainee.startDate);
   const milestoneLabel = days <= 35 ? "30-Day" : days <= 65 ? "60-Day" : "90-Day";
   const timelinePct = Math.min(100, Math.round(days / 90 * 100));
-  const phaseLbl = days <= 30 ? "Days 1–30" : days <= 60 ? "Days 31–60" : "Days 61–90";
+  const phaseLbl = days <= 30 ? "Days 1-30" : days <= 60 ? "Days 31-60" : "Days 61-90";
   const milestones = getMilestoneStatus(tasks);
   const dateStr = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const reportTitle = isTraineeReport ? "My Progress Report" : `${milestoneLabel} Performance Review`;
 
   // Helper: draw the Aiola logo using jsPDF drawing methods
   const drawLogo = (x, y, scale = 1) => {
     doc.setDrawColor(...blue);
     doc.setLineWidth(2 * scale);
-    // Triangle roof
     doc.line(x + 15 * scale, y + 35 * scale, x + 30 * scale, y + 10 * scale);
     doc.line(x + 30 * scale, y + 10 * scale, x + 45 * scale, y + 35 * scale);
-    // Base line
     doc.setLineWidth(2.5 * scale);
     doc.line(x + 7 * scale, y + 35 * scale, x + 53 * scale, y + 35 * scale);
-    // Door
     doc.setLineWidth(1.5 * scale);
     doc.rect(x + 26 * scale, y + 22 * scale, x + 8 * scale, y + 13 * scale);
-    // Lines on right
     doc.line(x + 35 * scale, y + 27 * scale, x + 50 * scale, y + 27 * scale);
     doc.line(x + 40 * scale, y + 22 * scale, x + 50 * scale, y + 22 * scale);
   };
 
-  // Helper: section header with blue rule
   const sectionHeader = (title, yPos) => {
     doc.setFontSize(16);
     doc.setTextColor(...navy);
@@ -1835,46 +1848,42 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
     return yPos + 24;
   };
 
-  // Helper: add page footer
   const addFooter = (pageNum, totalPages) => {
     doc.setFontSize(8);
     doc.setTextColor(...gray);
     doc.setFont("helvetica", "normal");
-    doc.text("Aiola CPA, PLLC — Confidential", margin, pageH - 25);
+    doc.text("Aiola CPA, PLLC -- Confidential", margin, pageH - 25);
     doc.text(`Page ${pageNum} of ${totalPages}`, pageW / 2, pageH - 25, { align: "center" });
     doc.text(trainee.name, pageW - margin, pageH - 25, { align: "right" });
   };
 
   // ── PAGE 1: Cover ──
-  // Dark navy background
   doc.setFillColor(...navy);
   doc.rect(0, 0, pageW, pageH, "F");
-
-  // Logo
   drawLogo(pageW / 2 - 30, 160, 2);
 
-  // Company name
   doc.setFontSize(14);
   doc.setTextColor(...blue);
   doc.setFont("helvetica", "bold");
   doc.text("AIOLA CPA, PLLC", pageW / 2, 280, { align: "center" });
 
-  // Title
   doc.setFontSize(28);
   doc.setTextColor(255, 255, 255);
-  doc.text(`${trainee.name}`, pageW / 2, 340, { align: "center" });
+  doc.text(trainee.name, pageW / 2, 340, { align: "center" });
 
   doc.setFontSize(20);
   doc.setTextColor(...blue);
-  doc.text(`${milestoneLabel} Performance Review`, pageW / 2, 370, { align: "center" });
+  doc.text(reportTitle, pageW / 2, 370, { align: "center" });
 
-  // Subtitle
   doc.setFontSize(12);
   doc.setTextColor(168, 208, 240);
-  doc.text("Prepared by Aiola CPA, PLLC", pageW / 2, 410, { align: "center" });
+  doc.text(isTraineeReport ? "Aiola CPA, PLLC" : "Prepared by Aiola CPA, PLLC", pageW / 2, 410, { align: "center" });
   doc.text(dateStr, pageW / 2, 430, { align: "center" });
+  if (rangeLbl) {
+    doc.setFontSize(10);
+    doc.text(`Report Period: ${rangeLbl}`, pageW / 2, 450, { align: "center" });
+  }
 
-  // Confidential notice
   doc.setFontSize(9);
   doc.setTextColor(100, 110, 130);
   doc.text("This document is confidential and intended for internal use only.", pageW / 2, pageH - 50, { align: "center" });
@@ -1883,12 +1892,9 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
   doc.addPage();
   let y = sectionHeader("Executive Summary", 55);
 
-  // Status determination
   const diff = prog.pct - timelinePct;
   const statusLabel = diff >= 0 ? "On Track" : diff >= -10 ? "Slightly Behind" : "Behind Schedule";
-  const statusColor = diff >= 0 ? [34, 197, 94] : diff >= -10 ? [245, 158, 11] : [239, 68, 68];
 
-  // Summary table
   const summaryRows = [
     ["Start Date", new Date(trainee.startDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })],
     ["Days in Program", `${days} days`],
@@ -1898,8 +1904,9 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
     ["Quizzes Passed", `${prog.passedQuizzes}/${totalQuizzes}`],
     ["Timeline Progress", `${timelinePct}%`],
     ["Timeline Status", statusLabel],
-    ["Milestones", milestones.map(m => `${m.label}: ${m.unlocked ? "✓" : `${m.done}/${m.total}`}`).join("  |  ")],
+    ["Milestones", milestones.map(m => `${m.label}: ${m.unlocked ? "OK" : `${m.done}/${m.total}`}`).join("  |  ")],
   ];
+  if (rangeLbl) summaryRows.push(["Report Period", rangeLbl]);
 
   doc.autoTable({
     startY: y,
@@ -1911,13 +1918,12 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
       0: { fontStyle: "bold", cellWidth: 140, textColor: navy, fontSize: 10 },
       1: { textColor: gray, fontSize: 10 },
     },
-    styles: { cellPadding: { top: 6, bottom: 6, left: 8, right: 8 }, lineWidth: 0 },
+    styles: { font: "helvetica", cellPadding: { top: 6, bottom: 6, left: 8, right: 8 }, lineWidth: 0 },
     alternateRowStyles: { fillColor: lightGray },
   });
 
   y = doc.lastAutoTable.finalY + 28;
 
-  // Overall Assessment
   doc.setFontSize(12);
   doc.setTextColor(...navy);
   doc.setFont("helvetica", "bold");
@@ -1943,22 +1949,21 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
   y = sectionHeader("KPI Performance", 55);
 
   ONBOARDING_KPIS.forEach((kpiDef) => {
-    const entries = kpi[kpiDef.id] || [];
+    const allEntries = kpi[kpiDef.id] || [];
+    const entries = allEntries.filter(e => inRange(e.date));
     const avg = entries.length > 0 ? entries.reduce((a, e) => a + e.score, 0) / entries.length : 0;
     const currentPhaseKey = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
     const target = kpiDef.targets[currentPhaseKey];
     const kpiStatus = entries.length === 0 ? "No Data" : avg >= target ? "On Track" : avg >= target - 0.3 ? "At Risk" : "Behind";
 
-    // Trend
-    let trend = "—";
+    let trend = "--";
     if (entries.length >= 3) {
       const last3 = entries.slice(-3);
       const diffs = last3.slice(1).map((e, i) => e.score - last3[i].score);
       const avgDiff = diffs.reduce((a, d) => a + d, 0) / diffs.length;
-      trend = avgDiff > 0.05 ? "Improving ↑" : avgDiff < -0.05 ? "Declining ↓" : "Stable →";
+      trend = avgDiff > 0.05 ? "Improving" : avgDiff < -0.05 ? "Declining" : "Stable";
     }
 
-    // Category header
     doc.setFontSize(12);
     doc.setTextColor(...navy);
     doc.setFont("helvetica", "bold");
@@ -1972,7 +1977,6 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
     doc.text(descLines, margin, y);
     y += descLines.length * 11 + 6;
 
-    // KPI stats row
     const kpiStatsRows = [
       ["Target (Current Phase)", target.toFixed(1)],
       ["Current Average", entries.length > 0 ? avg.toFixed(2) : "N/A"],
@@ -1991,12 +1995,11 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
         0: { fontStyle: "bold", cellWidth: 160, textColor: navy, fontSize: 9 },
         1: { textColor: gray, fontSize: 9 },
       },
-      styles: { cellPadding: { top: 4, bottom: 4, left: 8, right: 8 }, lineWidth: 0 },
+      styles: { font: "helvetica", cellPadding: { top: 4, bottom: 4, left: 8, right: 8 }, lineWidth: 0 },
       alternateRowStyles: { fillColor: lightGray },
     });
     y = doc.lastAutoTable.finalY + 10;
 
-    // Score history table
     if (entries.length > 0) {
       doc.autoTable({
         startY: y,
@@ -2007,7 +2010,7 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
         headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
         bodyStyles: { fontSize: 9, textColor: navy },
         alternateRowStyles: { fillColor: lightGray },
-        styles: { cellPadding: { top: 4, bottom: 4, left: 6, right: 6 } },
+        styles: { font: "helvetica", cellPadding: { top: 4, bottom: 4, left: 6, right: 6 } },
       });
       y = doc.lastAutoTable.finalY + 20;
     } else {
@@ -2042,13 +2045,13 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
       phase.items.forEach(item => {
         const tasksDone = item.tasks.filter(t => tasks[t.id]).length;
         const tasksTotal = item.tasks.length;
-        const quizStatus = item.quiz ? (isQuizPassed(quizzes, item.id) ? "Passed ✓" : "Not Passed") : "N/A";
+        const quizStatus = item.quiz ? (isQuizPassed(quizzes, item.id) ? "Passed" : "Not Passed") : "N/A";
         const highlight = tasksDone === 0 && days > (pm === pMeta[0] ? 0 : pm === pMeta[1] ? 30 : 60);
         rows.push([
           item.title,
           `${tasksDone}/${tasksTotal}`,
           quizStatus,
-          highlight ? "⚠ No progress" : "",
+          highlight ? "No progress" : "",
         ]);
       });
     });
@@ -2062,7 +2065,7 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
       headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
       bodyStyles: { fontSize: 9, textColor: navy },
       alternateRowStyles: { fillColor: lightGray },
-      styles: { cellPadding: { top: 4, bottom: 4, left: 6, right: 6 }, overflow: "linebreak" },
+      styles: { font: "helvetica", cellPadding: { top: 4, bottom: 4, left: 6, right: 6 }, overflow: "linebreak" },
       columnStyles: {
         0: { cellWidth: 220 },
         1: { cellWidth: 60, halign: "center" },
@@ -2072,7 +2075,6 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
     });
     y = doc.lastAutoTable.finalY + 16;
 
-    // Check if we need a new page
     if (y > pageH - 100) {
       doc.addPage();
       y = 55;
@@ -2081,9 +2083,8 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
 
   // ── PAGE 5: Manager Notes & Badges ──
   doc.addPage();
-  y = sectionHeader("Manager Observations", 55);
+  y = sectionHeader(isTraineeReport ? "Feedback & Badges" : "Manager Observations", 55);
 
-  // Badges
   doc.setFontSize(12);
   doc.setTextColor(...navy);
   doc.setFont("helvetica", "bold");
@@ -2094,13 +2095,13 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
     doc.autoTable({
       startY: y,
       head: [["Badge", "Awarded By", "Date"]],
-      body: badges.map(b => [`${b.icon || ""} ${b.label}`, b.awardedBy, b.date]),
+      body: badges.map(b => [`${b.label}`, b.awardedBy, b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : ""]),
       theme: "grid",
       margin: { left: margin, right: margin },
       headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
       bodyStyles: { fontSize: 9, textColor: navy },
       alternateRowStyles: { fillColor: lightGray },
-      styles: { cellPadding: { top: 5, bottom: 5, left: 8, right: 8 } },
+      styles: { font: "helvetica", cellPadding: { top: 5, bottom: 5, left: 8, right: 8 } },
     });
     y = doc.lastAutoTable.finalY + 20;
   } else {
@@ -2111,30 +2112,31 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
     y += 20;
   }
 
-  // Notes
   doc.setFontSize(12);
   doc.setTextColor(...navy);
   doc.setFont("helvetica", "bold");
-  doc.text("Manager Notes", margin, y);
+  doc.text(isTraineeReport ? "Feedback" : "Manager Notes", margin, y);
   y += 16;
 
   if (notes.length > 0) {
     const sortedNotes = [...notes].sort((a, b) => new Date(a.date) - new Date(b.date));
+    const noteHead = isTraineeReport ? [["Date", "Author", "Feedback", "Type"]] : [["Date", "Author", "Note", "Visibility"]];
+    const noteBody = sortedNotes.map(n => [
+      n.date ? new Date(n.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "",
+      n.author,
+      n.text,
+      isTraineeReport ? (n.tag === "positive" ? "Positive" : n.tag === "improve" ? "Improve" : "General") : (n.visibility === "shared" ? "Shared" : "Internal"),
+    ]);
     doc.autoTable({
       startY: y,
-      head: [["Date", "Author", "Note", "Visibility"]],
-      body: sortedNotes.map(n => [
-        n.date,
-        n.author,
-        n.text,
-        n.visibility === "shared" ? "Shared with trainee" : "Internal",
-      ]),
+      head: noteHead,
+      body: noteBody,
       theme: "grid",
       margin: { left: margin, right: margin },
       headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
       bodyStyles: { fontSize: 9, textColor: navy },
       alternateRowStyles: { fillColor: lightGray },
-      styles: { cellPadding: { top: 5, bottom: 5, left: 6, right: 6 }, overflow: "linebreak" },
+      styles: { font: "helvetica", cellPadding: { top: 5, bottom: 5, left: 6, right: 6 }, overflow: "linebreak" },
       columnStyles: {
         0: { cellWidth: 70 },
         1: { cellWidth: 80 },
@@ -2147,59 +2149,109 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...gray);
-    doc.text("No manager notes recorded yet.", margin + 8, y);
+    doc.text(isTraineeReport ? "No feedback shared yet." : "No manager notes recorded yet.", margin + 8, y);
     y += 20;
   }
 
-  // Areas of Focus
-  doc.setFontSize(12);
-  doc.setTextColor(...navy);
-  doc.setFont("helvetica", "bold");
-  doc.text("Areas of Focus", margin, y);
-  y += 16;
+  if (!isTraineeReport) {
+    doc.setFontSize(12);
+    doc.setTextColor(...navy);
+    doc.setFont("helvetica", "bold");
+    doc.text("Areas of Focus", margin, y);
+    y += 16;
 
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(...gray);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...gray);
 
-  const focusAreas = [];
-
-  // Failed/incomplete quizzes
-  PHASES.forEach(phase => {
-    phase.items.forEach(item => {
-      if (item.quiz && !isQuizPassed(quizzes, item.id)) {
-        focusAreas.push(`Quiz not passed: ${item.title}`);
+    const focusAreas = [];
+    PHASES.forEach(phase => {
+      phase.items.forEach(item => {
+        if (item.quiz && !isQuizPassed(quizzes, item.id)) {
+          focusAreas.push(`Quiz not passed: ${item.title}`);
+        }
+      });
+    });
+    ONBOARDING_KPIS.forEach(kpiDef => {
+      const entries = (kpi[kpiDef.id] || []).filter(e => inRange(e.date));
+      if (entries.length > 0) {
+        const avg = entries.reduce((a, e) => a + e.score, 0) / entries.length;
+        const currentPhaseKey = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
+        const target = kpiDef.targets[currentPhaseKey];
+        if (avg < target) {
+          focusAreas.push(`${kpiDef.category}: Average ${avg.toFixed(2)} below target ${target.toFixed(1)}`);
+        }
       }
     });
-  });
-
-  // KPI scores below target
-  ONBOARDING_KPIS.forEach(kpiDef => {
-    const entries = kpi[kpiDef.id] || [];
-    if (entries.length > 0) {
-      const avg = entries.reduce((a, e) => a + e.score, 0) / entries.length;
-      const currentPhaseKey = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
-      const target = kpiDef.targets[currentPhaseKey];
-      if (avg < target) {
-        focusAreas.push(`${kpiDef.category}: Average ${avg.toFixed(2)} below target ${target.toFixed(1)}`);
-      }
+    if (prog.pct < timelinePct - 10) {
+      focusAreas.push(`Overall progress (${prog.pct}%) significantly behind timeline (${timelinePct}%)`);
     }
-  });
-
-  // Behind timeline
-  if (prog.pct < timelinePct - 10) {
-    focusAreas.push(`Overall progress (${prog.pct}%) significantly behind timeline (${timelinePct}%)`);
+    if (focusAreas.length > 0) {
+      focusAreas.forEach((area) => {
+        const bullet = `  -  ${area}`;
+        const lines = doc.splitTextToSize(bullet, contentW - 16);
+        doc.text(lines, margin + 8, y);
+        y += lines.length * 13;
+      });
+    } else {
+      doc.text("No specific areas of concern identified. Continue current trajectory.", margin + 8, y);
+    }
   }
 
-  if (focusAreas.length > 0) {
-    focusAreas.forEach((area, i) => {
-      const bullet = `  •  ${area}`;
-      const lines = doc.splitTextToSize(bullet, contentW - 16);
-      doc.text(lines, margin + 8, y);
-      y += lines.length * 13;
+  // ── PAGE 6: AI Training Assistant Activity ──
+  doc.addPage();
+  y = sectionHeader("AI Training Assistant Activity", 55);
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(...gray);
+  doc.text("Questions asked reflect areas where the trainee sought additional guidance during onboarding.", margin, y);
+  y += 18;
+
+  // Pull chat history from localStorage
+  let chatRows = [];
+  try {
+    const chatKey = `aiola_chats_${trainee.name}`;
+    const raw = localStorage.getItem(chatKey);
+    const chats = raw ? JSON.parse(raw) : [];
+    chats.forEach(chat => {
+      if (!chat.messages || chat.messages.length === 0) return;
+      const chatDate = chat.date || (chat.messages[0]?.ts ? new Date(chat.messages[0].ts).toISOString() : null);
+      if (!inRange(chatDate)) return;
+      const msgCount = chat.messages.length;
+      const dateDisp = chatDate ? new Date(chatDate).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "Unknown";
+      chatRows.push([dateDisp, chat.title || "Untitled", String(msgCount)]);
+    });
+  } catch { /* ignore localStorage errors */ }
+
+  if (chatRows.length > 0) {
+    doc.autoTable({
+      startY: y,
+      head: [["Date", "Conversation Title", "Messages"]],
+      body: chatRows,
+      theme: "grid",
+      margin: { left: margin, right: margin },
+      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
+      bodyStyles: { fontSize: 9, textColor: navy },
+      alternateRowStyles: { fillColor: lightGray },
+      styles: { font: "helvetica", cellPadding: { top: 5, bottom: 5, left: 8, right: 8 } },
+      columnStyles: {
+        0: { cellWidth: 90 },
+        1: { cellWidth: contentW - 170 },
+        2: { cellWidth: 80, halign: "center" },
+      },
     });
   } else {
-    doc.text("No specific areas of concern identified. Continue current trajectory.", margin + 8, y);
+    doc.autoTable({
+      startY: y,
+      head: [["Date", "Conversation Title", "Messages"]],
+      body: [["--", "No AI assistant activity recorded during this period.", "--"]],
+      theme: "grid",
+      margin: { left: margin, right: margin },
+      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
+      bodyStyles: { fontSize: 9, textColor: gray },
+      styles: { font: "helvetica", cellPadding: { top: 5, bottom: 5, left: 8, right: 8 } },
+    });
   }
 
   // ── Add footers to all pages except cover ──
@@ -2212,11 +2264,36 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
   // ── Save ──
   const dateShort = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).replace(/[\s,]+/g, "");
   const safeName = trainee.name.replace(/\s+/g, "_");
-  doc.save(`${safeName}_${milestoneLabel.replace("-", "")}_Review_${dateShort}.pdf`);
+  const fileLabel = isTraineeReport ? "Progress_Report" : `${milestoneLabel.replace("-", "")}_Review`;
+  doc.save(`${safeName}_${fileLabel}_${dateShort}.pdf`);
   } catch (err) {
-    alert("Report generation failed: " + err.message);
-    console.error(err);
+    alert("Report generation failed: " + (err.message || String(err)));
+    console.error("Report generation error:", err);
   }
+}
+
+function ReportDateModal({ title, startDate, onGenerate, onClose }) {
+  const [dateFrom, setDateFrom] = useState(startDate || "");
+  const [dateTo, setDateTo] = useState(new Date().toISOString().slice(0, 10));
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:9999}}>
+      <div style={{background:"#fff",borderRadius:14,padding:"28px 32px",width:360,boxShadow:"0 8px 32px rgba(0,0,0,.18)",fontFamily:"'DM Sans',sans-serif"}}>
+        <h3 style={{margin:"0 0 18px",fontSize:16,fontWeight:700,color:B.navy}}>{title || "Generate Milestone Report"}</h3>
+        <div style={{marginBottom:14}}>
+          <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t3,marginBottom:4}}>From</label>
+          <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{width:"100%",padding:"8px 10px",border:`1px solid ${B.bdr}`,borderRadius:7,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
+        </div>
+        <div style={{marginBottom:20}}>
+          <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t3,marginBottom:4}}>To</label>
+          <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={{width:"100%",padding:"8px 10px",border:`1px solid ${B.bdr}`,borderRadius:7,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box"}}/>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <button onClick={()=>onGenerate(dateFrom, dateTo)} style={{flex:1,padding:"9px 18px",border:"none",borderRadius:7,background:B.blue,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Generate Report</button>
+          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",fontSize:12,color:B.t3,fontFamily:"inherit",textDecoration:"underline"}}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateReport, onLogout }) {
@@ -2602,6 +2679,15 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
         {/* My Performance Page */}
         {perfPage && (
           <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
+            {/* Generate My Report button — trainee only */}
+            {!isAdminView && onGenerateReport && (
+              <div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
+                <button onClick={onGenerateReport} style={{padding:"8px 18px",border:"none",borderRadius:8,background:B.blue,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:6}}>
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5.59L13 4.91V14.5H4V1.5z" stroke="#fff" strokeWidth="1.3"/><path d="M9.5 1.5V5H13" stroke="#fff" strokeWidth="1.3"/><path d="M7 8v4m0 0l-2-2m2 2l2-2" stroke="#fff" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  Generate My Report
+                </button>
+              </div>
+            )}
             {/* KPI Snapshot */}
             <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
               <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>KPI Snapshot</span></div>
@@ -3699,10 +3785,24 @@ export default function App() {
     });
   };
 
+  // Report modal state: { trainee, isTraineeReport }
+  const [reportModal, setReportModal] = useState(null);
+
   const handleGenerateReport = (t) => {
+    setReportModal({ trainee: t, isTraineeReport: false });
+  };
+
+  const handleTraineeReport = (t) => {
+    setReportModal({ trainee: t, isTraineeReport: true });
+  };
+
+  const executeReport = (dateFrom, dateTo) => {
+    if (!reportModal) return;
+    const t = reportModal.trainee;
     const uid = t.id;
     const nd = notesData[uid] || { notes: [], badges: [] };
-    generateMilestoneReport(t, allUserData[uid], kpiData[uid] || {}, nd);
+    generateMilestoneReport(t, allUserData[uid], kpiData[uid] || {}, nd, { dateFrom, dateTo, isTraineeReport: reportModal.isTraineeReport });
+    setReportModal(null);
   };
 
   let content = null;
@@ -3710,11 +3810,12 @@ export default function App() {
   else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onGenerateReport={handleGenerateReport} onLogout={handleLogout}/>;
   else if(view==="trainee-kpi"&&viewingTrainee) content = <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
   else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}}/>; }
-  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}}/>; }
+  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)}/>; }
   else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
 
   return <>
     <style>{RESPONSIVE_CSS}</style>
     {content}
+    {reportModal && <ReportDateModal title={reportModal.isTraineeReport ? "Generate My Progress Report" : "Generate Milestone Report"} startDate={reportModal.trainee.startDate} onGenerate={executeReport} onClose={()=>setReportModal(null)}/>}
   </>;
 }
