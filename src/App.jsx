@@ -2685,14 +2685,17 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             {cIt.quiz&&(()=>{
               const nQuiz = normalizeQuiz(cIt.quiz);
               const qs = nQuiz.questions;
+              const savedResult = quizResults?.[cIt.id];
+              const completed = savedResult === true || (savedResult && typeof savedResult === "object");
               const passed = isQuizPassed(quizResults, cIt.id);
+              const savedQuestions = (typeof savedResult === "object" && savedResult?.questions) || null;
               const curQ = qs[qIdx];
               const isSub = !!qSubs[curQ?.id];
               const mcQuestions = qs.filter(q=>q.type==="multiple_choice");
               const mcCorrectCount = mcQuestions.filter(q=>qAns[q.id]===q.correct).length;
               const allMcCorrect = mcQuestions.length>0 ? mcCorrectCount===mcQuestions.length : true;
 
-              // Finish quiz: save results
+              // Finish quiz: always mark complete (no retry)
               const finishQuiz = () => {
                 const qResults = {};
                 for(const q of qs){
@@ -2703,17 +2706,108 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 setQDone(true);
               };
 
-              return(
-              <div style={{background:B.card,border:`1px solid ${passed?B.ok:B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
-                <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",background:passed?B.okBg:"transparent"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6}}>{passed?<Trophy/>:<QuizIc/>}<span style={{fontSize:12,fontWeight:700,color:passed?B.ok:B.navy,textTransform:"uppercase",letterSpacing:.8}}>{passed?"Quiz Passed":"Knowledge Check"}</span></div>
-                  {passed&&<span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Complete</span>}
-                  {!passed&&qM===cIt.id&&!qDone&&<span style={{fontSize:10,color:B.t3}}>Question {qIdx+1} of {qs.length}</span>}
+              // Read-only results renderer (used by admin view and completed state)
+              const renderResults = (qsData, resultsMap) => (
+                <div style={{padding:18}}>
+                  <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                    {qsData.map((q,i)=>{
+                      const r = resultsMap?.[q.id];
+                      const isMc = q.type==="multiple_choice";
+                      const isFt = q.type==="free_text";
+                      const traineeAnswer = r ? r.answer : null;
+                      const isCorrect = isMc && r?.correct;
+                      return(
+                        <div key={q.id} style={{padding:"12px 14px",borderRadius:8,border:`1px solid ${B.bdr}`,background:"#fff"}}>
+                          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                            <span style={{fontSize:10,fontWeight:700,color:B.t3}}>Q{i+1}</span>
+                            {isMc && isCorrect && <span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Correct</span>}
+                            {isMc && !isCorrect && <span style={{fontSize:10,fontWeight:600,color:B.err,background:"#fee2e2",padding:"2px 8px",borderRadius:10}}>✗ Incorrect</span>}
+                            {isFt && <span style={{fontSize:10,fontWeight:600,color:B.blue,background:B.blueL,padding:"2px 8px",borderRadius:10}}>Answer Submitted</span>}
+                          </div>
+                          <div style={{fontSize:12,fontWeight:600,color:B.navy,marginBottom:8,lineHeight:1.5}}>{q.question}</div>
+                          {isMc && (
+                            <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                              {q.options.map((opt,idx)=>{
+                                const isTraineeChoice = traineeAnswer === idx;
+                                const isCorrectOpt = idx === q.correct;
+                                let bg = "#fff", bd = B.bdr, cl = B.t2;
+                                if (isCorrectOpt) { bg = B.okBg; bd = B.ok; cl = B.ok; }
+                                if (isTraineeChoice && !isCorrectOpt) { bg = "#fef2f2"; bd = B.err; cl = B.err; }
+                                if (isTraineeChoice && isCorrectOpt) { bg = B.okBg; bd = B.ok; cl = B.ok; }
+                                return (
+                                  <div key={idx} style={{padding:"8px 12px",border:`1.5px solid ${bd}`,borderRadius:6,background:bg,fontSize:11,color:cl,display:"flex",alignItems:"center",gap:8}}>
+                                    {isTraineeChoice && <span style={{fontSize:9,fontWeight:700,color:isCorrectOpt?B.ok:B.err,background:isCorrectOpt?B.okL:"#fee2e2",padding:"1px 6px",borderRadius:4,flexShrink:0}}>Your answer</span>}
+                                    {isCorrectOpt && !isTraineeChoice && <span style={{fontSize:9,fontWeight:700,color:B.ok,background:B.okL,padding:"1px 6px",borderRadius:4,flexShrink:0}}>Correct</span>}
+                                    <span>{opt}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                          {isFt && (
+                            <>
+                              <div style={{padding:"8px 12px",border:`1.5px solid ${B.blue}`,borderRadius:6,background:B.blueL,fontSize:11,color:B.t1,marginBottom:6,lineHeight:1.5}}>
+                                <span style={{fontSize:9,fontWeight:700,color:B.blue,display:"block",marginBottom:2}}>Trainee's Answer:</span>
+                                {r?.answer || <span style={{color:B.t3,fontStyle:"italic"}}>No answer provided</span>}
+                              </div>
+                              {q.modelAnswer && (
+                                <div style={{padding:"8px 12px",border:`1.5px solid ${B.ok}`,borderRadius:6,background:B.okBg,fontSize:11,color:B.t1,lineHeight:1.5}}>
+                                  <span style={{fontSize:9,fontWeight:700,color:B.ok,display:"block",marginBottom:2}}>Model Answer:</span>
+                                  {q.modelAnswer}
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                {passed?(
-                  <div style={{padding:"16px 18px",color:B.t2,fontSize:12}}>You've already passed this quiz. ({qs.length} question{qs.length!==1?"s":""})</div>
-                ):qDone?(
-                  /* Summary screen */
+              );
+
+              // ADMIN VIEW: read-only results panel
+              if (isAdminView) {
+                return (
+                  <div style={{background:B.card,border:`1px solid ${completed?B.ok:B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+                    <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",background:completed?B.okBg:"transparent"}}>
+                      <div style={{display:"flex",alignItems:"center",gap:6}}>{completed?<Trophy/>:<QuizIc/>}<span style={{fontSize:12,fontWeight:700,color:completed?B.ok:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Quiz Results</span></div>
+                      <span style={{fontSize:10,fontWeight:600,color:B.t3,background:"#f1f5f9",padding:"2px 8px",borderRadius:10}}>Read Only</span>
+                    </div>
+                    {!completed ? (
+                      <div style={{padding:"24px 18px",textAlign:"center"}}>
+                        <div style={{color:B.t3,marginBottom:6}}><QuizIc/></div>
+                        <div style={{fontSize:13,color:B.t3}}>Not yet attempted</div>
+                      </div>
+                    ) : (
+                      renderResults(qs, savedQuestions)
+                    )}
+                  </div>
+                );
+              }
+
+              // TRAINEE VIEW: completed quiz — show permanent results
+              if (completed) {
+                return (
+                  <div style={{background:B.card,border:`1px solid ${passed?B.ok:B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+                    <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",background:passed?B.okBg:"transparent"}}>
+                      <div style={{display:"flex",alignItems:"center",gap:6}}>{passed?<Trophy/>:<QuizIc/>}<span style={{fontSize:12,fontWeight:700,color:passed?B.ok:B.navy,textTransform:"uppercase",letterSpacing:.8}}>{passed?"Quiz Passed":"Quiz Complete"}</span></div>
+                      <span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Submitted</span>
+                    </div>
+                    {savedQuestions ? renderResults(qs, savedQuestions) : (
+                      <div style={{padding:"16px 18px",color:B.t2,fontSize:12}}>Quiz completed. ({qs.length} question{qs.length!==1?"s":""})</div>
+                    )}
+                  </div>
+                );
+              }
+
+              return(
+              <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+                <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6}}><QuizIc/><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Knowledge Check</span></div>
+                  {qM===cIt.id&&!qDone&&<span style={{fontSize:10,color:B.t3}}>Question {qIdx+1} of {qs.length}</span>}
+                </div>
+                {qDone?(
+                  /* Summary screen after finishing — permanent results */
                   <div style={{padding:18}}>
                     <div style={{textAlign:"center",padding:"10px 0 16px"}}>
                       <div style={{fontSize:18,fontWeight:700,color:allMcCorrect?B.ok:B.navy,marginBottom:4}}>
@@ -2724,27 +2818,58 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                         {qs.length>mcQuestions.length&&<span> · {qs.length-mcQuestions.length} free-text submitted for review</span>}
                       </div>
                     </div>
-                    {/* Per-question results */}
-                    <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:16}}>
+                    {/* Per-question detailed results */}
+                    <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:16}}>
                       {qs.map((q,i)=>{
-                        const isCorrect = q.type==="multiple_choice"&&qAns[q.id]===q.correct;
+                        const isMc = q.type==="multiple_choice";
                         const isFt = q.type==="free_text";
+                        const isCorrect = isMc&&qAns[q.id]===q.correct;
                         return(
-                          <div key={q.id} style={{padding:"10px 14px",borderRadius:7,border:`1px solid ${isCorrect?B.ok:isFt?B.blue:B.err}`,background:isCorrect?B.okBg:isFt?B.blueL:"#fef2f2",display:"flex",alignItems:"center",gap:10}}>
-                            <span style={{width:20,height:20,borderRadius:10,flexShrink:0,background:isCorrect?B.ok:isFt?B.blue:B.err,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700}}>
-                              {isCorrect?"✓":isFt?"✎":"✗"}
-                            </span>
-                            <div style={{flex:1,minWidth:0}}>
-                              <div style={{fontSize:11,fontWeight:600,color:B.t1}}>Q{i+1}: {q.question.slice(0,80)}{q.question.length>80?"...":""}</div>
-                              <div style={{fontSize:10,color:B.t3,marginTop:1}}>{isCorrect?"Correct":isFt?"Pending Review":"Incorrect"}</div>
+                          <div key={q.id} style={{padding:"12px 14px",borderRadius:8,border:`1px solid ${B.bdr}`,background:"#fff"}}>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                              <span style={{fontSize:10,fontWeight:700,color:B.t3}}>Q{i+1}</span>
+                              {isMc && isCorrect && <span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Correct</span>}
+                              {isMc && !isCorrect && <span style={{fontSize:10,fontWeight:600,color:B.err,background:"#fee2e2",padding:"2px 8px",borderRadius:10}}>✗ Incorrect</span>}
+                              {isFt && <span style={{fontSize:10,fontWeight:600,color:B.blue,background:B.blueL,padding:"2px 8px",borderRadius:10}}>Answer Submitted</span>}
                             </div>
+                            <div style={{fontSize:12,fontWeight:600,color:B.navy,marginBottom:8,lineHeight:1.5}}>{q.question}</div>
+                            {isMc && (
+                              <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                                {q.options.map((opt,idx)=>{
+                                  const isTraineeChoice = qAns[q.id] === idx;
+                                  const isCorrectOpt = idx === q.correct;
+                                  let bg = "#fff", bd = B.bdr, cl = B.t2;
+                                  if (isCorrectOpt) { bg = B.okBg; bd = B.ok; cl = B.ok; }
+                                  if (isTraineeChoice && !isCorrectOpt) { bg = "#fef2f2"; bd = B.err; cl = B.err; }
+                                  if (isTraineeChoice && isCorrectOpt) { bg = B.okBg; bd = B.ok; cl = B.ok; }
+                                  return (
+                                    <div key={idx} style={{padding:"8px 12px",border:`1.5px solid ${bd}`,borderRadius:6,background:bg,fontSize:11,color:cl,display:"flex",alignItems:"center",gap:8}}>
+                                      {isTraineeChoice && <span style={{fontSize:9,fontWeight:700,color:isCorrectOpt?B.ok:B.err,background:isCorrectOpt?B.okL:"#fee2e2",padding:"1px 6px",borderRadius:4,flexShrink:0}}>Your answer</span>}
+                                      {isCorrectOpt && !isTraineeChoice && <span style={{fontSize:9,fontWeight:700,color:B.ok,background:B.okL,padding:"1px 6px",borderRadius:4,flexShrink:0}}>Correct</span>}
+                                      <span>{opt}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            {isFt && (
+                              <>
+                                <div style={{padding:"8px 12px",border:`1.5px solid ${B.blue}`,borderRadius:6,background:B.blueL,fontSize:11,color:B.t1,marginBottom:6,lineHeight:1.5}}>
+                                  <span style={{fontSize:9,fontWeight:700,color:B.blue,display:"block",marginBottom:2}}>Your Answer:</span>
+                                  {qAns[q.id] || <span style={{color:B.t3,fontStyle:"italic"}}>No answer</span>}
+                                </div>
+                                {q.modelAnswer && (
+                                  <div style={{padding:"8px 12px",border:`1.5px solid ${B.ok}`,borderRadius:6,background:B.okBg,fontSize:11,color:B.t1,lineHeight:1.5}}>
+                                    <span style={{fontSize:9,fontWeight:700,color:B.ok,display:"block",marginBottom:2}}>Model Answer:</span>
+                                    {q.modelAnswer}
+                                  </div>
+                                )}
+                              </>
+                            )}
                           </div>
                         );
                       })}
                     </div>
-                    {!allMcCorrect&&(
-                      <button onClick={()=>{setQIdx(0);setQAns({});setQSubs({});setQDone(false)}} style={{padding:"8px 20px",border:`1px solid ${B.blue}`,borderRadius:7,background:"#fff",color:B.blue,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",marginRight:6}}>Retry Quiz</button>
-                    )}
                     <button onClick={resetQuiz} style={{padding:"8px 16px",border:`1px solid ${B.bdr}`,borderRadius:7,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Close</button>
                   </div>
                 ):qM===cIt.id&&curQ?(
@@ -2799,10 +2924,6 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                           style={{padding:"8px 20px",border:"none",borderRadius:7,background:(qAns[curQ.id]!=null&&(curQ.type!=="free_text"||(qAns[curQ.id]||"").trim()))?B.blue:B.bdr,color:"#fff",fontSize:12,fontWeight:600,cursor:(qAns[curQ.id]!=null&&(curQ.type!=="free_text"||(qAns[curQ.id]||"").trim()))?"pointer":"default",fontFamily:"inherit"}}>Submit</button>
                       ):(
                         <>
-                          {curQ.type==="multiple_choice"&&qAns[curQ.id]!==curQ.correct&&(
-                            <button onClick={()=>{setQAns(p=>{const n={...p};delete n[curQ.id];return n});setQSubs(p=>{const n={...p};delete n[curQ.id];return n})}}
-                              style={{padding:"8px 20px",border:`1px solid ${B.blue}`,borderRadius:7,background:"#fff",color:B.blue,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Try Again</button>
-                          )}
                           {qIdx<qs.length-1?(
                             <button onClick={()=>setQIdx(i=>i+1)} style={{padding:"8px 20px",border:"none",borderRadius:7,background:B.blue,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Next Question →</button>
                           ):(
