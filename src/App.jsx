@@ -1,4 +1,76 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, createContext, useContext } from "react";
+
+// ─── Responsive CSS ─────────────────────────────────────────────────────────
+const RESPONSIVE_CSS = `
+/* Mobile-first responsive overrides */
+@media (max-width: 768px) {
+  /* Headers */
+  .r-header { padding: 10px 16px !important; gap: 8px !important; flex-wrap: wrap; }
+  .r-header-title { font-size: 13px !important; }
+  .r-header-sub { font-size: 10px !important; }
+  .r-header-right { gap: 8px !important; }
+  .r-header-right .r-hide-mobile { display: none !important; }
+
+  /* Content areas */
+  .r-content { padding: 16px !important; }
+
+  /* Stat card grids — 2 columns on mobile */
+  .r-stat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+
+  /* Data tables — horizontal scroll */
+  .r-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .r-table-grid { min-width: 700px; }
+
+  /* Client portal 3-col → 1-col */
+  .r-three-col { grid-template-columns: 1fr !important; }
+
+  /* Client portal team cards — 1 col on mobile */
+  .r-team-grid { grid-template-columns: 1fr !important; }
+
+  /* Trainee sidebar — overlay on mobile */
+  .r-trainee-sidebar {
+    position: fixed !important;
+    z-index: 50 !important;
+    height: 100vh !important;
+    box-shadow: 4px 0 20px rgba(0,0,0,.15);
+  }
+  .r-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.3);
+    z-index: 49;
+  }
+
+  /* Trainee main content */
+  .r-trainee-main-header { padding: 10px 16px !important; }
+  .r-trainee-content { padding: 16px !important; }
+
+  /* Touch targets */
+  .r-touch { min-height: 44px; min-width: 44px; }
+
+  /* Filter buttons — wrap */
+  .r-filter-row { flex-wrap: wrap; gap: 8px !important; }
+
+  /* Add trainee form — stack vertically */
+  .r-add-form { flex-direction: column !important; align-items: stretch !important; }
+
+  /* Tab rows — scroll horizontally */
+  .r-tab-row { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Font size floors */
+  .r-body-text { font-size: 14px !important; }
+}
+
+@media (max-width: 480px) {
+  .r-stat-grid { grid-template-columns: 1fr !important; }
+  .r-header { padding: 8px 12px !important; }
+  .r-content { padding: 12px !important; }
+}
+
+@media (min-width: 769px) {
+  .r-sidebar-overlay { display: none; }
+}
+`;
 
 // ─── Training Data ───────────────────────────────────────────────────────────
 
@@ -611,7 +683,7 @@ function ClientPortalDemo() {
       </div>
 
       {/* Client Portal Tabs */}
-      <div style={{ display: "flex", gap: 20, marginBottom: 24, borderBottom: `1px solid ${B.bdr}`, overflowX: "auto" }}>
+      <div className="r-tab-row" style={{ display: "flex", gap: 20, marginBottom: 24, borderBottom: `1px solid ${B.bdr}`, overflowX: "auto" }}>
         {cpTabs.map(tab => (
           <button key={tab.key} onClick={() => setCpTab(tab.key)} style={{ padding: "10px 4px", border: "none", borderBottom: cpTab === tab.key ? `2px solid ${B.blue}` : "2px solid transparent", background: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: cpTab === tab.key ? B.blue : B.t3, fontFamily: "inherit", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 6, transition: "color .2s" }}>
             <span style={{ fontSize: 14 }}>{tab.icon}</span> {tab.label}
@@ -623,7 +695,7 @@ function ClientPortalDemo() {
       {cpTab === "home" && (
         <div>
           {/* Three-column layout */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 28 }}>
+          <div className="r-three-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 28 }}>
             {/* Left: Welcome */}
             <div style={{ ...cardS, padding: 24 }}>
               <h3 style={{ margin: "0 0 12px", fontSize: 18, fontWeight: 700, color: B.navy }}>Welcome!</h3>
@@ -692,7 +764,7 @@ function ClientPortalDemo() {
 
           {/* Your Aiola CPA Team */}
           <h3 style={sectionTitle}>Your Aiola CPA Team</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 28 }}>
+          <div className="r-team-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 28 }}>
             {[
               { initials: "SO", name: "Sam Ortiz", title: "Senior Tax Advisor", role: "Main Point of Contact", email: "sam@aiolacpa.com", phone: "(555) 123-4567", calendar: true },
               { initials: "NM", name: "Natalie Marcum", title: "Firm Administrator", role: "Admin/Billing Contact", email: "natalie@aiolacpa.com", phone: "(555) 234-5678", calendar: false },
@@ -989,7 +1061,7 @@ function AdminClientList() {
   return (
     <div>
       {/* Stats */}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
+      <div className="r-stat-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
         <div style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",borderLeft:`4px solid ${B.blue}`}}>
           <div style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3,marginBottom:8}}>Active Clients</div>
           <div style={{fontSize:28,fontWeight:700,color:B.blue}}>{active.length}</div>
@@ -1013,7 +1085,8 @@ function AdminClientList() {
         <div style={{padding:"18px 24px",borderBottom:`1px solid ${B.bdr}`}}>
           <h2 style={{margin:0,fontSize:16,fontWeight:700,color:B.navy}}>Advisory Clients</h2>
         </div>
-        <div style={{display:"grid",gridTemplateColumns:"80px 2fr 0.8fr 1.5fr 1fr 140px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
+        <div className="r-table-wrap">
+        <div className="r-table-grid" style={{display:"grid",gridTemplateColumns:"80px 2fr 0.8fr 1.5fr 1fr 140px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
           <span>Fathom ID</span><span>Client Name</span><span>Tier</span><span>Email</span><span>% Complete</span><span></span>
         </div>
         {active.length===0&&<div style={{padding:"32px 24px",textAlign:"center",fontSize:13,color:B.t3}}>No active clients.</div>}
@@ -1021,7 +1094,7 @@ function AdminClientList() {
           const pct=Math.round(c.completedTodos/c.totalTodos*100);
           const pctColor=pct>=80?B.ok:pct>=50?B.blue:pct>=30?B.warn:B.err;
           return(
-            <div key={c.id} style={{display:"grid",gridTemplateColumns:"80px 2fr 0.8fr 1.5fr 1fr 140px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
+            <div key={c.id} className="r-table-grid" style={{display:"grid",gridTemplateColumns:"80px 2fr 0.8fr 1.5fr 1fr 140px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
               onMouseEnter={e=>e.currentTarget.style.background="#fafbfc"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
               <span style={{fontSize:11,fontWeight:600,color:B.t2,fontFamily:"monospace"}}>{c.id}</span>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -1041,6 +1114,7 @@ function AdminClientList() {
             </div>
           );
         })}
+        </div>
       </div>
       {/* Archived Section */}
       {archived.length>0&&(
@@ -1152,20 +1226,20 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
 
   return (
     <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:B.bg,color:B.t1}}>
-      <header style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
+      <header className="r-header" style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
         <div style={{display:"flex",alignItems:"center",gap:14}}>
           <Logo size={32}/>
-          <div><div style={{fontWeight:700,fontSize:15,color:B.navy}}>Aiola Portal</div><div style={{fontSize:11,color:B.t3}}>Admin Dashboard</div></div>
+          <div><div className="r-header-title" style={{fontWeight:700,fontSize:15,color:B.navy}}>Aiola Portal</div><div className="r-header-sub" style={{fontSize:11,color:B.t3}}>Admin Dashboard</div></div>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:16}}>
-          <div style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{user.name}</div><div style={{fontSize:11,color:B.t3}}>Administrator</div></div>
+        <div className="r-header-right" style={{display:"flex",alignItems:"center",gap:16}}>
+          <div className="r-hide-mobile" style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{user.name}</div><div style={{fontSize:11,color:B.t3}}>Administrator</div></div>
           <div style={{width:36,height:36,borderRadius:18,background:B.navy,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700}}>{user.avatar}</div>
-          <button onClick={onLogout} style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
+          <button onClick={onLogout} className="r-touch" style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
         </div>
       </header>
-      <div style={{padding:"28px 32px",maxWidth:1400,margin:"0 auto"}}>
+      <div className="r-content" style={{padding:"28px 32px",maxWidth:1400,margin:"0 auto"}}>
         {/* Admin Tabs */}
-        <div style={{display:"flex",gap:24,marginBottom:24,borderBottom:`1px solid ${B.bdr}`}}>
+        <div className="r-tab-row" style={{display:"flex",gap:24,marginBottom:24,borderBottom:`1px solid ${B.bdr}`}}>
           {[{key:"training",label:"Training Portal"},{key:"client",label:"Client Portal"}].map(tab=>(
             <button key={tab.key} onClick={()=>setAdminTab(tab.key)} style={{padding:"10px 4px",border:"none",borderBottom:adminTab===tab.key?`2px solid ${B.blue}`:"2px solid transparent",background:"none",cursor:"pointer",fontSize:14,fontWeight:600,color:adminTab===tab.key?B.blue:B.t3,fontFamily:"inherit",transition:"color .2s"}}>
               {tab.label}
@@ -1175,7 +1249,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
         {adminTab==="client"&&<AdminClientList />}
         {adminTab==="training"&&<>
         {/* Pain-Point Stats */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
+        <div className="r-stat-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
           <div onClick={()=>setDrillDown({type:"deadlines",data:allOverdue})} style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${allOverdue.length>0?"#fecaca":B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",cursor:"pointer",transition:"all .15s",borderLeft:`4px solid ${allOverdue.length>0?B.err:B.ok}`}}
             onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 12px rgba(0,0,0,.08)"} onMouseLeave={e=>e.currentTarget.style.boxShadow="0 1px 3px rgba(0,0,0,.04)"}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
@@ -1274,9 +1348,9 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
         )}
 
         {/* Track Filter */}
-        <div style={{display:"flex",gap:8,marginBottom:16}}>
+        <div className="r-filter-row" style={{display:"flex",gap:8,marginBottom:16}}>
           {["All","Advisory","Tax Prep","Admin"].map(f=>(
-            <button key={f} onClick={()=>setTrackFilter(f)} style={{padding:"5px 14px",borderRadius:20,border:trackFilter===f?"none":`1px solid ${B.bdr}`,background:trackFilter===f?B.blue:"#fff",color:trackFilter===f?"#fff":B.t2,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
+            <button key={f} onClick={()=>setTrackFilter(f)} className="r-touch" style={{padding:"5px 14px",borderRadius:20,border:trackFilter===f?"none":`1px solid ${B.bdr}`,background:trackFilter===f?B.blue:"#fff",color:trackFilter===f?"#fff":B.t2,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>
               {f}
             </button>
           ))}
@@ -1285,10 +1359,10 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
         <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden"}}>
           <div style={{padding:"18px 24px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <h2 style={{margin:0,fontSize:16,fontWeight:700,color:B.navy}}>Team Members</h2>
-            <button onClick={()=>setShowAdd(!showAdd)} style={{padding:"8px 18px",border:"none",borderRadius:8,background:B.blue,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>+ Add Trainee</button>
+            <button onClick={()=>setShowAdd(!showAdd)} className="r-touch" style={{padding:"8px 18px",border:"none",borderRadius:8,background:B.blue,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>+ Add Trainee</button>
           </div>
           {showAdd && (
-            <div style={{padding:"16px 24px",borderBottom:`1px solid ${B.bdr}`,background:B.blueL,display:"flex",gap:12,alignItems:"flex-end"}}>
+            <div className="r-add-form" style={{padding:"16px 24px",borderBottom:`1px solid ${B.bdr}`,background:B.blueL,display:"flex",gap:12,alignItems:"flex-end"}}>
               <div style={{flex:1}}><label style={{fontSize:11,fontWeight:600,color:B.t2,display:"block",marginBottom:4}}>Full Name</label><input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="e.g. Chris Martinez" style={{width:"100%",padding:"8px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:13,fontFamily:"inherit",boxSizing:"border-box"}}/></div>
               <div style={{flex:1}}><label style={{fontSize:11,fontWeight:600,color:B.t2,display:"block",marginBottom:4}}>Email</label><input value={newEmail} onChange={e=>setNewEmail(e.target.value)} placeholder="e.g. chris@aiolacpa.com" style={{width:"100%",padding:"8px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:13,fontFamily:"inherit",boxSizing:"border-box"}}/></div>
               <div style={{flex:.7}}><label style={{fontSize:11,fontWeight:600,color:B.t2,display:"block",marginBottom:4}}>Track</label><select value={newTrack} onChange={e=>setNewTrack(e.target.value)} style={{width:"100%",padding:"8px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:13,fontFamily:"inherit",boxSizing:"border-box",background:"#fff"}}><option>Advisory</option><option>Tax Prep</option><option>Admin</option></select></div>
@@ -1296,7 +1370,8 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
               <button onClick={()=>setShowAdd(false)} style={{padding:"9px 16px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
             </div>
           )}
-          <div style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 150px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
+          <div className="r-table-wrap">
+          <div className="r-table-grid" style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 150px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
             <span>Name</span><span>Phase</span><span>Start Date</span><span>Timeline</span><span>Progress</span><span>Quizzes</span><span></span>
           </div>
           {filteredTrainees.map(t=>{
@@ -1308,7 +1383,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
             const diff=timelinePct-prog.pct;
             const tlColor=diff<=0?B.ok:diff<=10?B.warn:B.err;
             return(
-              <div key={t.id} style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 150px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
+              <div key={t.id} className="r-table-grid" style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 150px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
                 onMouseEnter={e=>e.currentTarget.style.background="#fafbfc"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                 <div style={{display:"flex",alignItems:"center",gap:12}}>
                   <div style={{width:36,height:36,borderRadius:18,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{t.avatar}</div>
@@ -1332,6 +1407,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
               </div>
             );
           })}
+          </div>
         </div>
         </>}
       </div>
@@ -1351,7 +1427,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   const [qAns, setQAns] = useState({}); // {questionId: selectedIndex | freeText}
   const [qSubs, setQSubs] = useState({}); // {questionId: true} submitted
   const [qDone, setQDone] = useState(false); // showing summary
-  const [sO, setSO] = useState(true);
+  const [sO, setSO] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : true);
   const [eP, setEP] = useState({week1:true});
   const mR = useRef(null);
   const prog = calcProg(completedTasks, quizResults);
@@ -1379,7 +1455,8 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   return (
     <div style={{fontFamily:"'DM Sans',sans-serif",display:"flex",height:"100vh",width:"100%",background:B.bg,color:B.t1,overflow:"hidden"}}>
       <style>{`@keyframes milestoneGlow{0%,100%{filter:drop-shadow(0 0 4px currentColor) brightness(1)}50%{filter:drop-shadow(0 0 10px currentColor) brightness(1.15)}}`}</style>
-      <aside style={{width:sO?280:0,minWidth:sO?280:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
+      {sO && <div className="r-sidebar-overlay" onClick={()=>setSO(false)}/>}
+      <aside className={sO?"r-trainee-sidebar":""} style={{width:sO?280:0,minWidth:sO?280:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
         <div style={{padding:"18px 20px 14px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:10}}>
           <Logo size={30}/><div><div style={{fontWeight:700,fontSize:13,color:B.navy,letterSpacing:.5}}>AIOLA CPA, PLLC</div><div style={{fontSize:10,color:B.t3,marginTop:1}}>Training Portal</div></div>
         </div>
@@ -1498,7 +1575,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
         </nav>
       </aside>
       <main ref={mR} style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column"}}>
-        <header style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 28px",background:"#fff",borderBottom:`1px solid ${B.bdr}`,position:"sticky",top:0,zIndex:10}}>
+        <header className="r-trainee-main-header" style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 28px",background:"#fff",borderBottom:`1px solid ${B.bdr}`,position:"sticky",top:0,zIndex:10}}>
           <div style={{display:"flex",alignItems:"center",gap:14}}>
             <button onClick={()=>setSO(!sO)} style={{border:"none",background:"none",cursor:"pointer",padding:4,display:"flex"}}>
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="3" y1="5" x2="17" y2="5" stroke={B.t2} strokeWidth="2" strokeLinecap="round"/><line x1="3" y1="10" x2="17" y2="10" stroke={B.t2} strokeWidth="2" strokeLinecap="round"/><line x1="3" y1="15" x2="17" y2="15" stroke={B.t2} strokeWidth="2" strokeLinecap="round"/></svg>
@@ -1512,7 +1589,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
           </div>
         </header>
         {cIt&&(
-          <div style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
+          <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
             <p style={{fontSize:13,color:B.t2,lineHeight:1.6,marginTop:0,marginBottom:20}}>{cIt.description}</p>
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
               <div style={{flex:1,height:7,borderRadius:4,background:B.blueL,overflow:"hidden"}}><div style={{height:"100%",borderRadius:4,transition:"width .4s",width:`${itemProg(cIt,completedTasks)}%`,background:itemProg(cIt,completedTasks)===100?B.ok:`linear-gradient(90deg,${B.blue},${B.blueD})`}}/></div>
@@ -1924,17 +2001,17 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
 
   return (
     <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:B.bg,color:B.t1}}>
-      <header style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
+      <header className="r-header" style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
         <div style={{display:"flex",alignItems:"center",gap:14}}>
           <Logo size={32}/>
-          <div><div style={{fontWeight:700,fontSize:15,color:B.navy}}>KPI & Performance</div><div style={{fontSize:11,color:B.t3}}>{user.name} · {user.track || "Advisory"} Track</div></div>
+          <div><div className="r-header-title" style={{fontWeight:700,fontSize:15,color:B.navy}}>KPI & Performance</div><div className="r-header-sub" style={{fontSize:11,color:B.t3}}>{user.name} · {user.track || "Advisory"} Track</div></div>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <button onClick={onBackToAdmin} style={{padding:"6px 14px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>← Back to Admin</button>
-          <button onClick={onLogout} style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
+        <div className="r-header-right" style={{display:"flex",alignItems:"center",gap:12}}>
+          <button onClick={onBackToAdmin} className="r-touch" style={{padding:"6px 14px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>← Back to Admin</button>
+          <button onClick={onLogout} className="r-touch" style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
         </div>
       </header>
-      <div style={{padding:"28px 32px",maxWidth:1200,margin:"0 auto"}}>
+      <div className="r-content" style={{padding:"28px 32px",maxWidth:1200,margin:"0 auto"}}>
         {/* Trainee Info Bar */}
         <div style={{background:"#fff",borderRadius:12,padding:"18px 24px",border:`1px solid ${B.bdr}`,marginBottom:24,display:"flex",alignItems:"center",gap:16,boxShadow:"0 1px 3px rgba(0,0,0,.04)"}}>
           <div style={{width:48,height:48,borderRadius:24,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:700}}>{user.avatar}</div>
@@ -2081,18 +2158,18 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
 function ClientPortalShell({ user, onLogout }) {
   return (
     <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:B.bg,color:B.t1}}>
-      <header style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
+      <header className="r-header" style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
         <div style={{display:"flex",alignItems:"center",gap:14}}>
           <Logo size={32}/>
-          <div><div style={{fontWeight:700,fontSize:15,color:B.navy}}>Client Advisory Portal</div><div style={{fontSize:11,color:B.t3}}>Welcome, {user.name}</div></div>
+          <div><div className="r-header-title" style={{fontWeight:700,fontSize:15,color:B.navy}}>Client Advisory Portal</div><div className="r-header-sub" style={{fontSize:11,color:B.t3}}>Welcome, {user.name}</div></div>
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:16}}>
-          <div style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{user.name}</div><div style={{fontSize:11,color:B.t3}}>Client</div></div>
+        <div className="r-header-right" style={{display:"flex",alignItems:"center",gap:16}}>
+          <div className="r-hide-mobile" style={{textAlign:"right"}}><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{user.name}</div><div style={{fontSize:11,color:B.t3}}>Client</div></div>
           <div style={{width:36,height:36,borderRadius:18,background:B.ok,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700}}>{user.avatar}</div>
-          <button onClick={onLogout} style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
+          <button onClick={onLogout} className="r-touch" style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
         </div>
       </header>
-      <div style={{padding:"28px 32px",maxWidth:1400,margin:"0 auto"}}>
+      <div className="r-content" style={{padding:"28px 32px",maxWidth:1400,margin:"0 auto"}}>
         <ClientPortalDemo />
       </div>
     </div>
@@ -2134,11 +2211,16 @@ export default function App() {
     setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), badges: [...((prev[uid]||{}).badges||[]), badge]}}));
   };
 
-  if(view==="login") return <LoginScreen onLogin={handleLogin}/>;
-  if(view==="admin") return <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onLogout={handleLogout}/>;
-  if(view==="trainee-kpi"&&viewingTrainee) return <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
-  if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; return <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} kpiData={kpiData[uid]||{}}/>; }
-  if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; return <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}}/>; }
-  if(view==="client"&&currentUser) return <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
-  return null;
+  let content = null;
+  if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
+  else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onLogout={handleLogout}/>;
+  else if(view==="trainee-kpi"&&viewingTrainee) content = <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
+  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} kpiData={kpiData[uid]||{}}/>; }
+  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}}/>; }
+  else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
+
+  return <>
+    <style>{RESPONSIVE_CSS}</style>
+    {content}
+  </>;
 }
