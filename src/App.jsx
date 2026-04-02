@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo, createContext, useContext } from "react";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 // ─── Responsive CSS ─────────────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
@@ -1192,7 +1194,445 @@ const getOverdueQuizzes = (trainee, quizData) => {
   return overdue;
 };
 
-function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
+// ═════════════════════════════════════════════════════════════════════════════
+// PDF REPORT GENERATION
+// ═════════════════════════════════════════════════════════════════════════════
+
+function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
+  const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter" });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const margin = 40;
+  const contentW = pageW - margin * 2;
+  const blue = [59, 141, 208];
+  const navy = [26, 26, 46];
+  const gray = [90, 101, 119];
+  const lightGray = [248, 249, 250];
+
+  const tasks = traineeData?.tasks || {};
+  const quizzes = traineeData?.quizzes || {};
+  const kpi = kpiData || {};
+  const notes = notesData?.notes || [];
+  const badges = notesData?.badges || [];
+  const prog = calcProg(tasks, quizzes);
+  const days = daysSince(trainee.startDate);
+  const milestoneLabel = days <= 35 ? "30-Day" : days <= 65 ? "60-Day" : "90-Day";
+  const timelinePct = Math.min(100, Math.round(days / 90 * 100));
+  const phaseLbl = days <= 30 ? "Days 1–30" : days <= 60 ? "Days 31–60" : "Days 61–90";
+  const milestones = getMilestoneStatus(tasks);
+  const dateStr = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
+  // Helper: draw the Aiola logo using jsPDF drawing methods
+  const drawLogo = (x, y, scale = 1) => {
+    doc.setDrawColor(...blue);
+    doc.setLineWidth(2 * scale);
+    // Triangle roof
+    doc.line(x + 15 * scale, y + 35 * scale, x + 30 * scale, y + 10 * scale);
+    doc.line(x + 30 * scale, y + 10 * scale, x + 45 * scale, y + 35 * scale);
+    // Base line
+    doc.setLineWidth(2.5 * scale);
+    doc.line(x + 7 * scale, y + 35 * scale, x + 53 * scale, y + 35 * scale);
+    // Door
+    doc.setLineWidth(1.5 * scale);
+    doc.rect(x + 26 * scale, y + 22 * scale, x + 8 * scale, y + 13 * scale);
+    // Lines on right
+    doc.line(x + 35 * scale, y + 27 * scale, x + 50 * scale, y + 27 * scale);
+    doc.line(x + 40 * scale, y + 22 * scale, x + 50 * scale, y + 22 * scale);
+  };
+
+  // Helper: section header with blue rule
+  const sectionHeader = (title, yPos) => {
+    doc.setFontSize(16);
+    doc.setTextColor(...navy);
+    doc.setFont("helvetica", "bold");
+    doc.text(title, margin, yPos);
+    doc.setDrawColor(...blue);
+    doc.setLineWidth(1.5);
+    doc.line(margin, yPos + 6, pageW - margin, yPos + 6);
+    return yPos + 24;
+  };
+
+  // Helper: add page footer
+  const addFooter = (pageNum, totalPages) => {
+    doc.setFontSize(8);
+    doc.setTextColor(...gray);
+    doc.setFont("helvetica", "normal");
+    doc.text("Aiola CPA, PLLC — Confidential", margin, pageH - 25);
+    doc.text(`Page ${pageNum} of ${totalPages}`, pageW / 2, pageH - 25, { align: "center" });
+    doc.text(trainee.name, pageW - margin, pageH - 25, { align: "right" });
+  };
+
+  // ── PAGE 1: Cover ──
+  // Dark navy background
+  doc.setFillColor(...navy);
+  doc.rect(0, 0, pageW, pageH, "F");
+
+  // Logo
+  drawLogo(pageW / 2 - 30, 160, 2);
+
+  // Company name
+  doc.setFontSize(14);
+  doc.setTextColor(...blue);
+  doc.setFont("helvetica", "bold");
+  doc.text("AIOLA CPA, PLLC", pageW / 2, 280, { align: "center" });
+
+  // Title
+  doc.setFontSize(28);
+  doc.setTextColor(255, 255, 255);
+  doc.text(`${trainee.name}`, pageW / 2, 340, { align: "center" });
+
+  doc.setFontSize(20);
+  doc.setTextColor(...blue);
+  doc.text(`${milestoneLabel} Performance Review`, pageW / 2, 370, { align: "center" });
+
+  // Subtitle
+  doc.setFontSize(12);
+  doc.setTextColor(168, 208, 240);
+  doc.text("Prepared by Aiola CPA, PLLC", pageW / 2, 410, { align: "center" });
+  doc.text(dateStr, pageW / 2, 430, { align: "center" });
+
+  // Confidential notice
+  doc.setFontSize(9);
+  doc.setTextColor(100, 110, 130);
+  doc.text("This document is confidential and intended for internal use only.", pageW / 2, pageH - 50, { align: "center" });
+
+  // ── PAGE 2: Executive Summary ──
+  doc.addPage();
+  let y = sectionHeader("Executive Summary", 55);
+
+  // Status determination
+  const diff = prog.pct - timelinePct;
+  const statusLabel = diff >= 0 ? "On Track" : diff >= -10 ? "Slightly Behind" : "Behind Schedule";
+  const statusColor = diff >= 0 ? [34, 197, 94] : diff >= -10 ? [245, 158, 11] : [239, 68, 68];
+
+  // Summary table
+  const summaryRows = [
+    ["Start Date", new Date(trainee.startDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })],
+    ["Days in Program", `${days} days`],
+    ["Current Phase", phaseLbl],
+    ["Track", trainee.track || "Advisory"],
+    ["Task Completion", `${prog.doneTasks}/${totalTasks} tasks (${prog.pct}%)`],
+    ["Quizzes Passed", `${prog.passedQuizzes}/${totalQuizzes}`],
+    ["Timeline Progress", `${timelinePct}%`],
+    ["Timeline Status", statusLabel],
+    ["Milestones", milestones.map(m => `${m.label}: ${m.unlocked ? "✓" : `${m.done}/${m.total}`}`).join("  |  ")],
+  ];
+
+  doc.autoTable({
+    startY: y,
+    head: [],
+    body: summaryRows,
+    theme: "plain",
+    margin: { left: margin, right: margin },
+    columnStyles: {
+      0: { fontStyle: "bold", cellWidth: 140, textColor: navy, fontSize: 10 },
+      1: { textColor: gray, fontSize: 10 },
+    },
+    styles: { cellPadding: { top: 6, bottom: 6, left: 8, right: 8 }, lineWidth: 0 },
+    alternateRowStyles: { fillColor: lightGray },
+  });
+
+  y = doc.lastAutoTable.finalY + 28;
+
+  // Overall Assessment
+  doc.setFontSize(12);
+  doc.setTextColor(...navy);
+  doc.setFont("helvetica", "bold");
+  doc.text("Overall Assessment", margin, y);
+  y += 16;
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(...gray);
+  let assessment;
+  if (diff >= 0) {
+    assessment = `${trainee.name} is performing well and is on track to meet their ${milestoneLabel} targets. Task completion is at ${prog.pct}% with ${prog.passedQuizzes} of ${totalQuizzes} quizzes passed. Continue monitoring progress and providing feedback.`;
+  } else if (diff >= -10) {
+    assessment = `${trainee.name} is slightly behind schedule with ${prog.pct}% task completion against ${timelinePct}% expected timeline progress. Review the areas below for specific gaps and consider additional support or check-ins.`;
+  } else {
+    assessment = `${trainee.name} is significantly behind their expected progress (${prog.pct}% complete vs ${timelinePct}% expected). Immediate attention is recommended. Schedule a 1-on-1 to identify blockers and create an action plan.`;
+  }
+  const splitAssessment = doc.splitTextToSize(assessment, contentW);
+  doc.text(splitAssessment, margin, y);
+
+  // ── PAGE 3: KPI Performance ──
+  doc.addPage();
+  y = sectionHeader("KPI Performance", 55);
+
+  ONBOARDING_KPIS.forEach((kpiDef) => {
+    const entries = kpi[kpiDef.id] || [];
+    const avg = entries.length > 0 ? entries.reduce((a, e) => a + e.score, 0) / entries.length : 0;
+    const currentPhaseKey = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
+    const target = kpiDef.targets[currentPhaseKey];
+    const kpiStatus = entries.length === 0 ? "No Data" : avg >= target ? "On Track" : avg >= target - 0.3 ? "At Risk" : "Behind";
+
+    // Trend
+    let trend = "—";
+    if (entries.length >= 3) {
+      const last3 = entries.slice(-3);
+      const diffs = last3.slice(1).map((e, i) => e.score - last3[i].score);
+      const avgDiff = diffs.reduce((a, d) => a + d, 0) / diffs.length;
+      trend = avgDiff > 0.05 ? "Improving ↑" : avgDiff < -0.05 ? "Declining ↓" : "Stable →";
+    }
+
+    // Category header
+    doc.setFontSize(12);
+    doc.setTextColor(...navy);
+    doc.setFont("helvetica", "bold");
+    doc.text(kpiDef.category, margin, y);
+    y += 14;
+
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...gray);
+    const descLines = doc.splitTextToSize(kpiDef.description, contentW);
+    doc.text(descLines, margin, y);
+    y += descLines.length * 11 + 6;
+
+    // KPI stats row
+    const kpiStatsRows = [
+      ["Target (Current Phase)", target.toFixed(1)],
+      ["Current Average", entries.length > 0 ? avg.toFixed(2) : "N/A"],
+      ["Status", kpiStatus],
+      ["Trend", trend],
+      ["Frequency", kpiDef.frequency],
+    ];
+
+    doc.autoTable({
+      startY: y,
+      head: [],
+      body: kpiStatsRows,
+      theme: "plain",
+      margin: { left: margin, right: margin },
+      columnStyles: {
+        0: { fontStyle: "bold", cellWidth: 160, textColor: navy, fontSize: 9 },
+        1: { textColor: gray, fontSize: 9 },
+      },
+      styles: { cellPadding: { top: 4, bottom: 4, left: 8, right: 8 }, lineWidth: 0 },
+      alternateRowStyles: { fillColor: lightGray },
+    });
+    y = doc.lastAutoTable.finalY + 10;
+
+    // Score history table
+    if (entries.length > 0) {
+      doc.autoTable({
+        startY: y,
+        head: [["Week", "Score", "Submitted By", "Comment"]],
+        body: entries.map(e => [e.week, e.score.toFixed(1), e.manager, e.comment || ""]),
+        theme: "grid",
+        margin: { left: margin, right: margin },
+        headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
+        bodyStyles: { fontSize: 9, textColor: navy },
+        alternateRowStyles: { fillColor: lightGray },
+        styles: { cellPadding: { top: 4, bottom: 4, left: 6, right: 6 } },
+      });
+      y = doc.lastAutoTable.finalY + 20;
+    } else {
+      doc.setFontSize(9);
+      doc.setTextColor(...gray);
+      doc.text("No scores recorded yet.", margin + 8, y + 4);
+      y += 20;
+    }
+  });
+
+  doc.setFontSize(8);
+  doc.setTextColor(...gray);
+  doc.setFont("helvetica", "italic");
+  doc.text("KPI data is based on weekly manager submissions and team pulse surveys.", margin, y + 8);
+
+  // ── PAGE 4: Training Progress Detail ──
+  doc.addPage();
+  y = sectionHeader("Training Progress by Phase", 55);
+
+  pMeta.forEach((pm) => {
+    const phaseSections = PHASES.filter(p => pm.ids.includes(p.id));
+    if (phaseSections.length === 0) return;
+
+    doc.setFontSize(11);
+    doc.setTextColor(...navy);
+    doc.setFont("helvetica", "bold");
+    doc.text(pm.label, margin, y);
+    y += 14;
+
+    const rows = [];
+    phaseSections.forEach(phase => {
+      phase.items.forEach(item => {
+        const tasksDone = item.tasks.filter(t => tasks[t.id]).length;
+        const tasksTotal = item.tasks.length;
+        const quizStatus = item.quiz ? (isQuizPassed(quizzes, item.id) ? "Passed ✓" : "Not Passed") : "N/A";
+        const highlight = tasksDone === 0 && days > (pm === pMeta[0] ? 0 : pm === pMeta[1] ? 30 : 60);
+        rows.push([
+          item.title,
+          `${tasksDone}/${tasksTotal}`,
+          quizStatus,
+          highlight ? "⚠ No progress" : "",
+        ]);
+      });
+    });
+
+    doc.autoTable({
+      startY: y,
+      head: [["Section", "Tasks", "Quiz", "Notes"]],
+      body: rows,
+      theme: "grid",
+      margin: { left: margin, right: margin },
+      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
+      bodyStyles: { fontSize: 9, textColor: navy },
+      alternateRowStyles: { fillColor: lightGray },
+      styles: { cellPadding: { top: 4, bottom: 4, left: 6, right: 6 }, overflow: "linebreak" },
+      columnStyles: {
+        0: { cellWidth: 220 },
+        1: { cellWidth: 60, halign: "center" },
+        2: { cellWidth: 80, halign: "center" },
+        3: { cellWidth: contentW - 360 - 24 },
+      },
+    });
+    y = doc.lastAutoTable.finalY + 16;
+
+    // Check if we need a new page
+    if (y > pageH - 100) {
+      doc.addPage();
+      y = 55;
+    }
+  });
+
+  // ── PAGE 5: Manager Notes & Badges ──
+  doc.addPage();
+  y = sectionHeader("Manager Observations", 55);
+
+  // Badges
+  doc.setFontSize(12);
+  doc.setTextColor(...navy);
+  doc.setFont("helvetica", "bold");
+  doc.text("Badges & Recognitions", margin, y);
+  y += 16;
+
+  if (badges.length > 0) {
+    doc.autoTable({
+      startY: y,
+      head: [["Badge", "Awarded By", "Date"]],
+      body: badges.map(b => [`${b.icon || ""} ${b.label}`, b.awardedBy, b.date]),
+      theme: "grid",
+      margin: { left: margin, right: margin },
+      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
+      bodyStyles: { fontSize: 9, textColor: navy },
+      alternateRowStyles: { fillColor: lightGray },
+      styles: { cellPadding: { top: 5, bottom: 5, left: 8, right: 8 } },
+    });
+    y = doc.lastAutoTable.finalY + 20;
+  } else {
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...gray);
+    doc.text("No badges awarded yet.", margin + 8, y);
+    y += 20;
+  }
+
+  // Notes
+  doc.setFontSize(12);
+  doc.setTextColor(...navy);
+  doc.setFont("helvetica", "bold");
+  doc.text("Manager Notes", margin, y);
+  y += 16;
+
+  if (notes.length > 0) {
+    const sortedNotes = [...notes].sort((a, b) => new Date(a.date) - new Date(b.date));
+    doc.autoTable({
+      startY: y,
+      head: [["Date", "Author", "Note", "Visibility"]],
+      body: sortedNotes.map(n => [
+        n.date,
+        n.author,
+        n.text,
+        n.visibility === "shared" ? "Shared with trainee" : "Internal",
+      ]),
+      theme: "grid",
+      margin: { left: margin, right: margin },
+      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
+      bodyStyles: { fontSize: 9, textColor: navy },
+      alternateRowStyles: { fillColor: lightGray },
+      styles: { cellPadding: { top: 5, bottom: 5, left: 6, right: 6 }, overflow: "linebreak" },
+      columnStyles: {
+        0: { cellWidth: 70 },
+        1: { cellWidth: 80 },
+        2: { cellWidth: contentW - 230 },
+        3: { cellWidth: 80 },
+      },
+    });
+    y = doc.lastAutoTable.finalY + 20;
+  } else {
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...gray);
+    doc.text("No manager notes recorded yet.", margin + 8, y);
+    y += 20;
+  }
+
+  // Areas of Focus
+  doc.setFontSize(12);
+  doc.setTextColor(...navy);
+  doc.setFont("helvetica", "bold");
+  doc.text("Areas of Focus", margin, y);
+  y += 16;
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(...gray);
+
+  const focusAreas = [];
+
+  // Failed/incomplete quizzes
+  PHASES.forEach(phase => {
+    phase.items.forEach(item => {
+      if (item.quiz && !isQuizPassed(quizzes, item.id)) {
+        focusAreas.push(`Quiz not passed: ${item.title}`);
+      }
+    });
+  });
+
+  // KPI scores below target
+  ONBOARDING_KPIS.forEach(kpiDef => {
+    const entries = kpi[kpiDef.id] || [];
+    if (entries.length > 0) {
+      const avg = entries.reduce((a, e) => a + e.score, 0) / entries.length;
+      const currentPhaseKey = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
+      const target = kpiDef.targets[currentPhaseKey];
+      if (avg < target) {
+        focusAreas.push(`${kpiDef.category}: Average ${avg.toFixed(2)} below target ${target.toFixed(1)}`);
+      }
+    }
+  });
+
+  // Behind timeline
+  if (prog.pct < timelinePct - 10) {
+    focusAreas.push(`Overall progress (${prog.pct}%) significantly behind timeline (${timelinePct}%)`);
+  }
+
+  if (focusAreas.length > 0) {
+    focusAreas.forEach((area, i) => {
+      const bullet = `  •  ${area}`;
+      const lines = doc.splitTextToSize(bullet, contentW - 16);
+      doc.text(lines, margin + 8, y);
+      y += lines.length * 13;
+    });
+  } else {
+    doc.text("No specific areas of concern identified. Continue current trajectory.", margin + 8, y);
+  }
+
+  // ── Add footers to all pages except cover ──
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let i = 2; i <= totalPages; i++) {
+    doc.setPage(i);
+    addFooter(i - 1, totalPages - 1);
+  }
+
+  // ── Save ──
+  const dateShort = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).replace(/[\s,]+/g, "");
+  const safeName = trainee.name.replace(/\s+/g, "_");
+  doc.save(`${safeName}_${milestoneLabel.replace("-", "")}_Review_${dateShort}.pdf`);
+}
+
+function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateReport, onLogout }) {
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
@@ -1371,7 +1811,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
             </div>
           )}
           <div className="r-table-wrap">
-          <div className="r-table-grid" style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 150px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
+          <div className="r-table-grid" style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 210px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
             <span>Name</span><span>Phase</span><span>Start Date</span><span>Timeline</span><span>Progress</span><span>Quizzes</span><span></span>
           </div>
           {filteredTrainees.map(t=>{
@@ -1383,7 +1823,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
             const diff=timelinePct-prog.pct;
             const tlColor=diff<=0?B.ok:diff<=10?B.warn:B.err;
             return(
-              <div key={t.id} className="r-table-grid" style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 150px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
+              <div key={t.id} className="r-table-grid" style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 210px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
                 onMouseEnter={e=>e.currentTarget.style.background="#fafbfc"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                 <div style={{display:"flex",alignItems:"center",gap:12}}>
                   <div style={{width:36,height:36,borderRadius:18,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{t.avatar}</div>
@@ -1403,6 +1843,10 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
                 <div style={{display:"flex",gap:6}}>
                   <button onClick={()=>onViewTrainee(t)} style={{padding:"5px 10px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>View</button>
                   <button onClick={()=>onViewKpi(t)} style={{padding:"5px 10px",border:`1px solid ${B.purple}`,borderRadius:6,background:"#fff",color:B.purple,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>KPI</button>
+                  <button onClick={()=>onGenerateReport(t)} style={{padding:"5px 10px",border:`1px solid ${B.ok}`,borderRadius:6,background:"#fff",color:B.ok,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:3}}>
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5.59L13 4.91V14.5H4V1.5z" stroke="currentColor" strokeWidth="1.3"/><path d="M9.5 1.5V5H13" stroke="currentColor" strokeWidth="1.3"/><path d="M7 8v4m0 0l-2-2m2 2l2-2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    Report
+                  </button>
                 </div>
               </div>
             );
@@ -1419,7 +1863,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
 // TRAINEE PORTAL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, notes, badges, onAddNote, onAddBadge, kpiData }) {
+function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, kpiData }) {
   const [aP, setAP] = useState("week1");
   const [aI, setAI] = useState("d1");
   const [qM, setQM] = useState(null); // which item's quiz is open
@@ -1584,6 +2028,10 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
           </div>
           <div style={{display:"flex",alignItems:"center",gap:14}}>
             {isAdminView&&<button onClick={onBackToAdmin} style={{padding:"6px 14px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>← Back to Admin</button>}
+            {isAdminView&&onGenerateReport&&<button onClick={onGenerateReport} style={{padding:"6px 14px",border:"none",borderRadius:6,background:B.ok,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:5}}>
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5.59L13 4.91V14.5H4V1.5z" stroke="#fff" strokeWidth="1.3"/><path d="M9.5 1.5V5H13" stroke="#fff" strokeWidth="1.3"/><path d="M7 8v4m0 0l-2-2m2 2l2-2" stroke="#fff" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              Generate Report
+            </button>}
             <div style={{display:"flex",alignItems:"center",gap:6}}><Ring pct={prog.pct} size={32} stroke={3}/><div style={{fontSize:13,fontWeight:700,color:prog.pct===100?B.ok:B.navy}}>{prog.pct}%</div></div>
             {!isAdminView&&<button onClick={onLogout} style={{padding:"6px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>}
           </div>
@@ -2211,11 +2659,17 @@ export default function App() {
     setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), badges: [...((prev[uid]||{}).badges||[]), badge]}}));
   };
 
+  const handleGenerateReport = (t) => {
+    const uid = t.id;
+    const nd = notesData[uid] || { notes: [], badges: [] };
+    generateMilestoneReport(t, allUserData[uid], kpiData[uid] || {}, nd);
+  };
+
   let content = null;
   if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
-  else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onLogout={handleLogout}/>;
+  else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onGenerateReport={handleGenerateReport} onLogout={handleLogout}/>;
   else if(view==="trainee-kpi"&&viewingTrainee) content = <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
-  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} kpiData={kpiData[uid]||{}}/>; }
+  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} kpiData={kpiData[uid]||{}}/>; }
   else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}}/>; }
   else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
 
