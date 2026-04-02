@@ -2862,25 +2862,33 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
 function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge, userId }) {
   const [noteText, setNoteText] = useState("");
   const [noteShared, setNoteShared] = useState(false);
+  const [noteTag, setNoteTag] = useState(null); // "positive" | "improve" | null
+  const [tagError, setTagError] = useState(false);
   const [showBadgeForm, setShowBadgeForm] = useState(false);
   const [customBadge, setCustomBadge] = useState("");
+  const [showAllPositive, setShowAllPositive] = useState(false);
+  const [showAllImprove, setShowAllImprove] = useState(false);
 
   const allNotes = notes || [];
   const allBadges = badges || [];
-  const visibleNotes = isAdminView ? allNotes : allNotes.filter(n => n.visibility === "shared");
+  const visibleNotes = isAdminView ? allNotes : allNotes.filter(n => n.visibility === "shared" && (n.tag === "positive" || n.tag === "improve"));
   const sorted = [...visibleNotes].sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const handleAddNote = () => {
     if (!noteText.trim() || !onAddNote) return;
+    if (noteShared && !noteTag) { setTagError(true); return; }
+    setTagError(false);
     onAddNote(userId, {
       id: "n_" + Date.now(),
       date: new Date().toISOString().slice(0, 10),
       author: "Nick Aiola",
       text: noteText.trim(),
       visibility: noteShared ? "shared" : "admin",
+      tag: noteTag,
     });
     setNoteText("");
     setNoteShared(false);
+    setNoteTag(null);
   };
 
   const handleAddBadge = (preset) => {
@@ -2973,22 +2981,27 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
               <textarea value={noteText} onChange={e=>setNoteText(e.target.value)} placeholder="Add a note about this trainee..." rows={3}
                 style={{width:"100%",padding:"10px 12px",border:`1px solid ${B.bdr}`,borderRadius:8,fontSize:13,fontFamily:"'DM Sans',sans-serif",color:B.t1,resize:"vertical",outline:"none",boxSizing:"border-box",transition:"border-color .2s"}}
                 onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
+              <div style={{display:"flex",alignItems:"center",gap:10,marginTop:10,flexWrap:"wrap"}}>
                 <label style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",fontSize:12,color:B.t2,userSelect:"none"}}>
-                  <div onClick={()=>setNoteShared(!noteShared)} style={{width:36,height:20,borderRadius:10,background:noteShared?B.blue:B.bdr,cursor:"pointer",position:"relative",transition:"background .2s"}}>
+                  <div onClick={()=>{setNoteShared(!noteShared);setTagError(false)}} style={{width:36,height:20,borderRadius:10,background:noteShared?B.blue:B.bdr,cursor:"pointer",position:"relative",transition:"background .2s"}}>
                     <div style={{width:16,height:16,borderRadius:8,background:"#fff",position:"absolute",top:2,left:noteShared?18:2,transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,.2)"}}/>
                   </div>
                   Visible to trainee
                   {noteShared && <span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"1px 6px",borderRadius:4}}>Shared</span>}
                 </label>
-                <button onClick={handleAddNote} disabled={!noteText.trim()} style={{padding:"7px 18px",border:"none",borderRadius:7,background:noteText.trim()?B.blue:B.bdr,color:"#fff",fontSize:12,fontWeight:600,cursor:noteText.trim()?"pointer":"default",fontFamily:"inherit",transition:"background .2s"}}>
+                <div style={{display:"flex",gap:6,alignItems:"center"}}>
+                  <button type="button" onClick={()=>{setNoteTag(noteTag==="positive"?null:"positive");setTagError(false)}} style={{padding:"5px 12px",borderRadius:14,border:`1.5px solid ${noteTag==="positive"?"#22c55e":B.bdr}`,background:noteTag==="positive"?"#dcfce7":"#fff",color:noteTag==="positive"?"#15803d":B.t2,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>🟢 Positive Feedback</button>
+                  <button type="button" onClick={()=>{setNoteTag(noteTag==="improve"?null:"improve");setTagError(false)}} style={{padding:"5px 12px",borderRadius:14,border:`1.5px solid ${noteTag==="improve"?B.err:B.bdr}`,background:noteTag==="improve"?"#fee2e2":"#fff",color:noteTag==="improve"?B.err:B.t2,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",transition:"all .15s"}}>🔴 Area to Improve</button>
+                </div>
+                <button onClick={handleAddNote} disabled={!noteText.trim()} style={{padding:"7px 18px",border:"none",borderRadius:7,background:noteText.trim()?B.blue:B.bdr,color:"#fff",fontSize:12,fontWeight:600,cursor:noteText.trim()?"pointer":"default",fontFamily:"inherit",transition:"background .2s",marginLeft:"auto"}}>
                   Add Note
                 </button>
               </div>
+              {tagError && <div style={{marginTop:6,fontSize:11,color:B.err,fontWeight:500}}>Please select a feedback tag before sharing with trainee.</div>}
               {/* Preview when shared */}
-              {noteShared && noteText.trim() && (
+              {noteShared && noteText.trim() && noteTag && (
                 <div style={{marginTop:10,padding:"10px 14px",border:`1px dashed ${B.ok}`,borderRadius:8,background:B.okBg}}>
-                  <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.ok,marginBottom:4}}>Trainee will see:</div>
+                  <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.ok,marginBottom:4}}>Trainee will see ({noteTag === "positive" ? "What's Going Well" : "Areas to Improve"}):</div>
                   <div style={{fontSize:12,color:B.t1,lineHeight:1.5}}>{noteText}</div>
                 </div>
               )}
@@ -2996,30 +3009,81 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
           )}
 
           {/* Notes List */}
-          {sorted.length === 0 ? (
-            <div style={{padding:"24px 18px",textAlign:"center",fontSize:13,color:B.t3}}>
-              {isAdminView ? "No notes yet. Add your first note above." : "No feedback yet."}
-            </div>
-          ) : (
-            <div>
-              {sorted.map((note, i) => (
-                <div key={note.id} style={{padding:"14px 18px",borderBottom:i<sorted.length-1?`1px solid ${B.bdr}`:"none"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
-                    <span style={{fontSize:11,fontWeight:600,color:B.t1}}>{note.author}</span>
-                    <span style={{fontSize:10,color:B.t3}}>{new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
-                    {isAdminView && (
+          {isAdminView ? (
+            sorted.length === 0 ? (
+              <div style={{padding:"24px 18px",textAlign:"center",fontSize:13,color:B.t3}}>No notes yet. Add your first note above.</div>
+            ) : (
+              <div>
+                {sorted.map((note, i) => (
+                  <div key={note.id} style={{padding:"14px 18px",borderBottom:i<sorted.length-1?`1px solid ${B.bdr}`:"none"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                      <span style={{fontSize:11,fontWeight:600,color:B.t1}}>{note.author}</span>
+                      <span style={{fontSize:10,color:B.t3}}>{new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
+                      {note.tag === "positive" && <span style={{fontSize:9,fontWeight:600,padding:"2px 7px",borderRadius:4,color:"#15803d",background:"#dcfce7"}}>Positive</span>}
+                      {note.tag === "improve" && <span style={{fontSize:9,fontWeight:600,padding:"2px 7px",borderRadius:4,color:B.err,background:"#fee2e2"}}>Area to Improve</span>}
                       <span style={{fontSize:9,fontWeight:600,padding:"2px 7px",borderRadius:4,marginLeft:"auto",
                         color:note.visibility==="shared"?B.ok:B.t3,
                         background:note.visibility==="shared"?B.okL:"#f1f5f9",
                       }}>
                         {note.visibility==="shared"?"Shared with Trainee":"Admin Only"}
                       </span>
+                    </div>
+                    <div style={{fontSize:13,color:B.t1,lineHeight:1.6}}>{note.text}</div>
+                  </div>
+                ))}
+              </div>
+            )
+          ) : (
+            (() => {
+              const positiveNotes = sorted.filter(n => n.tag === "positive");
+              const improveNotes = sorted.filter(n => n.tag === "improve");
+              const posShow = showAllPositive ? positiveNotes : positiveNotes.slice(0, 3);
+              const impShow = showAllImprove ? improveNotes : improveNotes.slice(0, 3);
+              return (
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:0}}>
+                  <div style={{borderRight:`1px solid ${B.bdr}`,padding:"14px 18px"}}>
+                    <div style={{fontSize:13,fontWeight:700,color:"#22c55e",marginBottom:12}}>✅ What's Going Well</div>
+                    {positiveNotes.length === 0 ? (
+                      <div style={{fontSize:12,color:B.t3,fontStyle:"italic"}}>Nothing here yet.</div>
+                    ) : (
+                      <>
+                        {posShow.map(note => (
+                          <div key={note.id} style={{padding:"8px 0",borderBottom:`1px solid #f1f5f9`}}>
+                            <div style={{fontSize:10,color:B.t3,marginBottom:2}}>{note.author} · {new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                            <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{note.text}</div>
+                          </div>
+                        ))}
+                        {positiveNotes.length > 3 && (
+                          <button onClick={()=>setShowAllPositive(!showAllPositive)} style={{border:"none",background:"none",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
+                            {showAllPositive ? "Show less" : `Show all (${positiveNotes.length})`}
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
-                  <div style={{fontSize:13,color:B.t1,lineHeight:1.6}}>{note.text}</div>
+                  <div style={{padding:"14px 18px"}}>
+                    <div style={{fontSize:13,fontWeight:700,color:"#f59e0b",marginBottom:12}}>📈 Areas to Improve</div>
+                    {improveNotes.length === 0 ? (
+                      <div style={{fontSize:12,color:B.t3,fontStyle:"italic"}}>Nothing here yet.</div>
+                    ) : (
+                      <>
+                        {impShow.map(note => (
+                          <div key={note.id} style={{padding:"8px 0",borderBottom:`1px solid #f1f5f9`}}>
+                            <div style={{fontSize:10,color:B.t3,marginBottom:2}}>{note.author} · {new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                            <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{note.text}</div>
+                          </div>
+                        ))}
+                        {improveNotes.length > 3 && (
+                          <button onClick={()=>setShowAllImprove(!showAllImprove)} style={{border:"none",background:"none",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
+                            {showAllImprove ? "Show less" : `Show all (${improveNotes.length})`}
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
-              ))}
-            </div>
+              );
+            })()
           )}
         </div>
       )}
