@@ -67,6 +67,7 @@ const RESPONSIVE_CSS = `
   .r-stat-grid { grid-template-columns: 1fr !important; }
   .r-header { padding: 8px 12px !important; }
   .r-content { padding: 12px !important; }
+  .r-chat-panel { width: calc(100vw - 16px) !important; height: calc(100vh - 80px) !important; bottom: 8px !important; right: 8px !important; }
 }
 
 @media (min-width: 769px) {
@@ -434,6 +435,269 @@ const B = {
   warn: "#f59e0b", warnL: "#fef3c7",
   err: "#ef4444", purple: "#7c3aed", purpleL: "#ede9fe",
 };
+
+// ─── Training Assistant ──────────────────────────────────────────────────────
+
+const TRAINING_ASSISTANT_SYSTEM_PROMPT = `You are the Aiola CPA Training Assistant — an AI helper embedded in the Advisory Training Portal for Aiola CPA, PLLC.
+Your role is to help new advisory trainees during their 30/60/90 day onboarding. You can answer questions about:
+TAX CONCEPTS COVERED IN TRAINING:
+- Form 1040 structure: income, adjustments, deductions, credits, tax computation
+- Schedule C (sole proprietorship), Schedule E (rental real estate)
+- Entity structures: LLCs, S-Corps, partnerships, Wyoming holding companies
+- S-Corp election: reasonable compensation, SE tax savings, salary optimization
+- STR loophole (Short-Term Rental): material participation, cost segregation, bonus depreciation
+- Real estate professional status (REPs): 750-hour requirement, material participation tests
+- Tax strategy concepts: estimated payments, entity restructuring, exit planning
+- Advisory engagement model: ISM → Onboarding → TSR → Checkup Calls
+
+FIRM PROCEDURES:
+- ClickUp is the project management system — all tasks, deadlines, and client workflows live there
+- Front is the client communication platform — shared inbox, templates, assignment rules
+- Microsoft Teams hosts SOPs and internal documents
+- Slack is for internal team communication
+- The advisory engagement flow: Initial Strategy Meeting (ISM) → Tax Strategy Roadmap (TSR) → Ongoing Checkups
+- Time logs are used to track material participation hours for STR and REPs strategies
+- Estimated tax payments are calculated quarterly
+
+WHAT YOU SHOULD DO:
+- Give clear, concise answers grounded in the training content
+- Reference specific training sections when relevant (e.g., "This is covered in Week 3 — Entity Structures")
+- Explain tax concepts at a level appropriate for someone learning advisory work
+- If asked about a specific client scenario, give educational guidance but remind them to verify with their manager
+- Be encouraging and supportive — trainees are new and building confidence
+
+WHAT YOU SHOULD NOT DO:
+- Never give specific tax advice for real client situations — always say "verify with your manager or Nick"
+- Never make up information — if you're not sure, say so and suggest they check the relevant SOP or ask their manager
+- Never share information about other trainees or clients
+- Keep responses focused and practical — these are busy people in their first 90 days
+- Don't respond to requests unrelated to training, tax concepts, or firm procedures — politely redirect
+
+TONE: Professional but warm. Think of yourself as a knowledgeable senior colleague who's always available to help. Use the trainee's name when you know it.`;
+
+const SUGGESTED_QUESTIONS = [
+  "What's the STR loophole?",
+  "How do I use ClickUp?",
+  "Explain S-Corp benefits",
+  "What happens at an ISM?",
+];
+
+function TrainingAssistant({ traineeName, currentPhase, currentSection, progressPct, completedTaskCount, totalTaskCount, passedQuizCount, totalQuizCount }) {
+  const [open, setOpen] = useState(false);
+  const [msgs, setMsgs] = useState(() => {
+    try { const s = localStorage.getItem(`aiola-training-assistant-${traineeName}`); return s ? JSON.parse(s) : []; } catch { return []; }
+  });
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [cooldown, setCooldown] = useState(false);
+  const [retryMsg, setRetryMsg] = useState(null);
+  const scrollRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // Persist to localStorage
+  useEffect(() => {
+    if (msgs.length > 0) localStorage.setItem(`aiola-training-assistant-${traineeName}`, JSON.stringify(msgs));
+  }, [msgs, traineeName]);
+
+  // Auto-scroll
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [msgs, loading]);
+
+  // Focus input on open
+  useEffect(() => { if (open && inputRef.current) inputRef.current.focus(); }, [open]);
+
+  const questionCount = msgs.filter(m => m.role === "user").length;
+
+  const sendMessage = async (text) => {
+    if (!text.trim() || loading || cooldown) return;
+    setShowSuggestions(false);
+    setRetryMsg(null);
+
+    const contextPrefix = `[Context: The trainee is ${traineeName}, currently on ${currentSection} of their training. They are in ${currentPhase}. Their overall progress is ${progressPct}%. They have completed ${completedTaskCount}/${totalTaskCount} tasks and passed ${passedQuizCount}/${totalQuizCount} quizzes.]\n\n`;
+
+    const userMsg = { role: "user", content: text, ts: Date.now() };
+    const newMsgs = [...msgs, userMsg];
+    setMsgs(newMsgs);
+    setInput("");
+    setLoading(true);
+    setCooldown(true);
+    setTimeout(() => setCooldown(false), 2000);
+
+    // Build API history (last 20 messages, with context on latest user msg)
+    const apiHistory = newMsgs.slice(-20).map((m, i, arr) => {
+      if (i === arr.length - 1 && m.role === "user") {
+        return { role: "user", content: contextPrefix + m.content };
+      }
+      return { role: m.role, content: m.content };
+    });
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: TRAINING_ASSISTANT_SYSTEM_PROMPT,
+          messages: apiHistory,
+        }),
+      });
+      const data = await response.json();
+      if (data.error) throw new Error(data.error.message || "API error");
+      const reply = data.content.map(c => c.text || "").join("\n");
+      setMsgs(prev => [...prev, { role: "assistant", content: reply, ts: Date.now() }]);
+    } catch {
+      setRetryMsg(text);
+      setMsgs(prev => [...prev, { role: "assistant", content: "I'm having trouble connecting right now. Try again in a moment, or reach out to your manager on Slack.", ts: Date.now(), error: true }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearConversation = () => {
+    setMsgs([]);
+    setShowSuggestions(true);
+    setRetryMsg(null);
+    localStorage.removeItem(`aiola-training-assistant-${traineeName}`);
+  };
+
+  const fmtTime = ts => new Date(ts).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
+  // Collapsed button
+  if (!open) return (
+    <div style={{position:"fixed",bottom:20,right:20,zIndex:1000}}>
+      <style>{`@keyframes chatPulse{0%,100%{box-shadow:0 4px 14px rgba(59,141,208,.3)}50%{box-shadow:0 4px 24px rgba(59,141,208,.6)}}`}</style>
+      <button
+        onClick={()=>setOpen(true)}
+        title="Training Assistant"
+        style={{width:56,height:56,borderRadius:28,border:"none",background:`linear-gradient(135deg,${B.blue},${B.blueD})`,color:"#fff",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",animation:msgs.length===0?"chatPulse 2s ease-in-out 3":"none",boxShadow:"0 4px 14px rgba(59,141,208,.3)",transition:"transform .2s"}}
+        onMouseEnter={e=>e.currentTarget.style.transform="scale(1.08)"}
+        onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <span style={{position:"absolute",top:-2,right:-2,background:"linear-gradient(135deg,#a855f7,#7c3aed)",color:"#fff",fontSize:8,fontWeight:700,padding:"2px 5px",borderRadius:8,letterSpacing:.5}}>AI</span>
+      </button>
+    </div>
+  );
+
+  // Expanded chat panel
+  return (
+    <div className="r-chat-panel" style={{position:"fixed",bottom:20,right:20,zIndex:1000,width:380,height:520,borderRadius:16,background:"#fff",boxShadow:"0 8px 40px rgba(0,0,0,.15)",display:"flex",flexDirection:"column",overflow:"hidden",fontFamily:"'DM Sans',sans-serif"}}>
+      {/* Header */}
+      <div style={{background:`linear-gradient(135deg,${B.blue},${B.blueD})`,padding:"14px 16px",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+        <div style={{width:30,height:30,borderRadius:15,background:"rgba(255,255,255,.2)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </div>
+        <div style={{flex:1}}>
+          <div style={{color:"#fff",fontWeight:700,fontSize:14}}>Training Assistant</div>
+          <div style={{color:"rgba(255,255,255,.7)",fontSize:10}}>Ask me anything about your training</div>
+        </div>
+        <button onClick={clearConversation} title="Clear conversation" style={{background:"none",border:"none",color:"rgba(255,255,255,.6)",cursor:"pointer",padding:4,fontSize:11,fontWeight:600}}>Clear</button>
+        <button onClick={()=>setOpen(false)} style={{background:"none",border:"none",color:"#fff",cursor:"pointer",padding:4,display:"flex"}}>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="#fff" strokeWidth="2" strokeLinecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
+        </button>
+      </div>
+
+      {/* Messages */}
+      <div ref={scrollRef} style={{flex:1,overflowY:"auto",padding:16,display:"flex",flexDirection:"column",gap:12}}>
+        {/* Welcome message */}
+        {msgs.length === 0 && (
+          <div style={{background:B.blueL,borderRadius:"12px 12px 12px 4px",padding:"12px 14px",maxWidth:"90%",fontSize:13,lineHeight:1.6,color:B.t1}}>
+            Hi! 👋 I'm your Training Assistant. I can help you with:
+            <ul style={{margin:"8px 0 0",paddingLeft:18,fontSize:12,color:B.t2}}>
+              <li>Tax concepts from your training modules</li>
+              <li>Firm procedures and workflows</li>
+              <li>ClickUp, Front, and other tool questions</li>
+              <li>Advisory meeting preparation</li>
+            </ul>
+            What can I help you with?
+          </div>
+        )}
+
+        {/* Suggested questions */}
+        {msgs.length === 0 && showSuggestions && (
+          <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+            {SUGGESTED_QUESTIONS.map(q => (
+              <button key={q} onClick={()=>sendMessage(q)} style={{padding:"6px 12px",borderRadius:20,border:`1px solid ${B.blueM}`,background:"#fff",color:B.blue,fontSize:11,fontWeight:500,cursor:"pointer",transition:"all .15s"}}
+                onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}}
+                onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.blueM}}
+              >{q}</button>
+            ))}
+          </div>
+        )}
+
+        {/* Message bubbles */}
+        {msgs.map((m, i) => (
+          <div key={i} style={{display:"flex",flexDirection:"column",alignItems:m.role==="user"?"flex-end":"flex-start"}}>
+            <div style={{
+              maxWidth:"85%",padding:"10px 14px",borderRadius:m.role==="user"?"12px 12px 4px 12px":"12px 12px 12px 4px",
+              background:m.role==="user"?B.blue:m.error?"#fef2f2":B.blueL,
+              color:m.role==="user"?"#fff":m.error?B.err:B.t1,
+              fontSize:13,lineHeight:1.55,whiteSpace:"pre-wrap",wordBreak:"break-word",
+            }}>
+              {m.content}
+              {m.error && retryMsg && (
+                <button onClick={()=>{setMsgs(prev=>prev.filter((_,j)=>j!==i)); sendMessage(retryMsg);}} style={{display:"block",marginTop:8,padding:"4px 10px",borderRadius:6,border:`1px solid ${B.err}`,background:"#fff",color:B.err,fontSize:11,fontWeight:600,cursor:"pointer"}}>Retry</button>
+              )}
+            </div>
+            <span style={{fontSize:9,color:B.t3,marginTop:3,paddingInline:4}}>{fmtTime(m.ts)}</span>
+          </div>
+        ))}
+
+        {/* Typing indicator */}
+        {loading && (
+          <div style={{display:"flex",alignItems:"flex-start"}}>
+            <div style={{background:B.blueL,borderRadius:"12px 12px 12px 4px",padding:"10px 18px",display:"flex",gap:4,alignItems:"center"}}>
+              <style>{`@keyframes dotBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}}`}</style>
+              {[0,1,2].map(i=><span key={i} style={{width:6,height:6,borderRadius:3,background:B.t3,display:"block",animation:`dotBounce .6s ${i*.15}s ease-in-out infinite`}}/>)}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Input */}
+      <div style={{borderTop:`1px solid ${B.bdr}`,padding:"10px 12px",display:"flex",gap:8,alignItems:"center",flexShrink:0}}>
+        <input
+          ref={inputRef}
+          value={input}
+          onChange={e=>setInput(e.target.value)}
+          onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage(input)}}}
+          placeholder="Ask a question..."
+          disabled={loading||cooldown}
+          style={{flex:1,padding:"10px 14px",borderRadius:24,border:`1px solid ${B.bdr}`,fontSize:13,outline:"none",fontFamily:"inherit",background:loading||cooldown?"#f9fafb":"#fff",transition:"border-color .15s"}}
+          onFocus={e=>e.target.style.borderColor=B.blue}
+          onBlur={e=>e.target.style.borderColor=B.bdr}
+        />
+        <button
+          onClick={()=>sendMessage(input)}
+          disabled={!input.trim()||loading||cooldown}
+          style={{width:38,height:38,borderRadius:19,border:"none",background:!input.trim()||loading||cooldown?"#e2e8f0":`linear-gradient(135deg,${B.blue},${B.blueD})`,color:"#fff",cursor:!input.trim()||loading||cooldown?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"all .15s"}}
+        >
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M3 10h14M11 4l6 6-6 6" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AiQuestionCount({ traineeName }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem(`aiola-training-assistant-${traineeName}`);
+      if (s) { const msgs = JSON.parse(s); setCount(msgs.filter(m => m.role === "user").length); }
+    } catch { /* ignore */ }
+  }, [traineeName]);
+  if (count === 0) return null;
+  return (
+    <span style={{fontSize:9,color:B.t3,display:"flex",alignItems:"center",gap:3,marginLeft:2}} title={`${count} question${count!==1?"s":""} asked to Training Assistant`}>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" stroke={B.t3} strokeWidth="2"/></svg>
+      {count}
+    </span>
+  );
+}
 
 // ─── Shared Icons ────────────────────────────────────────────────────────────
 
@@ -1847,6 +2111,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
                     <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5.59L13 4.91V14.5H4V1.5z" stroke="currentColor" strokeWidth="1.3"/><path d="M9.5 1.5V5H13" stroke="currentColor" strokeWidth="1.3"/><path d="M7 8v4m0 0l-2-2m2 2l2-2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     Report
                   </button>
+                  <AiQuestionCount traineeName={t.name}/>
                 </div>
               </div>
             );
@@ -2244,6 +2509,19 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
           </div>
         )}
       </main>
+      {/* AI Training Assistant — trainee view only */}
+      {!isAdminView && (
+        <TrainingAssistant
+          traineeName={user.name}
+          currentPhase={pMeta[currentPhaseIdx].label}
+          currentSection={cIt?.title || ""}
+          progressPct={prog.pct}
+          completedTaskCount={prog.doneTasks}
+          totalTaskCount={totalTasks}
+          passedQuizCount={prog.passedQuizzes}
+          totalQuizCount={totalQuizzes}
+        />
+      )}
     </div>
   );
 }
