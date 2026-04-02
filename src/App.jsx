@@ -3095,6 +3095,42 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
 // TRAINEE KPI DASHBOARD
 // ═════════════════════════════════════════════════════════════════════════════
 
+function KpiBarChart({ commEntries, teamEntries, weekLabels, target }) {
+  const W = 500, H = 200, padL = 30, padR = 10, padT = 10, padB = 30;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const barGroupW = plotW / weekLabels.length;
+  const barW = barGroupW * 0.3;
+  const barColor = (score) => score >= target ? B.ok : score >= target - 0.3 ? B.warn : B.err;
+  return (
+    <div style={{marginTop:16}}>
+      <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3,marginBottom:8}}>Performance Chart</div>
+      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{display:"block"}}>
+        {[1,2,3,4,5].map(v=>{const y=padT+plotH-(v/5)*plotH;return <g key={v}><line x1={padL} x2={W-padR} y1={y} y2={y} stroke="#f1f5f9" strokeWidth="1"/><text x={padL-4} y={y+3} textAnchor="end" fontSize="9" fill={B.t3}>{v}</text></g>})}
+        {(() => { const ty = padT + plotH - (target / 5) * plotH; return <line x1={padL} x2={W - padR} y1={ty} y2={ty} stroke={B.navy} strokeWidth="1" strokeDasharray="4 3"/>; })()}
+        {weekLabels.map((lbl, i) => {
+          const cx = padL + i * barGroupW + barGroupW / 2;
+          const commScore = commEntries.find(e => e.week === i + 1 + (weekLabels[0] === "W5" ? 4 : weekLabels[0] === "W9" ? 8 : 0));
+          const teamScore = teamEntries.find(e => e.week === i + 1 + (weekLabels[0] === "W5" ? 4 : weekLabels[0] === "W9" ? 8 : 0));
+          const commH = commScore ? (commScore.score / 5) * plotH : 0;
+          const teamH = teamScore ? (teamScore.score / 5) * plotH : 0;
+          return (
+            <g key={i}>
+              {commScore ? <rect x={cx - barW - 1} y={padT + plotH - commH} width={barW} height={commH} rx="2" fill={barColor(commScore.score)} opacity=".85"/> : <rect x={cx - barW - 1} y={padT + plotH - 4} width={barW} height={4} rx="2" fill="#e2e8f0"/>}
+              {teamScore ? <rect x={cx + 1} y={padT + plotH - teamH} width={barW} height={teamH} rx="2" fill={barColor(teamScore.score)} opacity=".85" stroke={B.purple} strokeWidth=".5"/> : <rect x={cx + 1} y={padT + plotH - 4} width={barW} height={4} rx="2" fill="#e2e8f0"/>}
+              <text x={cx} y={H - 8} textAnchor="middle" fontSize="9" fill={B.t3}>{lbl}</text>
+            </g>
+          );
+        })}
+      </svg>
+      <div style={{display:"flex",gap:16,justifyContent:"center",marginTop:6,fontSize:10,color:B.t3}}>
+        <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:10,borderRadius:2,background:B.blue,display:"inline-block"}}/> Communication</span>
+        <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:10,borderRadius:2,background:B.purple,display:"inline-block"}}/> Teamwork</span>
+        <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:2,borderTop:`2px dashed ${B.navy}`,display:"inline-block"}}/> Target ({target.toFixed(1)})</span>
+      </div>
+    </div>
+  );
+}
+
 function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogout }) {
   const [showForm, setShowForm] = useState(false);
   const [formKpi, setFormKpi] = useState("communication");
@@ -3103,16 +3139,35 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
   const [formDate, setFormDate] = useState(new Date().toISOString().slice(0,10));
 
   const days = daysSince(user.startDate);
-  const currentPhase = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
-  const phaseLbl = days <= 30 ? "Day 30" : days <= 60 ? "Day 60" : "Day 90";
+  const defaultPhase = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
+  const [activePhase, setActivePhase] = useState(defaultPhase);
+  const [formPhase, setFormPhase] = useState(defaultPhase);
+
+  const PHASES = [
+    { id: "day30", label: "Days 1–30", target: 4.0, weeks: ["W1","W2","W3","W4"], weekOffset: 0 },
+    { id: "day60", label: "Days 31–60", target: 4.2, weeks: ["W5","W6","W7","W8"], weekOffset: 4 },
+    { id: "day90", label: "Days 61–90", target: 4.5, weeks: ["W9","W10","W11","W12"], weekOffset: 8 },
+  ];
+  const phase = PHASES.find(p => p.id === activePhase);
+  const phaseTarget = phase.target;
+  const phaseLbl = phase.label;
+
+  const getPhaseEntries = (kpiId) => {
+    const all = kpiData?.[kpiId] || [];
+    return all.filter(e => {
+      const p = e.phase || inferPhase(e.week);
+      return p === activePhase;
+    });
+  };
+  const inferPhase = (week) => week <= 4 ? "day30" : week <= 8 ? "day60" : "day90";
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const s = parseFloat(formScore);
     if (isNaN(s) || s < 1 || s > 5) return;
-    const entries = kpiData?.[formKpi] || [];
-    const maxWeek = entries.length > 0 ? Math.max(...entries.map(e => e.week)) : 0;
-    onAddScore(user.id, formKpi, { week: maxWeek + 1, score: s, manager: "Nick Aiola", date: formDate, comment: formComment });
+    const all = kpiData?.[formKpi] || [];
+    const maxWeek = all.length > 0 ? Math.max(...all.map(e => e.week)) : 0;
+    onAddScore(user.id, formKpi, { week: maxWeek + 1, score: s, manager: "Nick Aiola", date: formDate, comment: formComment, phase: formPhase });
     setFormScore(""); setFormComment(""); setShowForm(false);
   };
 
@@ -3144,16 +3199,25 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
           </div>
         </div>
 
+        {/* Phase Tabs */}
+        <div style={{display:"flex",gap:10,marginBottom:24}}>
+          {PHASES.map(p => (
+            <button key={p.id} onClick={()=>setActivePhase(p.id)} style={{flex:1,padding:"12px 16px",borderRadius:10,border:`2px solid ${activePhase===p.id?B.blue:B.bdr}`,background:activePhase===p.id?B.blueL:"#fff",cursor:"pointer",fontFamily:"inherit",textAlign:"center",transition:"all .15s"}}>
+              <div style={{fontSize:13,fontWeight:700,color:activePhase===p.id?B.blue:B.t1}}>{p.label}</div>
+              <div style={{fontSize:10,color:activePhase===p.id?B.blue:B.t3,marginTop:2}}>Target ≥{p.target.toFixed(1)}</div>
+            </button>
+          ))}
+        </div>
+
         {/* KPI Cards */}
         {ONBOARDING_KPIS.map(kpi => {
-          const entries = kpiData?.[kpi.id] || [];
+          const entries = getPhaseEntries(kpi.id);
           const avg = entries.length > 0 ? (entries.reduce((a, e) => a + e.score, 0) / entries.length) : 0;
-          const target = kpi.targets[currentPhase];
+          const target = phaseTarget;
           const pct = target > 0 ? Math.min(100, Math.round(avg / target * 100)) : 0;
-          const status = avg >= target ? "on-track" : avg >= target - 0.3 ? "at-risk" : "behind";
+          const status = entries.length === 0 ? "behind" : avg >= target ? "on-track" : avg >= target - 0.3 ? "at-risk" : "behind";
           const statusColor = status === "on-track" ? B.ok : status === "at-risk" ? B.warn : B.err;
           const statusLabel = status === "on-track" ? "On Track" : status === "at-risk" ? "At Risk" : "Behind";
-          // Trend: compare last two entries
           const trend = entries.length >= 2 ? (entries[entries.length-1].score >= entries[entries.length-2].score ? "up" : "down") : "flat";
 
           return (
@@ -3174,7 +3238,7 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
                     <p style={{margin:0,fontSize:12,color:B.t3,lineHeight:1.5,maxWidth:500}}>{kpi.description}</p>
                   </div>
                   <div style={{textAlign:"right",marginLeft:24}}>
-                    <div style={{fontSize:32,fontWeight:700,color:statusColor,lineHeight:1}}>{entries.length > 0 ? avg.toFixed(1) : "—"}</div>
+                    <div style={{fontSize:32,fontWeight:700,color:entries.length>0?statusColor:B.t3,lineHeight:1}}>{entries.length > 0 ? avg.toFixed(1) : "—"}</div>
                     <div style={{fontSize:11,color:B.t3,marginTop:2}}>Target: {target.toFixed(1)} ({phaseLbl})</div>
                   </div>
                 </div>
@@ -3182,20 +3246,19 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
                 <div style={{display:"flex",alignItems:"center",gap:12}}>
                   <div style={{flex:1,height:8,borderRadius:4,background:"#f1f5f9",overflow:"hidden",position:"relative"}}>
                     <div style={{height:"100%",borderRadius:4,width:`${entries.length>0?pct:0}%`,background:statusColor,transition:"width .5s"}}/>
-                    {/* Target marker */}
                     <div style={{position:"absolute",top:-2,bottom:-2,left:"100%",width:2,background:B.navy,borderRadius:1,transform:"translateX(-1px)"}}/>
                   </div>
                   <span style={{fontSize:12,fontWeight:600,color:statusColor,minWidth:40,textAlign:"right"}}>{entries.length > 0 ? `${pct}%` : "N/A"}</span>
                 </div>
                 <div style={{display:"flex",gap:16,marginTop:8,fontSize:10,color:B.t3}}>
-                  <span>Frequency: {kpi.frequency}</span><span>Source: {kpi.source}</span><span>{entries.length} score{entries.length !== 1 ? "s" : ""} recorded</span>
+                  <span>Frequency: {kpi.frequency}</span><span>Source: {kpi.source}</span><span>{entries.length} score{entries.length !== 1 ? "s" : ""} in this phase</span>
                 </div>
               </div>
               {/* Score History */}
               <div style={{padding:"16px 24px"}}>
-                <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3,marginBottom:10}}>Score History</div>
+                <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3,marginBottom:10}}>Score History — {phaseLbl}</div>
                 {entries.length === 0 ? (
-                  <div style={{padding:"20px 0",textAlign:"center",fontSize:13,color:B.t3}}>No scores recorded yet</div>
+                  <div style={{padding:"20px 0",textAlign:"center",fontSize:13,color:B.t3}}>No scores recorded for this phase</div>
                 ) : (
                   <div>
                     <div style={{display:"grid",gridTemplateColumns:"60px 70px 1fr 140px 1fr",padding:"8px 0",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>
@@ -3225,6 +3288,11 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
           );
         })}
 
+        {/* Bar Chart — both KPIs side by side */}
+        <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,padding:"20px 24px",marginBottom:20,boxShadow:"0 1px 3px rgba(0,0,0,.04)"}}>
+          <KpiBarChart commEntries={getPhaseEntries("communication")} teamEntries={getPhaseEntries("teamwork")} weekLabels={phase.weeks} target={phaseTarget}/>
+        </div>
+
         {/* Add Score Form */}
         <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden"}}>
           <div style={{padding:"18px 24px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -3235,11 +3303,19 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
           </div>
           {showForm && (
             <form onSubmit={handleSubmit} style={{padding:"20px 24px",display:"flex",flexDirection:"column",gap:14}}>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14}}>
                 <div>
                   <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>KPI Category</label>
                   <select value={formKpi} onChange={e=>setFormKpi(e.target.value)} style={{...inputSt,background:"#fff"}}>
                     {ONBOARDING_KPIS.map(k=><option key={k.id} value={k.id}>{k.category}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Phase</label>
+                  <select value={formPhase} onChange={e=>setFormPhase(e.target.value)} style={{...inputSt,background:"#fff"}}>
+                    <option value="day30">30-Day Phase</option>
+                    <option value="day60">60-Day Phase</option>
+                    <option value="day90">90-Day Phase</option>
                   </select>
                 </div>
                 <div>
