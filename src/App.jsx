@@ -2457,7 +2457,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
 // TRAINEE PORTAL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, kpiData }) {
+function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData }) {
   const [aP, setAP] = useState("week1");
   const [aI, setAI] = useState("d1");
   const [qM, setQM] = useState(null); // which item's quiz is open
@@ -2550,20 +2550,21 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
           </div>
         )}
         {/* My Achievements — badges from managers */}
-        {!isAdminView && (badges || []).length > 0 && (
+        {!isAdminView && (badges || []).filter(b => !b.removed).length > 0 && (
           <div style={{padding:"12px 20px",borderBottom:`1px solid ${B.bdr}`}}>
             <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,marginBottom:8}}>My Achievements</div>
             <div style={{display:"flex",flexDirection:"column",gap:6}}>
-              {(badges||[]).map(b => {
+              {(badges||[]).filter(b => !b.removed).map(b => {
                 const iconFn = BADGE_ICONS[b.badgeId];
+                const awardDate = b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : null;
                 return (
                   <div key={b.id} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",background:B.blueL,borderRadius:8}}>
                     <div style={{width:24,height:24,borderRadius:12,background:"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,border:`1px solid ${B.blueM}`}}>
                       {iconFn ? iconFn(14, B.blue) : <span style={{fontSize:12}}>{b.icon}</span>}
                     </div>
                     <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:11,fontWeight:600,color:B.t1}}>{b.label}</div>
-                      <div style={{fontSize:9,color:B.t3}}>{b.awardedBy} · {new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                      <div style={{fontSize:11,fontWeight:600,color:B.t1}}>{b.label}{awardDate ? <span style={{fontWeight:400,color:B.t3}}> · Awarded {awardDate}</span> : ""}</div>
+                      <div style={{fontSize:9,color:B.t3}}>{b.awardedBy}</div>
                     </div>
                   </div>
                 );
@@ -2955,7 +2956,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               })()}
             </div>
             {/* Notes & Badges Panel */}
-            <NotesAndBadgesPanel notes={notes} badges={badges} isAdminView={isAdminView} onAddNote={onAddNote} onAddBadge={onAddBadge} userId={user.id}/>
+            <NotesAndBadgesPanel notes={notes} badges={badges} isAdminView={isAdminView} onAddNote={onAddNote} onAddBadge={onAddBadge} onUpdateBadge={onUpdateBadge} userId={user.id}/>
           </div>
         )}
       </main>
@@ -2980,7 +2981,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
 // NOTES & BADGES PANEL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge, userId }) {
+function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge, onUpdateBadge, userId }) {
   const [noteText, setNoteText] = useState("");
   const [noteShared, setNoteShared] = useState(false);
   const [noteTag, setNoteTag] = useState(null); // "positive" | "improve" | null
@@ -2989,9 +2990,14 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
   const [customBadge, setCustomBadge] = useState("");
   const [showAllPositive, setShowAllPositive] = useState(false);
   const [showAllImprove, setShowAllImprove] = useState(false);
+  const [confirmRemoveBadge, setConfirmRemoveBadge] = useState(null); // badge id being removed
+  const [removeReason, setRemoveReason] = useState("");
+  const [showRemovedBadges, setShowRemovedBadges] = useState(false);
 
   const allNotes = notes || [];
   const allBadges = badges || [];
+  const activeBadges = allBadges.filter(b => !b.removed);
+  const removedBadges = allBadges.filter(b => b.removed);
   const visibleNotes = isAdminView ? allNotes : allNotes.filter(n => n.visibility === "shared" && (n.tag === "positive" || n.tag === "improve"));
   const sorted = [...visibleNotes].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -3041,7 +3047,7 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
   return (
     <div style={{marginTop:8,paddingBottom:32}}>
       {/* Badges Section */}
-      {(allBadges.length > 0 || isAdminView) && (
+      {(activeBadges.length > 0 || removedBadges.length > 0 || isAdminView) && (
         <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
           <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Badges & Awards</span>
@@ -3052,24 +3058,63 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
             )}
           </div>
           <div style={{padding:"14px 18px"}}>
-            {allBadges.length > 0 ? (
-              <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:showBadgeForm?14:0}}>
-                {allBadges.map(b => (
-                  <div key={b.id} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"6px 14px",borderRadius:20,background:B.blueL,border:`1px solid ${B.blueM}`,fontSize:12,fontWeight:500,color:B.blue}}>
-                    <span style={{fontSize:15}}>{b.icon}</span>
-                    <span>{b.label}</span>
-                    {isAdminView && <span style={{fontSize:9,color:B.t3,marginLeft:2}}>— {b.awardedBy}, {new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>}
-                  </div>
-                ))}
+            {activeBadges.length > 0 ? (
+              <div style={{marginBottom:showBadgeForm||confirmRemoveBadge?14:0}}>
+                <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+                  {activeBadges.map(b => (
+                    <div key={b.id} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"6px 14px",borderRadius:20,background:B.blueL,border:`1px solid ${B.blueM}`,fontSize:12,fontWeight:500,color:B.blue}}>
+                      <span style={{fontSize:15}}>{b.icon}</span>
+                      <span>{b.label}</span>
+                      {isAdminView && <span style={{fontSize:9,color:B.t3,marginLeft:2}}>— {b.awardedBy}, {new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>}
+                      {isAdminView && <button onClick={()=>{setConfirmRemoveBadge(b.id);setRemoveReason("")}} style={{background:"none",border:"none",cursor:"pointer",padding:"0 0 0 4px",fontSize:14,color:B.t3,lineHeight:1,fontFamily:"inherit"}} title="Remove badge">×</button>}
+                    </div>
+                  ))}
+                </div>
+                {/* Inline removal confirmation */}
+                {isAdminView && confirmRemoveBadge && (()=>{
+                  const badge = activeBadges.find(b=>b.id===confirmRemoveBadge);
+                  if(!badge) return null;
+                  return (
+                    <div style={{marginTop:10,padding:"10px 14px",border:`1px solid #fecaca`,borderRadius:8,background:"#fef2f2"}}>
+                      <div style={{fontSize:11,fontWeight:600,color:B.err,marginBottom:6}}>Remove "{badge.label}"?</div>
+                      <input value={removeReason} onChange={e=>setRemoveReason(e.target.value)} placeholder="Reason for removal (optional)" style={{width:"100%",padding:"6px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:11,fontFamily:"inherit",outline:"none",boxSizing:"border-box",marginBottom:8}}/>
+                      <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                        <button onClick={()=>{if(onUpdateBadge)onUpdateBadge(userId,confirmRemoveBadge,{removed:true,removedAt:new Date().toISOString(),removedReason:removeReason.trim()||"No reason given"});setConfirmRemoveBadge(null);setRemoveReason("")}} style={{padding:"5px 14px",border:"none",borderRadius:6,background:B.err,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Remove Badge</button>
+                        <button onClick={()=>{setConfirmRemoveBadge(null);setRemoveReason("")}} style={{background:"none",border:"none",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit",textDecoration:"underline"}}>Cancel</button>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             ) : (
               <div style={{fontSize:12,color:B.t3,marginBottom:showBadgeForm?14:0}}>No badges awarded yet.</div>
+            )}
+            {/* Removed badges — admin only */}
+            {isAdminView && removedBadges.length > 0 && (
+              <div style={{marginTop:activeBadges.length>0?10:0}}>
+                <button onClick={()=>setShowRemovedBadges(!showRemovedBadges)} style={{display:"flex",alignItems:"center",gap:6,border:"none",background:"none",cursor:"pointer",fontSize:11,fontWeight:600,color:B.t3,fontFamily:"inherit",padding:"4px 0"}}>
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{transition:"transform .15s",transform:showRemovedBadges?"rotate(90deg)":"none"}}><path d="M2 1l4 3-4 3" stroke={B.t3} strokeWidth="1.5" strokeLinecap="round"/></svg>
+                  Removed Badges ({removedBadges.length})
+                </button>
+                {showRemovedBadges && (
+                  <div style={{display:"flex",flexDirection:"column",gap:4,marginTop:6}}>
+                    {removedBadges.map(b => (
+                      <div key={b.id} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 12px",borderRadius:16,background:"#f1f5f9",border:`1px solid ${B.bdr}`,fontSize:11,color:B.t3}}>
+                        <span style={{fontSize:13,opacity:.5}}>{b.icon}</span>
+                        <span style={{textDecoration:"line-through"}}>{b.label}</span>
+                        <span style={{fontSize:9}}>· Removed {b.removedAt ? new Date(b.removedAt).toLocaleDateString("en-US",{month:"short",day:"numeric"}) : "—"}</span>
+                        <span style={{fontSize:9}}>· {b.removedReason || "No reason given"}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             )}
             {isAdminView && showBadgeForm && (
               <div style={{borderTop:`1px solid ${B.bdr}`,paddingTop:14}}>
                 <div style={{fontSize:10,fontWeight:600,color:B.t3,marginBottom:8,textTransform:"uppercase",letterSpacing:1}}>Select a badge to award:</div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
-                  {BADGE_PRESETS.filter(p => !allBadges.some(b => b.badgeId === p.id)).map(preset => (
+                  {BADGE_PRESETS.filter(p => !activeBadges.some(b => b.badgeId === p.id)).map(preset => (
                     <button key={preset.id} onClick={()=>handleAddBadge(preset)} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"6px 12px",borderRadius:8,border:`1px solid ${B.bdr}`,background:"#fff",cursor:"pointer",fontSize:11,fontWeight:500,color:B.t1,fontFamily:"inherit",transition:"all .15s"}}
                       onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
                       <span>{preset.icon}</span> {preset.label}
@@ -3526,6 +3571,12 @@ export default function App() {
   const addBadge = (uid, badge) => {
     setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), badges: [...((prev[uid]||{}).badges||[]), badge]}}));
   };
+  const updateBadge = (uid, badgeId, updates) => {
+    setNotesData(prev => {
+      const d = prev[uid] || { notes: [], badges: [] };
+      return {...prev, [uid]: {...d, badges: (d.badges||[]).map(b => b.id === badgeId ? {...b, ...updates} : b)}};
+    });
+  };
 
   const handleGenerateReport = (t) => {
     const uid = t.id;
@@ -3537,7 +3588,7 @@ export default function App() {
   if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
   else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onGenerateReport={handleGenerateReport} onLogout={handleLogout}/>;
   else if(view==="trainee-kpi"&&viewingTrainee) content = <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
-  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} kpiData={kpiData[uid]||{}}/>; }
+  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}}/>; }
   else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}}/>; }
   else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
 
