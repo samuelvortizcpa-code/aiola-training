@@ -485,7 +485,6 @@ function LoginScreen({ onLogin }) {
             <Logo size={44}/>
             <div style={{textAlign:"left"}}>
               <div style={{fontWeight:700,fontSize:18,color:"#fff",letterSpacing:.5}}>AIOLA CPA, PLLC</div>
-              <div style={{fontSize:12,color:B.blueM,marginTop:2}}>Portal</div>
             </div>
           </div>
         </div>
