@@ -1163,7 +1163,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onLogout }) {
           <button onClick={onLogout} style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
         </div>
       </header>
-      <div style={{padding:"28px 32px",maxWidth:1100,margin:"0 auto"}}>
+      <div style={{padding:"28px 32px",maxWidth:1400,margin:"0 auto"}}>
         {/* Admin Tabs */}
         <div style={{display:"flex",gap:24,marginBottom:24,borderBottom:`1px solid ${B.bdr}`}}>
           {[{key:"training",label:"Training Portal"},{key:"client",label:"Client Portal"}].map(tab=>(
@@ -1512,7 +1512,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
           </div>
         </header>
         {cIt&&(
-          <div style={{padding:"24px 28px",maxWidth:800,width:"100%"}}>
+          <div style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
             <p style={{fontSize:13,color:B.t2,lineHeight:1.6,marginTop:0,marginBottom:20}}>{cIt.description}</p>
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
               <div style={{flex:1,height:7,borderRadius:4,background:B.blueL,overflow:"hidden"}}><div style={{height:"100%",borderRadius:4,transition:"width .4s",width:`${itemProg(cIt,completedTasks)}%`,background:itemProg(cIt,completedTasks)===100?B.ok:`linear-gradient(90deg,${B.blue},${B.blueD})`}}/></div>
@@ -1934,7 +1934,7 @@ function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogou
           <button onClick={onLogout} style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
         </div>
       </header>
-      <div style={{padding:"28px 32px",maxWidth:900,margin:"0 auto"}}>
+      <div style={{padding:"28px 32px",maxWidth:1200,margin:"0 auto"}}>
         {/* Trainee Info Bar */}
         <div style={{background:"#fff",borderRadius:12,padding:"18px 24px",border:`1px solid ${B.bdr}`,marginBottom:24,display:"flex",alignItems:"center",gap:16,boxShadow:"0 1px 3px rgba(0,0,0,.04)"}}>
           <div style={{width:48,height:48,borderRadius:24,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:700}}>{user.avatar}</div>
@@ -2092,7 +2092,7 @@ function ClientPortalShell({ user, onLogout }) {
           <button onClick={onLogout} style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
         </div>
       </header>
-      <div style={{padding:"28px 32px",maxWidth:1100,margin:"0 auto"}}>
+      <div style={{padding:"28px 32px",maxWidth:1400,margin:"0 auto"}}>
         <ClientPortalDemo />
       </div>
     </div>
