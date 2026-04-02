@@ -2467,6 +2467,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   const [qDone, setQDone] = useState(false); // showing summary
   const [sO, setSO] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : true);
   const [eP, setEP] = useState({week1:true});
+  const [perfPage, setPerfPage] = useState(false);
   const mR = useRef(null);
   const prog = calcProg(completedTasks, quizResults);
   const cPh = PHASES.find(p=>p.id===aP);
@@ -2477,7 +2478,8 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   const phaseEnd = [30, 60, 90][currentPhaseIdx];
   const daysRemaining = Math.max(0, phaseEnd - days);
 
-  const sel = (pid,iid) => { setAP(pid); setAI(iid); setEP(p=>({...p,[pid]:true})); setQM(null); setQIdx(0); setQAns({}); setQSubs({}); setQDone(false); if(mR.current)mR.current.scrollTop=0; };
+  const sel = (pid,iid) => { setPerfPage(false); setAP(pid); setAI(iid); setEP(p=>({...p,[pid]:true})); setQM(null); setQIdx(0); setQAns({}); setQSubs({}); setQDone(false); if(mR.current)mR.current.scrollTop=0; };
+  const goPerf = () => { setPerfPage(true); if(mR.current)mR.current.scrollTop=0; };
   const resetQuiz = () => { setQM(null); setQIdx(0); setQAns({}); setQSubs({}); setQDone(false); };
 
   // KPI averages for snapshot
@@ -2494,7 +2496,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
     <div style={{fontFamily:"'DM Sans',sans-serif",display:"flex",height:"100vh",width:"100%",background:B.bg,color:B.t1,overflow:"hidden"}}>
       <style>{`@keyframes milestoneGlow{0%,100%{filter:drop-shadow(0 0 4px currentColor) brightness(1)}50%{filter:drop-shadow(0 0 10px currentColor) brightness(1.15)}}`}</style>
       {sO && <div className="r-sidebar-overlay" onClick={()=>setSO(false)}/>}
-      <aside className={sO?"r-trainee-sidebar":""} style={{width:sO?280:0,minWidth:sO?280:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
+      <aside className={sO?"r-trainee-sidebar":""} style={{width:sO?240:0,minWidth:sO?240:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
         <div style={{padding:"18px 20px 14px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:10}}>
           <Logo size={30}/><div><div style={{fontWeight:700,fontSize:13,color:B.navy,letterSpacing:.5}}>AIOLA CPA, PLLC</div><div style={{fontSize:10,color:B.t3,marginTop:1}}>Training Portal</div></div>
         </div>
@@ -2527,62 +2529,18 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             ))}
           </div>
         </div>
-        {/* Your Performance — KPI Snapshot */}
-        {!isAdminView && (commEntries.length > 0 || teamEntries.length > 0) && (
-          <div style={{padding:"12px 20px",borderBottom:`1px solid ${B.bdr}`}}>
-            <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,marginBottom:8}}>Your Performance</div>
-            <div style={{display:"flex",gap:12,justifyContent:"center"}}>
-              {commEntries.length > 0 && (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                  <Ring pct={Math.round(commAvg/5*100)} size={36} stroke={3}/>
-                  <span style={{fontSize:10,fontWeight:700,color:B.navy}}>{commAvg.toFixed(1)}</span>
-                  <span style={{fontSize:8,color:B.t3}}>Communication</span>
-                </div>
-              )}
-              {teamEntries.length > 0 && (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                  <Ring pct={Math.round(teamAvg/5*100)} size={36} stroke={3}/>
-                  <span style={{fontSize:10,fontWeight:700,color:B.navy}}>{teamAvg.toFixed(1)}</span>
-                  <span style={{fontSize:8,color:B.t3}}>Teamwork</span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-        {/* My Achievements — badges from managers */}
-        {!isAdminView && (badges || []).filter(b => !b.removed).length > 0 && (
-          <div style={{padding:"12px 20px",borderBottom:`1px solid ${B.bdr}`}}>
-            <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,marginBottom:8}}>My Achievements</div>
-            <div style={{display:"flex",flexDirection:"column",gap:6}}>
-              {(badges||[]).filter(b => !b.removed).map(b => {
-                const iconFn = BADGE_ICONS[b.badgeId];
-                const awardDate = b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : null;
-                return (
-                  <div key={b.id} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 8px",background:B.blueL,borderRadius:8}}>
-                    <div style={{width:24,height:24,borderRadius:12,background:"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,border:`1px solid ${B.blueM}`}}>
-                      {iconFn ? iconFn(14, B.blue) : <span style={{fontSize:12}}>{b.icon}</span>}
-                    </div>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:11,fontWeight:600,color:B.t1}}>{b.label}{awardDate ? <span style={{fontWeight:400,color:B.t3}}> · Awarded {awardDate}</span> : ""}</div>
-                      <div style={{fontSize:9,color:B.t3}}>{b.awardedBy}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        {/* Feedback from shared notes */}
+        {/* Recent Feedback — truncated, links to My Performance */}
         {!isAdminView && sharedNotes.length > 0 && (
           <div style={{padding:"12px 20px",borderBottom:`1px solid ${B.bdr}`}}>
-            <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,marginBottom:8}}>Feedback & Areas of Improvement</div>
+            <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,marginBottom:8}}>Recent Feedback</div>
             <div style={{display:"flex",flexDirection:"column",gap:6}}>
-              {sharedNotes.slice(0,3).map(n => (
-                <div key={n.id} style={{padding:"6px 8px",background:"#fafbfc",borderRadius:6,borderLeft:`3px solid ${B.blue}`}}>
-                  <div style={{fontSize:11,color:B.t1,lineHeight:1.4}}>{n.text}</div>
+              {sharedNotes.slice(0,2).map(n => (
+                <div key={n.id} style={{padding:"6px 8px",background:"#fafbfc",borderRadius:6,borderLeft:`3px solid ${n.tag==="positive"?"#22c55e":n.tag==="improve"?B.err:B.blue}`}}>
+                  <div style={{fontSize:11,color:B.t1,lineHeight:1.4,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{n.text}</div>
                   <div style={{fontSize:9,color:B.t3,marginTop:2}}>{n.author} · {new Date(n.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
                 </div>
               ))}
+              <button onClick={goPerf} style={{border:"none",background:"none",color:B.blue,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit",padding:"4px 0",textAlign:"left"}}>→ See all feedback on My Performance</button>
             </div>
           </div>
         )}
@@ -2595,12 +2553,12 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 return(
                   <div key={phase.id}>
                     <button onClick={()=>{setEP(p=>({...p,[phase.id]:!p[phase.id]}));if(!isE)sel(phase.id,phase.items[0].id);}}
-                      style={{width:"100%",display:"flex",alignItems:"center",gap:6,padding:"6px 20px",border:"none",background:"none",cursor:"pointer",fontSize:12,fontWeight:600,color:aP===phase.id?B.blue:B.t1,fontFamily:"inherit",textAlign:"left"}}>
+                      style={{width:"100%",display:"flex",alignItems:"center",gap:6,padding:"6px 20px",border:"none",background:"none",cursor:"pointer",fontSize:12,fontWeight:600,color:aP===phase.id&&!perfPage?B.blue:B.t1,fontFamily:"inherit",textAlign:"left"}}>
                       <Chev open={isE}/><span style={{flex:1}}>{phase.label}</span>
                       {pp===100?<span style={{width:16,height:16,borderRadius:8,background:B.ok,display:"flex",alignItems:"center",justifyContent:"center"}}><Chk/></span>:<span style={{fontSize:10,color:B.t3}}>{pp}%</span>}
                     </button>
                     {isE&&<div style={{paddingLeft:36}}>{phase.items.map(item=>{
-                      const ip=itemProg(item,completedTasks); const isA=aI===item.id&&aP===phase.id;
+                      const ip=itemProg(item,completedTasks); const isA=aI===item.id&&aP===phase.id&&!perfPage;
                       return <button key={item.id} onClick={()=>sel(phase.id,item.id)}
                         style={{width:"100%",display:"flex",alignItems:"center",gap:6,padding:"5px 12px 5px 6px",border:"none",cursor:"pointer",background:isA?B.blueL:"transparent",borderRadius:5,fontSize:11,fontWeight:isA?600:400,color:isA?B.blue:B.t2,fontFamily:"inherit",textAlign:"left",marginBottom:1,transition:"background .15s"}}>
                         <span style={{width:7,height:7,borderRadius:4,flexShrink:0,background:ip===100?B.ok:ip>0?B.blue:B.bdr}}/><span style={{flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{item.title.split(" — ")[0]}</span>
@@ -2611,6 +2569,16 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               })}
             </div>
           ))}
+          {/* My Performance nav item */}
+          {!isAdminView && (
+            <>
+              <div style={{margin:"6px 20px",borderTop:`1px solid ${B.bdr}`}}/>
+              <button onClick={goPerf}
+                style={{width:"100%",display:"flex",alignItems:"center",gap:8,padding:"8px 20px",border:"none",background:perfPage?B.blueL:"none",cursor:"pointer",fontSize:12,fontWeight:perfPage?700:600,color:perfPage?B.blue:B.t1,fontFamily:"inherit",textAlign:"left",transition:"background .15s"}}>
+                <span style={{fontSize:14}}>📊</span><span>My Performance</span>
+              </button>
+            </>
+          )}
         </nav>
       </aside>
       <main ref={mR} style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column"}}>
@@ -2619,7 +2587,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             <button onClick={()=>setSO(!sO)} style={{border:"none",background:"none",cursor:"pointer",padding:4,display:"flex"}}>
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="3" y1="5" x2="17" y2="5" stroke={B.t2} strokeWidth="2" strokeLinecap="round"/><line x1="3" y1="10" x2="17" y2="10" stroke={B.t2} strokeWidth="2" strokeLinecap="round"/><line x1="3" y1="15" x2="17" y2="15" stroke={B.t2} strokeWidth="2" strokeLinecap="round"/></svg>
             </button>
-            <div><h1 style={{margin:0,fontSize:16,fontWeight:700,color:B.navy}}>{cIt?.title||"Training"}</h1><p style={{margin:0,fontSize:11,color:B.t3,marginTop:1}}>{cPh?.subtitle} · {cPh?.phase}</p></div>
+            <div><h1 style={{margin:0,fontSize:16,fontWeight:700,color:B.navy}}>{perfPage?"My Performance":cIt?.title||"Training"}</h1><p style={{margin:0,fontSize:11,color:B.t3,marginTop:1}}>{perfPage?"KPIs, achievements & feedback":cPh?.subtitle+" · "+cPh?.phase}</p></div>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:14}}>
             {isAdminView&&<button onClick={onBackToAdmin} style={{padding:"6px 14px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>← Back to Admin</button>}
@@ -2631,7 +2599,156 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             {!isAdminView&&<button onClick={onLogout} style={{padding:"6px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>}
           </div>
         </header>
-        {cIt&&(
+        {/* My Performance Page */}
+        {perfPage && (
+          <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
+            {/* KPI Snapshot */}
+            <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+              <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>KPI Snapshot</span></div>
+              <div style={{padding:"18px 18px"}}>
+                {(commEntries.length > 0 || teamEntries.length > 0) ? (
+                  <div style={{display:"flex",gap:24,flexWrap:"wrap"}}>
+                    {commEntries.length > 0 && (()=>{
+                      const latest = commEntries[commEntries.length-1];
+                      const prev = commEntries.length > 1 ? commEntries[commEntries.length-2] : null;
+                      const trend = prev ? latest.score - prev.score : 0;
+                      const phase = latest.phase || (latest.week <= 4 ? "day30" : latest.week <= 8 ? "day60" : "day90");
+                      const target = ONBOARDING_KPIS.find(k=>k.id==="communication")?.targets?.[phase] || 3;
+                      const onTrack = commAvg >= target;
+                      return (
+                        <div style={{flex:"1 1 200px",padding:16,background:B.blueL,borderRadius:10,border:`1px solid ${B.blueM}`}}>
+                          <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3,marginBottom:10}}>Communication</div>
+                          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:8}}>
+                            <Ring pct={Math.round(commAvg/5*100)} size={48} stroke={4}/>
+                            <div>
+                              <div style={{fontSize:22,fontWeight:800,color:B.navy}}>{commAvg.toFixed(1)}<span style={{fontSize:12,fontWeight:400,color:B.t3}}>/5</span></div>
+                              {trend !== 0 && <div style={{fontSize:11,fontWeight:600,color:trend>0?B.ok:B.err}}>{trend>0?"▲":"▼"} {Math.abs(trend).toFixed(1)} from last</div>}
+                            </div>
+                          </div>
+                          <div style={{display:"flex",alignItems:"center",gap:6}}>
+                            <span style={{fontSize:10,color:B.t3}}>Target: {target.toFixed(1)}</span>
+                            <span style={{fontSize:9,fontWeight:600,padding:"2px 8px",borderRadius:4,background:onTrack?B.okL:"#fee2e2",color:onTrack?B.ok:B.err}}>{onTrack?"On Track":"Below Target"}</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                    {teamEntries.length > 0 && (()=>{
+                      const latest = teamEntries[teamEntries.length-1];
+                      const prev = teamEntries.length > 1 ? teamEntries[teamEntries.length-2] : null;
+                      const trend = prev ? latest.score - prev.score : 0;
+                      const phase = latest.phase || (latest.week <= 4 ? "day30" : latest.week <= 8 ? "day60" : "day90");
+                      const target = ONBOARDING_KPIS.find(k=>k.id==="teamwork")?.targets?.[phase] || 3;
+                      const onTrack = teamAvg >= target;
+                      return (
+                        <div style={{flex:"1 1 200px",padding:16,background:"#faf5ff",borderRadius:10,border:`1px solid #e9d5ff`}}>
+                          <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3,marginBottom:10}}>Teamwork</div>
+                          <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:8}}>
+                            <Ring pct={Math.round(teamAvg/5*100)} size={48} stroke={4}/>
+                            <div>
+                              <div style={{fontSize:22,fontWeight:800,color:B.navy}}>{teamAvg.toFixed(1)}<span style={{fontSize:12,fontWeight:400,color:B.t3}}>/5</span></div>
+                              {trend !== 0 && <div style={{fontSize:11,fontWeight:600,color:trend>0?B.ok:B.err}}>{trend>0?"▲":"▼"} {Math.abs(trend).toFixed(1)} from last</div>}
+                            </div>
+                          </div>
+                          <div style={{display:"flex",alignItems:"center",gap:6}}>
+                            <span style={{fontSize:10,color:B.t3}}>Target: {target.toFixed(1)}</span>
+                            <span style={{fontSize:9,fontWeight:600,padding:"2px 8px",borderRadius:4,background:onTrack?B.okL:"#fee2e2",color:onTrack?B.ok:B.err}}>{onTrack?"On Track":"Below Target"}</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                ) : (
+                  <div style={{fontSize:12,color:B.t3,textAlign:"center",padding:"12px 0"}}>No KPI scores recorded yet. Your manager will add scores as you progress.</div>
+                )}
+              </div>
+            </div>
+
+            {/* Achievements & Milestones */}
+            <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+              <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Achievements & Milestones</span></div>
+              <div style={{padding:"18px 18px"}}>
+                {/* Milestone trophies */}
+                <div style={{display:"flex",gap:16,marginBottom:16,flexWrap:"wrap"}}>
+                  {milestones.map(m => (
+                    <div key={m.id} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderRadius:10,background:m.unlocked?"#fffbeb":"#f9fafb",border:`1px solid ${m.unlocked?"#fde68a":B.bdr}`}}>
+                      <div style={m.unlocked?{animation:"milestoneGlow 2s ease-in-out infinite"}:{}}>
+                        <TrophySvg size={24} color={m.unlocked ? m.color : "#d1d5db"} glow={m.unlocked}/>
+                      </div>
+                      <div>
+                        <div style={{fontSize:11,fontWeight:600,color:m.unlocked?B.t1:B.t3}}>{m.label}</div>
+                        <div style={{fontSize:10,color:m.unlocked?m.color:B.t3}}>{m.done}/{m.total} {m.unlocked?"✓":""}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Badges */}
+                {(()=>{
+                  const activeBadges = (badges||[]).filter(b => !b.removed);
+                  return activeBadges.length > 0 ? (
+                    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                      {activeBadges.map(b => {
+                        const iconFn = BADGE_ICONS[b.badgeId];
+                        const awardDate = b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : null;
+                        return (
+                          <div key={b.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",background:B.blueL,borderRadius:10,border:`1px solid ${B.blueM}`}}>
+                            <div style={{width:32,height:32,borderRadius:16,background:"#fff",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,border:`1px solid ${B.blueM}`}}>
+                              {iconFn ? iconFn(18, B.blue) : <span style={{fontSize:16}}>{b.icon}</span>}
+                            </div>
+                            <div style={{flex:1}}>
+                              <div style={{fontSize:13,fontWeight:600,color:B.t1}}>{b.label}</div>
+                              <div style={{fontSize:10,color:B.t3}}>{b.awardedBy}{awardDate ? ` · Awarded ${awardDate}` : ""}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div style={{fontSize:12,color:B.t3}}>No badges awarded yet. Keep up the great work!</div>
+                  );
+                })()}
+              </div>
+            </div>
+
+            {/* Feedback from Your Manager — full two-column view */}
+            <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden"}}>
+              <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Feedback from Your Manager</span></div>
+              {(()=>{
+                const positiveNotes = sharedNotes.filter(n => n.tag === "positive");
+                const improveNotes = sharedNotes.filter(n => n.tag === "improve");
+                return sharedNotes.length > 0 ? (
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:0}}>
+                    <div style={{borderRight:`1px solid ${B.bdr}`,padding:"14px 18px"}}>
+                      <div style={{fontSize:13,fontWeight:700,color:"#22c55e",marginBottom:12}}>✅ What's Going Well</div>
+                      {positiveNotes.length === 0 ? (
+                        <div style={{fontSize:12,color:B.t3,fontStyle:"italic"}}>Nothing here yet.</div>
+                      ) : positiveNotes.map(note => (
+                        <div key={note.id} style={{padding:"8px 0",borderBottom:`1px solid #f1f5f9`}}>
+                          <div style={{fontSize:10,color:B.t3,marginBottom:2}}>{note.author} · {new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                          <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{note.text}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{padding:"14px 18px"}}>
+                      <div style={{fontSize:13,fontWeight:700,color:"#f59e0b",marginBottom:12}}>📈 Areas to Improve</div>
+                      {improveNotes.length === 0 ? (
+                        <div style={{fontSize:12,color:B.t3,fontStyle:"italic"}}>Nothing here yet.</div>
+                      ) : improveNotes.map(note => (
+                        <div key={note.id} style={{padding:"8px 0",borderBottom:`1px solid #f1f5f9`}}>
+                          <div style={{fontSize:10,color:B.t3,marginBottom:2}}>{note.author} · {new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                          <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{note.text}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{padding:"24px 18px",textAlign:"center",fontSize:12,color:B.t3}}>No feedback shared yet. Your manager will share feedback as you progress through training.</div>
+                );
+              })()}
+            </div>
+          </div>
+        )}
+        {/* Section content */}
+        {!perfPage&&cIt&&(
           <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
             <p style={{fontSize:13,color:B.t2,lineHeight:1.6,marginTop:0,marginBottom:20}}>{cIt.description}</p>
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
@@ -2956,7 +3073,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               })()}
             </div>
             {/* Notes & Badges Panel */}
-            <NotesAndBadgesPanel notes={notes} badges={badges} isAdminView={isAdminView} onAddNote={onAddNote} onAddBadge={onAddBadge} onUpdateBadge={onUpdateBadge} userId={user.id}/>
+            <NotesAndBadgesPanel notes={notes} badges={badges} isAdminView={isAdminView} onAddNote={onAddNote} onAddBadge={onAddBadge} onUpdateBadge={onUpdateBadge} userId={user.id} onGoPerformance={goPerf}/>
           </div>
         )}
       </main>
@@ -2981,7 +3098,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
 // NOTES & BADGES PANEL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge, onUpdateBadge, userId }) {
+function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge, onUpdateBadge, userId, onGoPerformance }) {
   const [noteText, setNoteText] = useState("");
   const [noteShared, setNoteShared] = useState(false);
   const [noteTag, setNoteTag] = useState(null); // "positive" | "improve" | null
@@ -3203,8 +3320,8 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
             (() => {
               const positiveNotes = sorted.filter(n => n.tag === "positive");
               const improveNotes = sorted.filter(n => n.tag === "improve");
-              const posShow = showAllPositive ? positiveNotes : positiveNotes.slice(0, 3);
-              const impShow = showAllImprove ? improveNotes : improveNotes.slice(0, 3);
+              const posShow = onGoPerformance ? positiveNotes.slice(0, 2) : (showAllPositive ? positiveNotes : positiveNotes.slice(0, 3));
+              const impShow = onGoPerformance ? improveNotes.slice(0, 2) : (showAllImprove ? improveNotes : improveNotes.slice(0, 3));
               return (
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:0}}>
                   <div style={{borderRight:`1px solid ${B.bdr}`,padding:"14px 18px"}}>
@@ -3219,7 +3336,9 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
                             <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{note.text}</div>
                           </div>
                         ))}
-                        {positiveNotes.length > 3 && (
+                        {onGoPerformance && positiveNotes.length > 2 ? (
+                          <button onClick={onGoPerformance} style={{border:"none",background:"none",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>→ See all on My Performance</button>
+                        ) : positiveNotes.length > 3 && !onGoPerformance && (
                           <button onClick={()=>setShowAllPositive(!showAllPositive)} style={{border:"none",background:"none",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
                             {showAllPositive ? "Show less" : `Show all (${positiveNotes.length})`}
                           </button>
@@ -3239,7 +3358,9 @@ function NotesAndBadgesPanel({ notes, badges, isAdminView, onAddNote, onAddBadge
                             <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{note.text}</div>
                           </div>
                         ))}
-                        {improveNotes.length > 3 && (
+                        {onGoPerformance && improveNotes.length > 2 ? (
+                          <button onClick={onGoPerformance} style={{border:"none",background:"none",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>→ See all on My Performance</button>
+                        ) : improveNotes.length > 3 && !onGoPerformance && (
                           <button onClick={()=>setShowAllImprove(!showAllImprove)} style={{border:"none",background:"none",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",padding:"6px 0"}}>
                             {showAllImprove ? "Show less" : `Show all (${improveNotes.length})`}
                           </button>
