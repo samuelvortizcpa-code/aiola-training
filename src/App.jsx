@@ -1461,6 +1461,7 @@ const getOverdueQuizzes = (trainee, quizData) => {
 // ═════════════════════════════════════════════════════════════════════════════
 
 function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
+  try {
   const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter" });
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
@@ -1892,6 +1893,10 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData) {
   const dateShort = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).replace(/[\s,]+/g, "");
   const safeName = trainee.name.replace(/\s+/g, "_");
   doc.save(`${safeName}_${milestoneLabel.replace("-", "")}_Review_${dateShort}.pdf`);
+  } catch (err) {
+    alert("Report generation failed: " + err.message);
+    console.error(err);
+  }
 }
 
 function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateReport, onLogout }) {
