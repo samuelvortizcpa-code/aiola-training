@@ -371,25 +371,24 @@ const ONBOARDING_KPIS = [
 const KPI_SEED_DATA = {
   chris_m: {
     communication: [
-      { week: 1, score: 3.8, manager: "Nick Aiola", date: "2026-04-28", comment: "Good start, responsive on Slack" },
-      { week: 2, score: 4.0, manager: "Nick Aiola", date: "2026-05-05", comment: "Improving clarity in emails" },
-      { week: 3, score: 4.2, manager: "Nick Aiola", date: "2026-05-12", comment: "Proactive follow-ups" },
+      { week: 1, score: 3.8, manager: "Nick Aiola", date: "2026-04-28", phase: "day30", comment: "Good start, responsive on Slack" },
+      { week: 2, score: 4.0, manager: "Nick Aiola", date: "2026-05-05", phase: "day30", comment: "Improving clarity in emails" },
     ],
     teamwork: [
-      { week: 4, score: 4.1, manager: "Team Survey", date: "2026-05-16", comment: "Day 25 pulse — strong collaborator" },
+      { week: 1, score: 3.9, manager: "Nick Aiola", date: "2026-04-28", phase: "day30", comment: "Collaborative in team meetings" },
+      { week: 2, score: 4.1, manager: "Nick Aiola", date: "2026-05-05", phase: "day30", comment: "Volunteered to help onboard new tool" },
     ],
   },
   mary_c: {
     communication: [
-      { week: 1, score: 3.5, manager: "Nick Aiola", date: "2026-03-02", comment: "Needs to ask more questions" },
-      { week: 2, score: 3.7, manager: "Nick Aiola", date: "2026-03-09", comment: "Better follow-through" },
-      { week: 3, score: 3.9, manager: "Nick Aiola", date: "2026-03-16", comment: "Communication improving" },
-      { week: 4, score: 4.0, manager: "Nick Aiola", date: "2026-03-23", comment: "Hitting stride" },
-      { week: 5, score: 4.1, manager: "Nick Aiola", date: "2026-03-30", comment: "Excellent week" },
+      { week: 1, score: 4.2, manager: "Nick Aiola", date: "2026-03-02", phase: "day30", comment: "Strong communicator from day one" },
+      { week: 2, score: 4.3, manager: "Nick Aiola", date: "2026-03-09", phase: "day30", comment: "Clear and concise updates" },
+      { week: 3, score: 4.1, manager: "Nick Aiola", date: "2026-03-16", phase: "day60", comment: "Slight dip but still solid" },
     ],
     teamwork: [
-      { week: 4, score: 3.8, manager: "Team Survey", date: "2026-03-22", comment: "Day 25 pulse" },
-      { week: 8, score: 4.0, manager: "Team Survey", date: "2026-04-21", comment: "Day 55 pulse — good improvement" },
+      { week: 1, score: 4.0, manager: "Nick Aiola", date: "2026-03-02", phase: "day30", comment: "Works well with advisory team" },
+      { week: 2, score: 4.2, manager: "Nick Aiola", date: "2026-03-09", phase: "day30", comment: "Helped peers with client prep" },
+      { week: 3, score: 4.4, manager: "Nick Aiola", date: "2026-03-16", phase: "day60", comment: "Strong cross-team collaboration" },
     ],
   },
 };
@@ -2154,6 +2153,80 @@ function ReportDateModal({ title, startDate, onGenerate, onClose }) {
   );
 }
 
+function TeamKpiChart({ trainees, allKpiData }) {
+  const chartW = 600, chartH = 220, padL = 44, padR = 20, padT = 14, padB = 44;
+  const plotW = chartW - padL - padR, plotH = chartH - padT - padB;
+  const maxScore = 5;
+  const benchmark = 4.0;
+  const barColor = (score, target) => score >= target ? B.ok : score >= target - 0.3 ? B.warn : B.err;
+
+  const traineeKpiData = (trainees || []).map(t => {
+    const tk = (allKpiData && allKpiData[t.id]) || {};
+    const commE = tk.communication || [];
+    const teamE = tk.teamwork || [];
+    const commA = commE.length > 0 ? commE.reduce((a,e)=>a+e.score,0)/commE.length : null;
+    const teamA = teamE.length > 0 ? teamE.reduce((a,e)=>a+e.score,0)/teamE.length : null;
+    const d = daysSince(t.startDate);
+    const phaseKey = d <= 30 ? "day30" : d <= 60 ? "day60" : "day90";
+    const commTarget = ONBOARDING_KPIS.find(k=>k.id==="communication")?.targets?.[phaseKey] || 4;
+    const teamTarget = ONBOARDING_KPIS.find(k=>k.id==="teamwork")?.targets?.[phaseKey] || 4;
+    return { name: t.name.split(" ")[0], commAvg: commA, teamAvg: teamA, commTarget, teamTarget };
+  });
+
+  const hasData = traineeKpiData.length > 0;
+  const groupW = hasData ? plotW / traineeKpiData.length : 1;
+  const barW = hasData ? Math.min(groupW * 0.28, 28) : 20;
+  const benchmarkY = padT + plotH - (benchmark / maxScore * plotH);
+
+  return (
+    <div style={{background:"#fff",borderRadius:12,border:"2px solid #e2e8f0",boxShadow:"0 2px 6px rgba(0,0,0,.06)",padding:"18px 24px",marginBottom:28,minHeight:180}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+        <span style={{fontSize:14,fontWeight:700,color:B.navy}}>Team KPI Overview</span>
+        <div style={{display:"flex",alignItems:"center",gap:14,fontSize:10,color:B.t3}}>
+          <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:10,borderRadius:2,background:B.blue,display:"inline-block"}}/> Communication</span>
+          <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:10,borderRadius:2,background:B.purple,display:"inline-block"}}/> Teamwork</span>
+        </div>
+      </div>
+      {!hasData ? (
+        <div style={{textAlign:"center",padding:"32px 0",color:B.t3,fontSize:12}}>No trainees enrolled yet. KPI data will appear here once trainees are added.</div>
+      ) : (
+        <svg width="100%" height="200" viewBox={`0 0 ${chartW} ${chartH}`} preserveAspectRatio="xMidYMid meet" style={{display:"block"}}>
+          {/* Background */}
+          <rect x="0" y="0" width={chartW} height={chartH} fill="#fff" rx="4"/>
+          {/* Y-axis gridlines and labels */}
+          {[0,1,2,3,4,5].map(v => {
+            const yy = padT + plotH - (v / maxScore * plotH);
+            return <g key={v}><line x1={padL} y1={yy} x2={chartW-padR} y2={yy} stroke="#e2e8f0" strokeWidth="1"/><text x={padL-8} y={yy+4} textAnchor="end" fontSize="10" fill="#64748b">{v}</text></g>;
+          })}
+          {/* Benchmark line */}
+          <line x1={padL} y1={benchmarkY} x2={chartW-padR} y2={benchmarkY} stroke={B.blue} strokeWidth="1.5" strokeDasharray="6,4" opacity=".6"/>
+          <text x={chartW-padR+4} y={benchmarkY+4} fontSize="9" fill={B.blue} fontWeight="600" opacity=".8">4.0</text>
+          {/* Bars */}
+          {traineeKpiData.map((td, i) => {
+            const cx = padL + groupW * i + groupW / 2;
+            const commH = td.commAvg !== null ? (td.commAvg / maxScore * plotH) : 0;
+            const teamH = td.teamAvg !== null ? (td.teamAvg / maxScore * plotH) : 0;
+            const commColor = td.commAvg !== null ? barColor(td.commAvg, td.commTarget) : "#cbd5e1";
+            const noDataH = plotH * 0.15;
+            return <g key={i}>
+              {/* Communication bar */}
+              <rect x={cx - barW - 2} y={padT + plotH - (td.commAvg !== null ? commH : noDataH)} width={barW} height={Math.max(td.commAvg !== null ? commH : noDataH, 4)} rx="3" fill={commColor} opacity={td.commAvg !== null ? 1 : .25}/>
+              {/* Teamwork bar */}
+              <rect x={cx + 2} y={padT + plotH - (td.teamAvg !== null ? teamH : noDataH)} width={barW} height={Math.max(td.teamAvg !== null ? teamH : noDataH, 4)} rx="3" fill={td.teamAvg !== null ? B.purple : "#cbd5e1"} opacity={td.teamAvg !== null ? .85 : .25}/>
+              {/* Score labels */}
+              {td.commAvg !== null && <text x={cx - barW/2 - 2} y={padT + plotH - commH - 5} textAnchor="middle" fontSize="9" fontWeight="700" fill={commColor}>{td.commAvg.toFixed(1)}</text>}
+              {td.teamAvg !== null && <text x={cx + barW/2 + 2} y={padT + plotH - teamH - 5} textAnchor="middle" fontSize="9" fontWeight="700" fill={B.purple}>{td.teamAvg.toFixed(1)}</text>}
+              {td.commAvg === null && td.teamAvg === null && <text x={cx} y={padT + plotH - noDataH - 5} textAnchor="middle" fontSize="9" fill="#94a3b8">No data</text>}
+              {/* Name label */}
+              <text x={cx} y={chartH - 8} textAnchor="middle" fontSize="11" fontWeight="600" fill="#334155">{td.name}</text>
+            </g>;
+          })}
+        </svg>
+      )}
+    </div>
+  );
+}
+
 function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateReport, onLogout, kpiData: allKpiData }) {
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
@@ -2253,77 +2326,8 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
           </div>
         </div>
 
-        {/* Team KPI Overview Chart */}
-        {(()=>{
-          const chartW = 600, chartH = 200, padL = 40, padR = 20, padT = 10, padB = 40;
-          const plotW = chartW - padL - padR, plotH = chartH - padT - padB;
-          const maxScore = 5;
-          const benchmark = 4.0;
-          const traineeKpiData = trainees.map(t => {
-            const tk = allKpiData?.[t.id] || {};
-            const commE = tk.communication || [];
-            const teamE = tk.teamwork || [];
-            const commA = commE.length > 0 ? commE.reduce((a,e)=>a+e.score,0)/commE.length : null;
-            const teamA = teamE.length > 0 ? teamE.reduce((a,e)=>a+e.score,0)/teamE.length : null;
-            const d = daysSince(t.startDate);
-            const phaseKey = d <= 30 ? "day30" : d <= 60 ? "day60" : "day90";
-            const commTarget = ONBOARDING_KPIS.find(k=>k.id==="communication")?.targets?.[phaseKey] || 4;
-            const teamTarget = ONBOARDING_KPIS.find(k=>k.id==="teamwork")?.targets?.[phaseKey] || 4;
-            return { name: t.name.split(" ")[0], commAvg: commA, teamAvg: teamA, commTarget, teamTarget };
-          });
-          if (traineeKpiData.length === 0) {
-            return (
-              <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",padding:"18px 24px",marginBottom:28}}>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
-                  <span style={{fontSize:14,fontWeight:700,color:B.navy}}>Team KPI Overview</span>
-                </div>
-                <div style={{textAlign:"center",padding:"32px 0",color:B.t3,fontSize:12}}>No trainees enrolled yet. KPI data will appear here once trainees are added.</div>
-              </div>
-            );
-          }
-          const groupW = plotW / traineeKpiData.length;
-          const barW = Math.min(groupW * 0.28, 28);
-          const barColor = (score, target) => score >= target ? B.ok : score >= target - 0.3 ? B.warn : B.err;
-          const benchmarkY = padT + plotH - (benchmark / maxScore * plotH);
-          return (
-            <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",padding:"18px 24px",marginBottom:28}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
-                <span style={{fontSize:14,fontWeight:700,color:B.navy}}>Team KPI Overview</span>
-                <div style={{display:"flex",alignItems:"center",gap:14,fontSize:10,color:B.t3}}>
-                  <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:10,borderRadius:2,background:B.blue,display:"inline-block"}}/> Communication</span>
-                  <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:10,borderRadius:2,background:B.purple,display:"inline-block"}}/> Teamwork</span>
-                </div>
-              </div>
-              <svg viewBox={`0 0 ${chartW} ${chartH}`} style={{width:"100%",maxHeight:200}}>
-                {/* Y-axis gridlines and labels */}
-                {[0,1,2,3,4,5].map(v => {
-                  const yy = padT + plotH - (v / maxScore * plotH);
-                  return <g key={v}><line x1={padL} y1={yy} x2={chartW-padR} y2={yy} stroke="#f1f5f9" strokeWidth="1"/><text x={padL-6} y={yy+3} textAnchor="end" fontSize="9" fill="#94a3b8">{v}</text></g>;
-                })}
-                {/* Benchmark line */}
-                <line x1={padL} y1={benchmarkY} x2={chartW-padR} y2={benchmarkY} stroke={B.blue} strokeWidth="1" strokeDasharray="5,4" opacity=".5"/>
-                <text x={chartW-padR+2} y={benchmarkY+3} fontSize="8" fill={B.blue} opacity=".7">4.0</text>
-                {/* Bars */}
-                {traineeKpiData.map((td, i) => {
-                  const cx = padL + groupW * i + groupW / 2;
-                  const commH = td.commAvg !== null ? (td.commAvg / maxScore * plotH) : 0;
-                  const teamH = td.teamAvg !== null ? (td.teamAvg / maxScore * plotH) : 0;
-                  const commColor = td.commAvg !== null ? barColor(td.commAvg, td.commTarget) : "#e2e8f0";
-                  const teamColor = td.teamAvg !== null ? barColor(td.teamAvg, td.teamTarget) : "#e2e8f0";
-                  const noDataH = plotH * 0.15;
-                  return <g key={i}>
-                    <rect x={cx - barW - 2} y={padT + plotH - (td.commAvg !== null ? commH : noDataH)} width={barW} height={Math.max(td.commAvg !== null ? commH : noDataH, 2)} rx="3" fill={commColor} opacity={td.commAvg !== null ? 1 : .2}/>
-                    <rect x={cx + 2} y={padT + plotH - (td.teamAvg !== null ? teamH : noDataH)} width={barW} height={Math.max(td.teamAvg !== null ? teamH : noDataH, 2)} rx="3" fill={td.teamAvg !== null ? B.purple : "#e2e8f0"} opacity={td.teamAvg !== null ? .8 : .2}/>
-                    {td.commAvg !== null && <text x={cx - barW/2 - 2} y={padT + plotH - commH - 4} textAnchor="middle" fontSize="8" fontWeight="600" fill={commColor}>{td.commAvg.toFixed(1)}</text>}
-                    {td.teamAvg !== null && <text x={cx + barW/2 + 2} y={padT + plotH - teamH - 4} textAnchor="middle" fontSize="8" fontWeight="600" fill={B.purple}>{td.teamAvg.toFixed(1)}</text>}
-                    {td.commAvg === null && td.teamAvg === null && <text x={cx} y={padT + plotH - noDataH - 4} textAnchor="middle" fontSize="8" fill="#94a3b8">No data</text>}
-                    <text x={cx} y={chartH - 8} textAnchor="middle" fontSize="10" fontWeight="600" fill="#475569">{td.name}</text>
-                  </g>;
-                })}
-              </svg>
-            </div>
-          );
-        })()}
+        {/* Team KPI Overview Chart — always rendered */}
+        <TeamKpiChart trainees={trainees} allKpiData={allKpiData}/>
 
         {/* Drill-Down Modal */}
         {drillDown && (
