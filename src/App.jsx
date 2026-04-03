@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo, createContext, useContext } from "react";
-import jsPDF from "jspdf";
-import { applyPlugin } from "jspdf-autotable";
-applyPlugin(jsPDF);
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 // ─── Responsive CSS ─────────────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
