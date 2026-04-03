@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo, createContext, useContext } from "react";
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 // ─── Responsive CSS ─────────────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
@@ -1817,6 +1816,107 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   const navy = [26, 26, 46];
   const gray = [90, 101, 119];
   const lightGray = [248, 249, 250];
+  const headerBg = [30, 58, 95];
+  const rowH = 18;
+  const cellPad = 6;
+
+  // ── drawTable helper ──
+  function drawTable(doc, headers, rows, startY, colWidths) {
+    const totalW = colWidths.reduce((a, w) => a + w, 0);
+    let y = startY;
+    // Check for page overflow before starting
+    const needsHeight = rowH + rows.length * rowH + 4;
+    if (y + needsHeight > pageH - 50) {
+      doc.addPage();
+      y = 55;
+    }
+    // Header row
+    if (headers && headers.length > 0) {
+      doc.setFillColor(...headerBg);
+      doc.rect(margin, y, totalW, rowH, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(255, 255, 255);
+      let x = margin;
+      for (let c = 0; c < headers.length; c++) {
+        const txt = String(headers[c] || "");
+        const clipped = txt.length > Math.floor(colWidths[c] / 4.5) ? txt.slice(0, Math.floor(colWidths[c] / 4.5)) + ".." : txt;
+        doc.text(clipped, x + cellPad, y + 13);
+        x += colWidths[c];
+      }
+      y += rowH;
+    }
+    // Data rows
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    for (let r = 0; r < rows.length; r++) {
+      // Page break check
+      if (y + rowH > pageH - 50) {
+        doc.addPage();
+        y = 55;
+        // Redraw header on new page
+        if (headers && headers.length > 0) {
+          doc.setFillColor(...headerBg);
+          doc.rect(margin, y, totalW, rowH, "F");
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(9);
+          doc.setTextColor(255, 255, 255);
+          let hx = margin;
+          for (let c = 0; c < headers.length; c++) {
+            doc.text(String(headers[c] || ""), hx + cellPad, y + 13);
+            hx += colWidths[c];
+          }
+          y += rowH;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(9);
+        }
+      }
+      // Alternate row background
+      if (r % 2 === 1) {
+        doc.setFillColor(...lightGray);
+        doc.rect(margin, y, totalW, rowH, "F");
+      }
+      doc.setTextColor(...navy);
+      let x = margin;
+      const row = rows[r];
+      for (let c = 0; c < row.length && c < colWidths.length; c++) {
+        const txt = String(row[c] != null ? row[c] : "");
+        const maxChars = Math.floor((colWidths[c] - cellPad * 2) / 4.5);
+        const clipped = txt.length > maxChars ? txt.slice(0, maxChars) + ".." : txt;
+        doc.text(clipped, x + cellPad, y + 13);
+        x += colWidths[c];
+      }
+      y += rowH;
+    }
+    // Bottom border line
+    doc.setDrawColor(220, 220, 220);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y, margin + totalW, y);
+    return y + 4;
+  }
+
+  // ── drawKeyValueRows helper (for summary-style tables without headers) ──
+  function drawKeyValueRows(doc, rows, startY, labelW, valW) {
+    let y = startY;
+    for (let r = 0; r < rows.length; r++) {
+      if (y + rowH > pageH - 50) { doc.addPage(); y = 55; }
+      if (r % 2 === 1) {
+        doc.setFillColor(...lightGray);
+        doc.rect(margin, y, labelW + valW, rowH, "F");
+      }
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(...navy);
+      doc.text(String(rows[r][0] || ""), margin + cellPad, y + 13);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(...gray);
+      const valTxt = String(rows[r][1] || "");
+      const maxChars = Math.floor((valW - cellPad * 2) / 5);
+      doc.text(valTxt.length > maxChars ? valTxt.slice(0, maxChars) + ".." : valTxt, margin + labelW + cellPad, y + 13);
+      y += rowH;
+    }
+    return y + 4;
+  }
 
   // Date range filtering helpers
   const rangeFrom = dateFrom ? new Date(dateFrom + "T00:00:00") : null;
@@ -1828,7 +1928,7 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
     if (rangeTo && d > rangeTo) return false;
     return true;
   };
-  const rangeLbl = (rangeFrom && rangeTo) ? `${rangeFrom.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})} – ${rangeTo.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}` : "";
+  const rangeLbl = (rangeFrom && rangeTo) ? `${rangeFrom.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})} - ${rangeTo.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}` : "";
 
   const tasks = traineeData?.tasks || {};
   const quizzes = traineeData?.quizzes || {};
@@ -1848,7 +1948,7 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   const dateStr = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
   const reportTitle = isTraineeReport ? "My Progress Report" : `${milestoneLabel} Performance Review`;
 
-  // Helper: draw the Aiola logo using jsPDF drawing methods
+  // Helper: draw the Aiola logo
   const drawLogo = (x, y, scale = 1) => {
     doc.setDrawColor(...blue);
     doc.setLineWidth(2 * scale);
@@ -1933,22 +2033,9 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   ];
   if (rangeLbl) summaryRows.push(["Report Period", rangeLbl]);
 
-  doc.autoTable({
-    startY: y,
-    head: [],
-    body: summaryRows,
-    theme: "plain",
-    margin: { left: margin, right: margin },
-    columnStyles: {
-      0: { fontStyle: "bold", cellWidth: 140, textColor: navy, fontSize: 10 },
-      1: { textColor: gray, fontSize: 10 },
-    },
-    styles: { font: "helvetica", cellPadding: { top: 6, bottom: 6, left: 8, right: 8 }, lineWidth: 0 },
-    alternateRowStyles: { fillColor: lightGray },
-  });
+  y = drawKeyValueRows(doc, summaryRows, y, 150, contentW - 150);
 
-  y = doc.lastAutoTable.finalY + 28;
-
+  y += 12;
   doc.setFontSize(12);
   doc.setTextColor(...navy);
   doc.setFont("helvetica", "bold");
@@ -1989,6 +2076,8 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
       trend = avgDiff > 0.05 ? "Improving" : avgDiff < -0.05 ? "Declining" : "Stable";
     }
 
+    if (y > pageH - 180) { doc.addPage(); y = 55; }
+
     doc.setFontSize(12);
     doc.setTextColor(...navy);
     doc.setFont("helvetica", "bold");
@@ -2010,34 +2099,17 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
       ["Frequency", kpiDef.frequency],
     ];
 
-    doc.autoTable({
-      startY: y,
-      head: [],
-      body: kpiStatsRows,
-      theme: "plain",
-      margin: { left: margin, right: margin },
-      columnStyles: {
-        0: { fontStyle: "bold", cellWidth: 160, textColor: navy, fontSize: 9 },
-        1: { textColor: gray, fontSize: 9 },
-      },
-      styles: { font: "helvetica", cellPadding: { top: 4, bottom: 4, left: 8, right: 8 }, lineWidth: 0 },
-      alternateRowStyles: { fillColor: lightGray },
-    });
-    y = doc.lastAutoTable.finalY + 10;
+    y = drawKeyValueRows(doc, kpiStatsRows, y, 160, contentW - 160);
+    y += 6;
 
     if (entries.length > 0) {
-      doc.autoTable({
-        startY: y,
-        head: [["Week", "Score", "Submitted By", "Comment"]],
-        body: entries.map(e => [e.week, e.score.toFixed(1), e.manager, e.comment || ""]),
-        theme: "grid",
-        margin: { left: margin, right: margin },
-        headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
-        bodyStyles: { fontSize: 9, textColor: navy },
-        alternateRowStyles: { fillColor: lightGray },
-        styles: { font: "helvetica", cellPadding: { top: 4, bottom: 4, left: 6, right: 6 } },
-      });
-      y = doc.lastAutoTable.finalY + 20;
+      y = drawTable(doc,
+        ["Week", "Score", "Submitted By", "Comment"],
+        entries.map(e => [e.week, e.score.toFixed(1), e.manager, e.comment || ""]),
+        y,
+        [50, 50, 120, contentW - 220]
+      );
+      y += 12;
     } else {
       doc.setFontSize(9);
       doc.setTextColor(...gray);
@@ -2058,6 +2130,8 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   pMeta.forEach((pm) => {
     const phaseSections = PHASES.filter(p => pm.ids.includes(p.id));
     if (phaseSections.length === 0) return;
+
+    if (y > pageH - 100) { doc.addPage(); y = 55; }
 
     doc.setFontSize(11);
     doc.setTextColor(...navy);
@@ -2081,29 +2155,13 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
       });
     });
 
-    doc.autoTable({
-      startY: y,
-      head: [["Section", "Tasks", "Quiz", "Notes"]],
-      body: rows,
-      theme: "grid",
-      margin: { left: margin, right: margin },
-      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
-      bodyStyles: { fontSize: 9, textColor: navy },
-      alternateRowStyles: { fillColor: lightGray },
-      styles: { font: "helvetica", cellPadding: { top: 4, bottom: 4, left: 6, right: 6 }, overflow: "linebreak" },
-      columnStyles: {
-        0: { cellWidth: 220 },
-        1: { cellWidth: 60, halign: "center" },
-        2: { cellWidth: 80, halign: "center" },
-        3: { cellWidth: contentW - 360 - 24 },
-      },
-    });
-    y = doc.lastAutoTable.finalY + 16;
-
-    if (y > pageH - 100) {
-      doc.addPage();
-      y = 55;
-    }
+    y = drawTable(doc,
+      ["Section", "Tasks", "Quiz", "Notes"],
+      rows,
+      y,
+      [220, 60, 80, contentW - 360]
+    );
+    y += 10;
   });
 
   // ── PAGE 5: Manager Notes & Badges ──
@@ -2117,18 +2175,13 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   y += 16;
 
   if (badges.length > 0) {
-    doc.autoTable({
-      startY: y,
-      head: [["Badge", "Awarded By", "Date"]],
-      body: badges.map(b => [`${b.label}`, b.awardedBy, b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : ""]),
-      theme: "grid",
-      margin: { left: margin, right: margin },
-      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
-      bodyStyles: { fontSize: 9, textColor: navy },
-      alternateRowStyles: { fillColor: lightGray },
-      styles: { font: "helvetica", cellPadding: { top: 5, bottom: 5, left: 8, right: 8 } },
-    });
-    y = doc.lastAutoTable.finalY + 20;
+    y = drawTable(doc,
+      ["Badge", "Awarded By", "Date"],
+      badges.map(b => [b.label, b.awardedBy, b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : ""]),
+      y,
+      [contentW * 0.45, contentW * 0.3, contentW * 0.25]
+    );
+    y += 12;
   } else {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
@@ -2145,31 +2198,15 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
 
   if (notes.length > 0) {
     const sortedNotes = [...notes].sort((a, b) => new Date(a.date) - new Date(b.date));
-    const noteHead = isTraineeReport ? [["Date", "Author", "Feedback", "Type"]] : [["Date", "Author", "Note", "Visibility"]];
-    const noteBody = sortedNotes.map(n => [
+    const noteHeaders = isTraineeReport ? ["Date", "Author", "Feedback", "Type"] : ["Date", "Author", "Note", "Visibility"];
+    const noteRows = sortedNotes.map(n => [
       n.date ? new Date(n.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "",
       n.author,
       n.text,
       isTraineeReport ? (n.tag === "positive" ? "Positive" : n.tag === "improve" ? "Improve" : "General") : (n.visibility === "shared" ? "Shared" : "Internal"),
     ]);
-    doc.autoTable({
-      startY: y,
-      head: noteHead,
-      body: noteBody,
-      theme: "grid",
-      margin: { left: margin, right: margin },
-      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
-      bodyStyles: { fontSize: 9, textColor: navy },
-      alternateRowStyles: { fillColor: lightGray },
-      styles: { font: "helvetica", cellPadding: { top: 5, bottom: 5, left: 6, right: 6 }, overflow: "linebreak" },
-      columnStyles: {
-        0: { cellWidth: 70 },
-        1: { cellWidth: 80 },
-        2: { cellWidth: contentW - 230 },
-        3: { cellWidth: 80 },
-      },
-    });
-    y = doc.lastAutoTable.finalY + 20;
+    y = drawTable(doc, noteHeaders, noteRows, y, [70, 80, contentW - 230, 80]);
+    y += 12;
   } else {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
@@ -2179,6 +2216,7 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   }
 
   if (!isTraineeReport) {
+    if (y > pageH - 100) { doc.addPage(); y = 55; }
     doc.setFontSize(12);
     doc.setTextColor(...navy);
     doc.setFont("helvetica", "bold");
@@ -2250,33 +2288,9 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   } catch { /* ignore localStorage errors */ }
 
   if (chatRows.length > 0) {
-    doc.autoTable({
-      startY: y,
-      head: [["Date", "Conversation Title", "Messages"]],
-      body: chatRows,
-      theme: "grid",
-      margin: { left: margin, right: margin },
-      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
-      bodyStyles: { fontSize: 9, textColor: navy },
-      alternateRowStyles: { fillColor: lightGray },
-      styles: { font: "helvetica", cellPadding: { top: 5, bottom: 5, left: 8, right: 8 } },
-      columnStyles: {
-        0: { cellWidth: 90 },
-        1: { cellWidth: contentW - 170 },
-        2: { cellWidth: 80, halign: "center" },
-      },
-    });
+    y = drawTable(doc, ["Date", "Conversation Title", "Messages"], chatRows, y, [90, contentW - 170, 80]);
   } else {
-    doc.autoTable({
-      startY: y,
-      head: [["Date", "Conversation Title", "Messages"]],
-      body: [["--", "No AI assistant activity recorded during this period.", "--"]],
-      theme: "grid",
-      margin: { left: margin, right: margin },
-      headStyles: { fillColor: blue, textColor: [255, 255, 255], fontSize: 9, fontStyle: "bold" },
-      bodyStyles: { fontSize: 9, textColor: gray },
-      styles: { font: "helvetica", cellPadding: { top: 5, bottom: 5, left: 8, right: 8 } },
-    });
+    y = drawTable(doc, ["Date", "Conversation Title", "Messages"], [["--", "No AI assistant activity recorded during this period.", "--"]], y, [90, contentW - 170, 80]);
   }
 
   // ── Add footers to all pages except cover ──
@@ -2438,6 +2452,16 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
             const teamTarget = ONBOARDING_KPIS.find(k=>k.id==="teamwork")?.targets?.[phaseKey] || 4;
             return { name: t.name.split(" ")[0], commAvg: commA, teamAvg: teamA, commTarget, teamTarget };
           });
+          if (traineeKpiData.length === 0) {
+            return (
+              <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",padding:"18px 24px",marginBottom:28}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+                  <span style={{fontSize:14,fontWeight:700,color:B.navy}}>Team KPI Overview</span>
+                </div>
+                <div style={{textAlign:"center",padding:"32px 0",color:B.t3,fontSize:12}}>No trainees enrolled yet. KPI data will appear here once trainees are added.</div>
+              </div>
+            );
+          }
           const groupW = plotW / traineeKpiData.length;
           const barW = Math.min(groupW * 0.28, 28);
           const barColor = (score, target) => score >= target ? B.ok : score >= target - 0.3 ? B.warn : B.err;
@@ -2467,12 +2491,13 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
                   const teamH = td.teamAvg !== null ? (td.teamAvg / maxScore * plotH) : 0;
                   const commColor = td.commAvg !== null ? barColor(td.commAvg, td.commTarget) : "#e2e8f0";
                   const teamColor = td.teamAvg !== null ? barColor(td.teamAvg, td.teamTarget) : "#e2e8f0";
+                  const noDataH = plotH * 0.15;
                   return <g key={i}>
-                    <rect x={cx - barW - 2} y={padT + plotH - commH} width={barW} height={Math.max(commH, 2)} rx="3" fill={commColor} opacity={td.commAvg !== null ? 1 : .3}/>
-                    <rect x={cx + 2} y={padT + plotH - teamH} width={barW} height={Math.max(teamH, 2)} rx="3" fill={td.teamAvg !== null ? B.purple : "#e2e8f0"} opacity={td.teamAvg !== null ? .8 : .3}/>
+                    <rect x={cx - barW - 2} y={padT + plotH - (td.commAvg !== null ? commH : noDataH)} width={barW} height={Math.max(td.commAvg !== null ? commH : noDataH, 2)} rx="3" fill={commColor} opacity={td.commAvg !== null ? 1 : .2}/>
+                    <rect x={cx + 2} y={padT + plotH - (td.teamAvg !== null ? teamH : noDataH)} width={barW} height={Math.max(td.teamAvg !== null ? teamH : noDataH, 2)} rx="3" fill={td.teamAvg !== null ? B.purple : "#e2e8f0"} opacity={td.teamAvg !== null ? .8 : .2}/>
                     {td.commAvg !== null && <text x={cx - barW/2 - 2} y={padT + plotH - commH - 4} textAnchor="middle" fontSize="8" fontWeight="600" fill={commColor}>{td.commAvg.toFixed(1)}</text>}
                     {td.teamAvg !== null && <text x={cx + barW/2 + 2} y={padT + plotH - teamH - 4} textAnchor="middle" fontSize="8" fontWeight="600" fill={B.purple}>{td.teamAvg.toFixed(1)}</text>}
-                    {td.commAvg === null && td.teamAvg === null && <text x={cx} y={padT + plotH - 10} textAnchor="middle" fontSize="8" fill="#94a3b8">No data</text>}
+                    {td.commAvg === null && td.teamAvg === null && <text x={cx} y={padT + plotH - noDataH - 4} textAnchor="middle" fontSize="8" fill="#94a3b8">No data</text>}
                     <text x={cx} y={chartH - 8} textAnchor="middle" fontSize="10" fontWeight="600" fill="#475569">{td.name}</text>
                   </g>;
                 })}
@@ -2660,7 +2685,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
     <div style={{fontFamily:"'DM Sans',sans-serif",display:"flex",height:"100vh",width:"100%",background:B.bg,color:B.t1,overflow:"hidden"}}>
       <style>{`@keyframes milestoneGlow{0%,100%{filter:drop-shadow(0 0 4px currentColor) brightness(1)}50%{filter:drop-shadow(0 0 10px currentColor) brightness(1.15)}}`}</style>
       {sO && <div className="r-sidebar-overlay" onClick={()=>setSO(false)}/>}
-      <aside className={sO?"r-trainee-sidebar":""} style={{width:sO?280:0,minWidth:sO?280:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
+      <aside className={sO?"r-trainee-sidebar":""} style={{width:sO?300:0,minWidth:sO?300:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
         <div style={{padding:"18px 20px 14px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:10}}>
           <Logo size={30}/><div><div style={{fontWeight:700,fontSize:13,color:B.navy,letterSpacing:.5}}>AIOLA CPA, PLLC</div><div style={{fontSize:10,color:B.t3,marginTop:1}}>Training Portal</div></div>
         </div>
@@ -2763,6 +2788,15 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             {!isAdminView&&<button onClick={onLogout} style={{padding:"6px 12px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>}
           </div>
         </header>
+        {/* Tab bar — My Performance toggle */}
+        <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 28px 0",background:B.bg}}>
+          <button onClick={()=>setPerfPage(false)} style={{padding:"7px 16px",border:"none",borderRadius:8,background:!perfPage?B.navy:"#fff",color:!perfPage?"#fff":B.t2,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",boxShadow:!perfPage?"0 1px 3px rgba(0,0,0,.12)":"none",border:perfPage?`1px solid ${B.bdr}`:"1px solid transparent",transition:"all .15s"}}>
+            Training Content
+          </button>
+          <button onClick={goPerf} style={{padding:"7px 16px",border:"none",borderRadius:8,background:perfPage?B.blue:"#fff",color:perfPage?"#fff":B.t2,fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",boxShadow:perfPage?"0 1px 3px rgba(0,0,0,.12)":"none",border:!perfPage?`1px solid ${B.bdr}`:"1px solid transparent",transition:"all .15s",display:"flex",alignItems:"center",gap:5}}>
+            <span style={{fontSize:14}}>📊</span> My Performance
+          </button>
+        </div>
         {/* My Performance Page */}
         {perfPage && (
           <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
@@ -2775,9 +2809,9 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 </button>
               </div>
             )}
-            {/* KPI Snapshot */}
+            {/* Card 1: KPI Scores */}
             <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
-              <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>KPI Snapshot</span></div>
+              <div style={{padding:"14px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:16}}>📈</span><span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>KPI Scores</span></div>
               <div style={{padding:"18px 18px"}}>
                 {(commEntries.length > 0 || teamEntries.length > 0) ? (
                   <div style={{display:"flex",gap:24,flexWrap:"wrap"}}>
@@ -2836,10 +2870,10 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               </div>
             </div>
 
-            {/* Weekly KPI Drill-Down */}
+            {/* Weekly KPI Drill-Down (inside Card 1) */}
             {(commEntries.length > 0 || teamEntries.length > 0) && (
               <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
-                <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Weekly Score Breakdown</span></div>
+                <div style={{padding:"14px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:14}}>📅</span><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Weekly Score Breakdown</span></div>
                 <div style={{padding:"14px 18px"}}>
                   {(()=>{
                     const COMM_QUESTIONS = ["Responds timely and with urgency","Provides complete and accurate information","Meets deadlines","Communication clarity","Teamwork and collaboration"];
@@ -2921,9 +2955,9 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               </div>
             )}
 
-            {/* Achievements & Milestones */}
+            {/* Card 2: Achievements & Milestones */}
             <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
-              <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Achievements & Milestones</span></div>
+              <div style={{padding:"14px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:16}}>🏆</span><span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Achievements & Milestones</span></div>
               <div style={{padding:"18px 18px"}}>
                 {/* Milestone trophies */}
                 <div style={{display:"flex",gap:16,marginBottom:16,flexWrap:"wrap"}}>
@@ -2967,9 +3001,9 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               </div>
             </div>
 
-            {/* Feedback from Your Manager — full two-column view */}
+            {/* Card 3: Manager Feedback */}
             <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden"}}>
-              <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Feedback from Your Manager</span></div>
+              <div style={{padding:"14px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:16}}>💬</span><span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Manager Feedback</span></div>
               {(()=>{
                 const positiveNotes = sharedNotes.filter(n => n.tag === "positive");
                 const improveNotes = sharedNotes.filter(n => n.tag === "improve");
