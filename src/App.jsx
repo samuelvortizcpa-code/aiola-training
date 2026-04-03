@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef, useMemo, createContext, useContext } from "react";
-import jsPDF from 'jspdf';
 
 // ─── Responsive CSS ─────────────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
@@ -1807,118 +1806,7 @@ const getOverdueQuizzes = (trainee, quizData) => {
 
 function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dateFrom, dateTo, isTraineeReport } = {}) {
   try {
-  const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter" });
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  const margin = 40;
-  const contentW = pageW - margin * 2;
-  const blue = [59, 141, 208];
-  const navy = [26, 26, 46];
-  const gray = [90, 101, 119];
-  const lightGray = [248, 249, 250];
-  const headerBg = [30, 58, 95];
-  const rowH = 18;
-  const cellPad = 6;
-
-  // ── drawTable helper ──
-  function drawTable(doc, headers, rows, startY, colWidths) {
-    const totalW = colWidths.reduce((a, w) => a + w, 0);
-    let y = startY;
-    // Check for page overflow before starting
-    const needsHeight = rowH + rows.length * rowH + 4;
-    if (y + needsHeight > pageH - 50) {
-      doc.addPage();
-      y = 55;
-    }
-    // Header row
-    if (headers && headers.length > 0) {
-      doc.setFillColor(...headerBg);
-      doc.rect(margin, y, totalW, rowH, "F");
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(9);
-      doc.setTextColor(255, 255, 255);
-      let x = margin;
-      for (let c = 0; c < headers.length; c++) {
-        const txt = String(headers[c] || "");
-        const clipped = txt.length > Math.floor(colWidths[c] / 4.5) ? txt.slice(0, Math.floor(colWidths[c] / 4.5)) + ".." : txt;
-        doc.text(clipped, x + cellPad, y + 13);
-        x += colWidths[c];
-      }
-      y += rowH;
-    }
-    // Data rows
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    for (let r = 0; r < rows.length; r++) {
-      // Page break check
-      if (y + rowH > pageH - 50) {
-        doc.addPage();
-        y = 55;
-        // Redraw header on new page
-        if (headers && headers.length > 0) {
-          doc.setFillColor(...headerBg);
-          doc.rect(margin, y, totalW, rowH, "F");
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(9);
-          doc.setTextColor(255, 255, 255);
-          let hx = margin;
-          for (let c = 0; c < headers.length; c++) {
-            doc.text(String(headers[c] || ""), hx + cellPad, y + 13);
-            hx += colWidths[c];
-          }
-          y += rowH;
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(9);
-        }
-      }
-      // Alternate row background
-      if (r % 2 === 1) {
-        doc.setFillColor(...lightGray);
-        doc.rect(margin, y, totalW, rowH, "F");
-      }
-      doc.setTextColor(...navy);
-      let x = margin;
-      const row = rows[r];
-      for (let c = 0; c < row.length && c < colWidths.length; c++) {
-        const txt = String(row[c] != null ? row[c] : "");
-        const maxChars = Math.floor((colWidths[c] - cellPad * 2) / 4.5);
-        const clipped = txt.length > maxChars ? txt.slice(0, maxChars) + ".." : txt;
-        doc.text(clipped, x + cellPad, y + 13);
-        x += colWidths[c];
-      }
-      y += rowH;
-    }
-    // Bottom border line
-    doc.setDrawColor(220, 220, 220);
-    doc.setLineWidth(0.5);
-    doc.line(margin, y, margin + totalW, y);
-    return y + 4;
-  }
-
-  // ── drawKeyValueRows helper (for summary-style tables without headers) ──
-  function drawKeyValueRows(doc, rows, startY, labelW, valW) {
-    let y = startY;
-    for (let r = 0; r < rows.length; r++) {
-      if (y + rowH > pageH - 50) { doc.addPage(); y = 55; }
-      if (r % 2 === 1) {
-        doc.setFillColor(...lightGray);
-        doc.rect(margin, y, labelW + valW, rowH, "F");
-      }
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(...navy);
-      doc.text(String(rows[r][0] || ""), margin + cellPad, y + 13);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(...gray);
-      const valTxt = String(rows[r][1] || "");
-      const maxChars = Math.floor((valW - cellPad * 2) / 5);
-      doc.text(valTxt.length > maxChars ? valTxt.slice(0, maxChars) + ".." : valTxt, margin + labelW + cellPad, y + 13);
-      y += rowH;
-    }
-    return y + 4;
-  }
-
-  // Date range filtering helpers
+  // Date range filtering
   const rangeFrom = dateFrom ? new Date(dateFrom + "T00:00:00") : null;
   const rangeTo = dateTo ? new Date(dateTo + "T23:59:59") : null;
   const inRange = (dateVal) => {
@@ -1947,104 +1835,9 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   const milestones = getMilestoneStatus(tasks);
   const dateStr = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
   const reportTitle = isTraineeReport ? "My Progress Report" : `${milestoneLabel} Performance Review`;
-
-  // Helper: draw the Aiola logo
-  const drawLogo = (x, y, scale = 1) => {
-    doc.setDrawColor(...blue);
-    doc.setLineWidth(2 * scale);
-    doc.line(x + 15 * scale, y + 35 * scale, x + 30 * scale, y + 10 * scale);
-    doc.line(x + 30 * scale, y + 10 * scale, x + 45 * scale, y + 35 * scale);
-    doc.setLineWidth(2.5 * scale);
-    doc.line(x + 7 * scale, y + 35 * scale, x + 53 * scale, y + 35 * scale);
-    doc.setLineWidth(1.5 * scale);
-    doc.rect(x + 26 * scale, y + 22 * scale, x + 8 * scale, y + 13 * scale);
-    doc.line(x + 35 * scale, y + 27 * scale, x + 50 * scale, y + 27 * scale);
-    doc.line(x + 40 * scale, y + 22 * scale, x + 50 * scale, y + 22 * scale);
-  };
-
-  const sectionHeader = (title, yPos) => {
-    doc.setFontSize(16);
-    doc.setTextColor(...navy);
-    doc.setFont("helvetica", "bold");
-    doc.text(title, margin, yPos);
-    doc.setDrawColor(...blue);
-    doc.setLineWidth(1.5);
-    doc.line(margin, yPos + 6, pageW - margin, yPos + 6);
-    return yPos + 24;
-  };
-
-  const addFooter = (pageNum, totalPages) => {
-    doc.setFontSize(8);
-    doc.setTextColor(...gray);
-    doc.setFont("helvetica", "normal");
-    doc.text("Aiola CPA, PLLC -- Confidential", margin, pageH - 25);
-    doc.text(`Page ${pageNum} of ${totalPages}`, pageW / 2, pageH - 25, { align: "center" });
-    doc.text(trainee.name, pageW - margin, pageH - 25, { align: "right" });
-  };
-
-  // ── PAGE 1: Cover ──
-  doc.setFillColor(...navy);
-  doc.rect(0, 0, pageW, pageH, "F");
-  drawLogo(pageW / 2 - 30, 160, 2);
-
-  doc.setFontSize(14);
-  doc.setTextColor(...blue);
-  doc.setFont("helvetica", "bold");
-  doc.text("AIOLA CPA, PLLC", pageW / 2, 280, { align: "center" });
-
-  doc.setFontSize(28);
-  doc.setTextColor(255, 255, 255);
-  doc.text(trainee.name, pageW / 2, 340, { align: "center" });
-
-  doc.setFontSize(20);
-  doc.setTextColor(...blue);
-  doc.text(reportTitle, pageW / 2, 370, { align: "center" });
-
-  doc.setFontSize(12);
-  doc.setTextColor(168, 208, 240);
-  doc.text(isTraineeReport ? "Aiola CPA, PLLC" : "Prepared by Aiola CPA, PLLC", pageW / 2, 410, { align: "center" });
-  doc.text(dateStr, pageW / 2, 430, { align: "center" });
-  if (rangeLbl) {
-    doc.setFontSize(10);
-    doc.text(`Report Period: ${rangeLbl}`, pageW / 2, 450, { align: "center" });
-  }
-
-  doc.setFontSize(9);
-  doc.setTextColor(100, 110, 130);
-  doc.text("This document is confidential and intended for internal use only.", pageW / 2, pageH - 50, { align: "center" });
-
-  // ── PAGE 2: Executive Summary ──
-  doc.addPage();
-  let y = sectionHeader("Executive Summary", 55);
-
   const diff = prog.pct - timelinePct;
   const statusLabel = diff >= 0 ? "On Track" : diff >= -10 ? "Slightly Behind" : "Behind Schedule";
 
-  const summaryRows = [
-    ["Start Date", new Date(trainee.startDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })],
-    ["Days in Program", `${days} days`],
-    ["Current Phase", phaseLbl],
-    ["Track", trainee.track || "Advisory"],
-    ["Task Completion", `${prog.doneTasks}/${totalTasks} tasks (${prog.pct}%)`],
-    ["Quizzes Passed", `${prog.passedQuizzes}/${totalQuizzes}`],
-    ["Timeline Progress", `${timelinePct}%`],
-    ["Timeline Status", statusLabel],
-    ["Milestones", milestones.map(m => `${m.label}: ${m.unlocked ? "OK" : `${m.done}/${m.total}`}`).join("  |  ")],
-  ];
-  if (rangeLbl) summaryRows.push(["Report Period", rangeLbl]);
-
-  y = drawKeyValueRows(doc, summaryRows, y, 150, contentW - 150);
-
-  y += 12;
-  doc.setFontSize(12);
-  doc.setTextColor(...navy);
-  doc.setFont("helvetica", "bold");
-  doc.text("Overall Assessment", margin, y);
-  y += 16;
-
-  doc.setFontSize(10);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(...gray);
   let assessment;
   if (diff >= 0) {
     assessment = `${trainee.name} is performing well and is on track to meet their ${milestoneLabel} targets. Task completion is at ${prog.pct}% with ${prog.passedQuizzes} of ${totalQuizzes} quizzes passed. Continue monitoring progress and providing feedback.`;
@@ -2053,13 +1846,30 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   } else {
     assessment = `${trainee.name} is significantly behind their expected progress (${prog.pct}% complete vs ${timelinePct}% expected). Immediate attention is recommended. Schedule a 1-on-1 to identify blockers and create an action plan.`;
   }
-  const splitAssessment = doc.splitTextToSize(assessment, contentW);
-  doc.text(splitAssessment, margin, y);
 
-  // ── PAGE 3: KPI Performance ──
-  doc.addPage();
-  y = sectionHeader("KPI Performance", 55);
+  // Helper: escape HTML
+  const esc = (s) => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
+  // Helper: build an HTML table
+  const htmlTable = (headers, rows) => {
+    let h = '<table><thead><tr>' + headers.map(c => `<th>${esc(c)}</th>`).join("") + '</tr></thead><tbody>';
+    rows.forEach((row, i) => {
+      h += `<tr class="${i%2===1?'alt':''}">` + row.map(c => `<td>${esc(c)}</td>`).join("") + '</tr>';
+    });
+    return h + '</tbody></table>';
+  };
+
+  // Helper: key-value rows
+  const kvTable = (rows) => {
+    let h = '<table class="kv">';
+    rows.forEach((r, i) => {
+      h += `<tr class="${i%2===1?'alt':''}"><td class="kv-label">${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`;
+    });
+    return h + '</table>';
+  };
+
+  // ── Build KPI section ──
+  let kpiHtml = '';
   ONBOARDING_KPIS.forEach((kpiDef) => {
     const allEntries = kpi[kpiDef.id] || [];
     const entries = allEntries.filter(e => inRange(e.date));
@@ -2076,69 +1886,33 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
       trend = avgDiff > 0.05 ? "Improving" : avgDiff < -0.05 ? "Declining" : "Stable";
     }
 
-    if (y > pageH - 180) { doc.addPage(); y = 55; }
-
-    doc.setFontSize(12);
-    doc.setTextColor(...navy);
-    doc.setFont("helvetica", "bold");
-    doc.text(kpiDef.category, margin, y);
-    y += 14;
-
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(...gray);
-    const descLines = doc.splitTextToSize(kpiDef.description, contentW);
-    doc.text(descLines, margin, y);
-    y += descLines.length * 11 + 6;
-
-    const kpiStatsRows = [
+    kpiHtml += `<h3>${esc(kpiDef.category)}</h3>`;
+    kpiHtml += `<p class="desc">${esc(kpiDef.description)}</p>`;
+    kpiHtml += kvTable([
       ["Target (Current Phase)", target.toFixed(1)],
       ["Current Average", entries.length > 0 ? avg.toFixed(2) : "N/A"],
       ["Status", kpiStatus],
       ["Trend", trend],
       ["Frequency", kpiDef.frequency],
-    ];
-
-    y = drawKeyValueRows(doc, kpiStatsRows, y, 160, contentW - 160);
-    y += 6;
+    ]);
 
     if (entries.length > 0) {
-      y = drawTable(doc,
+      kpiHtml += htmlTable(
         ["Week", "Score", "Submitted By", "Comment"],
-        entries.map(e => [e.week, e.score.toFixed(1), e.manager, e.comment || ""]),
-        y,
-        [50, 50, 120, contentW - 220]
+        entries.map(e => [e.week, e.score.toFixed(1), e.manager, e.comment || ""])
       );
-      y += 12;
     } else {
-      doc.setFontSize(9);
-      doc.setTextColor(...gray);
-      doc.text("No scores recorded yet.", margin + 8, y + 4);
-      y += 20;
+      kpiHtml += '<p class="empty">No scores recorded yet.</p>';
     }
   });
+  kpiHtml += '<p class="footnote">KPI data is based on weekly manager submissions and team pulse surveys.</p>';
 
-  doc.setFontSize(8);
-  doc.setTextColor(...gray);
-  doc.setFont("helvetica", "italic");
-  doc.text("KPI data is based on weekly manager submissions and team pulse surveys.", margin, y + 8);
-
-  // ── PAGE 4: Training Progress Detail ──
-  doc.addPage();
-  y = sectionHeader("Training Progress by Phase", 55);
-
+  // ── Build training progress section ──
+  let progressHtml = '';
   pMeta.forEach((pm) => {
     const phaseSections = PHASES.filter(p => pm.ids.includes(p.id));
     if (phaseSections.length === 0) return;
-
-    if (y > pageH - 100) { doc.addPage(); y = 55; }
-
-    doc.setFontSize(11);
-    doc.setTextColor(...navy);
-    doc.setFont("helvetica", "bold");
-    doc.text(pm.label, margin, y);
-    y += 14;
-
+    progressHtml += `<h3>${esc(pm.label)}</h3>`;
     const rows = [];
     phaseSections.forEach(phase => {
       phase.items.forEach(item => {
@@ -2146,132 +1920,57 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
         const tasksTotal = item.tasks.length;
         const quizStatus = item.quiz ? (isQuizPassed(quizzes, item.id) ? "Passed" : "Not Passed") : "N/A";
         const highlight = tasksDone === 0 && days > (pm === pMeta[0] ? 0 : pm === pMeta[1] ? 30 : 60);
-        rows.push([
-          item.title,
-          `${tasksDone}/${tasksTotal}`,
-          quizStatus,
-          highlight ? "No progress" : "",
-        ]);
+        rows.push([item.title, `${tasksDone}/${tasksTotal}`, quizStatus, highlight ? "No progress" : ""]);
       });
     });
-
-    y = drawTable(doc,
-      ["Section", "Tasks", "Quiz", "Notes"],
-      rows,
-      y,
-      [220, 60, 80, contentW - 360]
-    );
-    y += 10;
+    progressHtml += htmlTable(["Section", "Tasks", "Quiz", "Notes"], rows);
   });
 
-  // ── PAGE 5: Manager Notes & Badges ──
-  doc.addPage();
-  y = sectionHeader(isTraineeReport ? "Feedback & Badges" : "Manager Observations", 55);
-
-  doc.setFontSize(12);
-  doc.setTextColor(...navy);
-  doc.setFont("helvetica", "bold");
-  doc.text("Badges & Recognitions", margin, y);
-  y += 16;
-
+  // ── Build notes & badges section ──
+  let notesHtml = `<h3>Badges &amp; Recognitions</h3>`;
   if (badges.length > 0) {
-    y = drawTable(doc,
-      ["Badge", "Awarded By", "Date"],
-      badges.map(b => [b.label, b.awardedBy, b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : ""]),
-      y,
-      [contentW * 0.45, contentW * 0.3, contentW * 0.25]
-    );
-    y += 12;
+    notesHtml += htmlTable(["Badge", "Awarded By", "Date"],
+      badges.map(b => [b.label, b.awardedBy, b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : ""]));
   } else {
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(...gray);
-    doc.text("No badges awarded yet.", margin + 8, y);
-    y += 20;
+    notesHtml += '<p class="empty">No badges awarded yet.</p>';
   }
 
-  doc.setFontSize(12);
-  doc.setTextColor(...navy);
-  doc.setFont("helvetica", "bold");
-  doc.text(isTraineeReport ? "Feedback" : "Manager Notes", margin, y);
-  y += 16;
-
+  notesHtml += `<h3>${isTraineeReport ? "Feedback" : "Manager Notes"}</h3>`;
   if (notes.length > 0) {
     const sortedNotes = [...notes].sort((a, b) => new Date(a.date) - new Date(b.date));
     const noteHeaders = isTraineeReport ? ["Date", "Author", "Feedback", "Type"] : ["Date", "Author", "Note", "Visibility"];
-    const noteRows = sortedNotes.map(n => [
+    notesHtml += htmlTable(noteHeaders, sortedNotes.map(n => [
       n.date ? new Date(n.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "",
-      n.author,
-      n.text,
+      n.author, n.text,
       isTraineeReport ? (n.tag === "positive" ? "Positive" : n.tag === "improve" ? "Improve" : "General") : (n.visibility === "shared" ? "Shared" : "Internal"),
-    ]);
-    y = drawTable(doc, noteHeaders, noteRows, y, [70, 80, contentW - 230, 80]);
-    y += 12;
+    ]));
   } else {
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(...gray);
-    doc.text(isTraineeReport ? "No feedback shared yet." : "No manager notes recorded yet.", margin + 8, y);
-    y += 20;
+    notesHtml += `<p class="empty">${isTraineeReport ? "No feedback shared yet." : "No manager notes recorded yet."}</p>`;
   }
 
   if (!isTraineeReport) {
-    if (y > pageH - 100) { doc.addPage(); y = 55; }
-    doc.setFontSize(12);
-    doc.setTextColor(...navy);
-    doc.setFont("helvetica", "bold");
-    doc.text("Areas of Focus", margin, y);
-    y += 16;
-
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(...gray);
-
+    notesHtml += '<h3>Areas of Focus</h3>';
     const focusAreas = [];
-    PHASES.forEach(phase => {
-      phase.items.forEach(item => {
-        if (item.quiz && !isQuizPassed(quizzes, item.id)) {
-          focusAreas.push(`Quiz not passed: ${item.title}`);
-        }
-      });
-    });
+    PHASES.forEach(phase => { phase.items.forEach(item => { if (item.quiz && !isQuizPassed(quizzes, item.id)) focusAreas.push(`Quiz not passed: ${item.title}`); }); });
     ONBOARDING_KPIS.forEach(kpiDef => {
       const entries = (kpi[kpiDef.id] || []).filter(e => inRange(e.date));
       if (entries.length > 0) {
         const avg = entries.reduce((a, e) => a + e.score, 0) / entries.length;
         const currentPhaseKey = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
         const target = kpiDef.targets[currentPhaseKey];
-        if (avg < target) {
-          focusAreas.push(`${kpiDef.category}: Average ${avg.toFixed(2)} below target ${target.toFixed(1)}`);
-        }
+        if (avg < target) focusAreas.push(`${kpiDef.category}: Average ${avg.toFixed(2)} below target ${target.toFixed(1)}`);
       }
     });
-    if (prog.pct < timelinePct - 10) {
-      focusAreas.push(`Overall progress (${prog.pct}%) significantly behind timeline (${timelinePct}%)`);
-    }
+    if (prog.pct < timelinePct - 10) focusAreas.push(`Overall progress (${prog.pct}%) significantly behind timeline (${timelinePct}%)`);
     if (focusAreas.length > 0) {
-      focusAreas.forEach((area) => {
-        const bullet = `  -  ${area}`;
-        const lines = doc.splitTextToSize(bullet, contentW - 16);
-        doc.text(lines, margin + 8, y);
-        y += lines.length * 13;
-      });
+      notesHtml += '<ul>' + focusAreas.map(a => `<li>${esc(a)}</li>`).join("") + '</ul>';
     } else {
-      doc.text("No specific areas of concern identified. Continue current trajectory.", margin + 8, y);
+      notesHtml += '<p class="empty">No specific areas of concern identified. Continue current trajectory.</p>';
     }
   }
 
-  // ── PAGE 6: AI Training Assistant Activity ──
-  doc.addPage();
-  y = sectionHeader("AI Training Assistant Activity", 55);
-
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "italic");
-  doc.setTextColor(...gray);
-  doc.text("Questions asked reflect areas where the trainee sought additional guidance during onboarding.", margin, y);
-  y += 18;
-
-  // Pull chat history from localStorage
+  // ── Build AI chat section ──
+  let chatHtml = '<p class="desc">Questions asked reflect areas where the trainee sought additional guidance during onboarding.</p>';
   let chatRows = [];
   try {
     const chatKey = `aiola_chats_${trainee.name}`;
@@ -2286,25 +1985,145 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
       chatRows.push([dateDisp, chat.title || "Untitled", String(msgCount)]);
     });
   } catch { /* ignore localStorage errors */ }
-
   if (chatRows.length > 0) {
-    y = drawTable(doc, ["Date", "Conversation Title", "Messages"], chatRows, y, [90, contentW - 170, 80]);
+    chatHtml += htmlTable(["Date", "Conversation Title", "Messages"], chatRows);
   } else {
-    y = drawTable(doc, ["Date", "Conversation Title", "Messages"], [["--", "No AI assistant activity recorded during this period.", "--"]], y, [90, contentW - 170, 80]);
+    chatHtml += htmlTable(["Date", "Conversation Title", "Messages"], [["--", "No AI assistant activity recorded during this period.", "--"]]);
   }
 
-  // ── Add footers to all pages except cover ──
-  const totalPages = doc.internal.getNumberOfPages();
-  for (let i = 2; i <= totalPages; i++) {
-    doc.setPage(i);
-    addFooter(i - 1, totalPages - 1);
+  // ── Assemble full HTML document ──
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>${esc(trainee.name)} - ${esc(reportTitle)}</title>
+<style>
+  @page { size: letter; margin: 0.75in 1in; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Georgia, 'Times New Roman', serif; font-size: 11pt; color: #1a1a2e; line-height: 1.5; }
+  .page { page-break-after: always; min-height: 100vh; }
+  .page:last-child { page-break-after: avoid; }
+  /* Cover page */
+  .cover { background: #1a1a2e; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2in 1in; min-height: 100vh; }
+  .cover .logo-text { font-family: Arial, Helvetica, sans-serif; font-size: 14pt; font-weight: bold; color: #3B8DD0; letter-spacing: 2px; margin-bottom: 40px; }
+  .cover .trainee-name { font-size: 28pt; font-weight: bold; margin-bottom: 10px; }
+  .cover .report-title { font-size: 18pt; color: #3B8DD0; margin-bottom: 30px; }
+  .cover .cover-sub { font-size: 11pt; color: #a8d0f0; margin-bottom: 6px; }
+  .cover .confidential { position: absolute; bottom: 40px; font-size: 9pt; color: #646e82; }
+  /* Section pages */
+  .section { padding: 20px 0; }
+  .section-title { font-size: 16pt; font-weight: bold; color: #1a1a2e; border-bottom: 2px solid #3B8DD0; padding-bottom: 6px; margin-bottom: 16px; }
+  h3 { font-size: 12pt; color: #1a1a2e; margin: 16px 0 8px; }
+  p.desc { font-size: 10pt; color: #5a6577; margin-bottom: 8px; }
+  p.empty { font-size: 10pt; color: #5a6577; font-style: italic; margin: 6px 0 12px 8px; }
+  p.footnote { font-size: 8pt; color: #5a6577; font-style: italic; margin-top: 10px; }
+  p.assessment { font-size: 10pt; color: #5a6577; line-height: 1.6; margin: 6px 0 0; }
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 9pt; }
+  th { background: #1e3a5f; color: #fff; font-weight: bold; text-align: left; padding: 6px 8px; }
+  td { padding: 5px 8px; border-bottom: 1px solid #e5e7eb; color: #1a1a2e; }
+  tr.alt td { background: #f8f9fa; }
+  table.kv { margin-bottom: 10px; }
+  table.kv td.kv-label { font-weight: bold; width: 200px; }
+  table.kv td { font-size: 10pt; }
+  ul { margin: 6px 0 12px 24px; font-size: 10pt; color: #5a6577; }
+  li { margin-bottom: 4px; }
+  /* Footer */
+  .footer { font-size: 8pt; color: #5a6577; display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid #e5e7eb; margin-top: auto; }
+  @media print {
+    .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tr.alt td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
   }
+  @media screen {
+    body { max-width: 8.5in; margin: 0 auto; padding: 0.5in; background: #f5f5f5; }
+    .page { background: #fff; padding: 0.75in 1in; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.1); border-radius: 4px; min-height: auto; }
+    .cover { border-radius: 4px; min-height: 600px; position: relative; }
+    .print-bar { position: sticky; top: 0; background: #1a1a2e; color: #fff; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; font-family: Arial, sans-serif; font-size: 13px; z-index: 10; margin: -0.5in -0.5in 20px; width: calc(100% + 1in); border-radius: 0; }
+    .print-bar button { background: #3B8DD0; color: #fff; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: Arial, sans-serif; }
+    .print-bar button:hover { background: #2a7bc0; }
+  }
+</style>
+</head>
+<body>
+<div class="print-bar no-print">
+  <span>Aiola CPA, PLLC &mdash; ${esc(reportTitle)}</span>
+  <button onclick="window.print()">Print / Save as PDF</button>
+</div>
 
-  // ── Save ──
-  const dateShort = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).replace(/[\s,]+/g, "");
-  const safeName = trainee.name.replace(/\s+/g, "_");
-  const fileLabel = isTraineeReport ? "Progress_Report" : `${milestoneLabel.replace("-", "")}_Review`;
-  doc.save(`${safeName}_${fileLabel}_${dateShort}.pdf`);
+<!-- PAGE 1: Cover -->
+<div class="page cover">
+  <div class="logo-text">AIOLA CPA, PLLC</div>
+  <div class="trainee-name">${esc(trainee.name)}</div>
+  <div class="report-title">${esc(reportTitle)}</div>
+  <div class="cover-sub">${isTraineeReport ? "Aiola CPA, PLLC" : "Prepared by Aiola CPA, PLLC"}</div>
+  <div class="cover-sub">${esc(dateStr)}</div>
+  ${rangeLbl ? `<div class="cover-sub" style="margin-top:8px;font-size:10pt">Report Period: ${esc(rangeLbl)}</div>` : ""}
+  <div class="confidential">This document is confidential and intended for internal use only.</div>
+</div>
+
+<!-- PAGE 2: Executive Summary -->
+<div class="page section">
+  <div class="section-title">Executive Summary</div>
+  ${kvTable([
+    ["Start Date", new Date(trainee.startDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })],
+    ["Days in Program", `${days} days`],
+    ["Current Phase", phaseLbl],
+    ["Track", trainee.track || "Advisory"],
+    ["Task Completion", `${prog.doneTasks}/${totalTasks} tasks (${prog.pct}%)`],
+    ["Quizzes Passed", `${prog.passedQuizzes}/${totalQuizzes}`],
+    ["Timeline Progress", `${timelinePct}%`],
+    ["Timeline Status", statusLabel],
+    ["Milestones", milestones.map(m => `${m.label}: ${m.unlocked ? "OK" : `${m.done}/${m.total}`}`).join("  |  ")],
+    ...(rangeLbl ? [["Report Period", rangeLbl]] : []),
+  ])}
+  <h3>Overall Assessment</h3>
+  <p class="assessment">${esc(assessment)}</p>
+  <div class="footer"><span>Aiola CPA, PLLC &mdash; Confidential</span><span>${esc(trainee.name)}</span></div>
+</div>
+
+<!-- PAGE 3: KPI Performance -->
+<div class="page section">
+  <div class="section-title">KPI Performance</div>
+  ${kpiHtml}
+  <div class="footer"><span>Aiola CPA, PLLC &mdash; Confidential</span><span>${esc(trainee.name)}</span></div>
+</div>
+
+<!-- PAGE 4: Training Progress -->
+<div class="page section">
+  <div class="section-title">Training Progress by Phase</div>
+  ${progressHtml}
+  <div class="footer"><span>Aiola CPA, PLLC &mdash; Confidential</span><span>${esc(trainee.name)}</span></div>
+</div>
+
+<!-- PAGE 5: Notes & Badges -->
+<div class="page section">
+  <div class="section-title">${isTraineeReport ? "Feedback &amp; Badges" : "Manager Observations"}</div>
+  ${notesHtml}
+  <div class="footer"><span>Aiola CPA, PLLC &mdash; Confidential</span><span>${esc(trainee.name)}</span></div>
+</div>
+
+<!-- PAGE 6: AI Assistant Activity -->
+<div class="page section">
+  <div class="section-title">AI Training Assistant Activity</div>
+  ${chatHtml}
+  <div class="footer"><span>Aiola CPA, PLLC &mdash; Confidential</span><span>${esc(trainee.name)}</span></div>
+</div>
+
+</body>
+</html>`;
+
+  // Open in new window and trigger print
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert("Please allow pop-ups to generate the report.");
+    return;
+  }
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => { win.print(); }, 500);
+
   } catch (err) {
     alert("Report generation failed: " + (err.message || String(err)));
     console.error("Report generation error:", err);
