@@ -1542,6 +1542,16 @@ function AdminClientList() {
   const [sortCol, setSortCol] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
   const [statusFilter, setStatusFilter] = useState(null); // "Onboarding" | "Needs Attention" | null
+  // Custom columns
+  const [customCols, setCustomCols] = useState(() => { try { const s = localStorage.getItem("aiola_client_custom_cols"); return s ? JSON.parse(s) : []; } catch { return []; } });
+  const [customData, setCustomData] = useState(() => { try { const s = localStorage.getItem("aiola_client_custom_data"); return s ? JSON.parse(s) : {}; } catch { return {}; } });
+  const [showAddCol, setShowAddCol] = useState(false);
+  const [newColName, setNewColName] = useState("");
+  const [newColType, setNewColType] = useState("Text");
+  useEffect(() => { localStorage.setItem("aiola_client_custom_cols", JSON.stringify(customCols)); }, [customCols]);
+  useEffect(() => { localStorage.setItem("aiola_client_custom_data", JSON.stringify(customData)); }, [customData]);
+  const addCustomCol = () => { if (!newColName.trim()) return; setCustomCols(p => [...p, { id: "cc_" + Date.now(), name: newColName.trim(), type: newColType }]); setNewColName(""); setNewColType("Text"); setShowAddCol(false); };
+  const updateCustomCell = (clientId, colId, val) => { setCustomData(p => ({...p, [clientId]: {...(p[clientId]||{}), [colId]: val}})); };
 
   const getStatus = (c) => {
     if (c.flagged) return "Needs Attention";
@@ -1588,10 +1598,12 @@ function AdminClientList() {
   const sortIcon = (col) => sortCol === col ? (sortAsc ? " ↑" : " ↓") : "";
 
   const exportCsv = () => {
-    const header = "Client ID,Name,Tier,Email,% Complete,Status,Onboard Date";
+    const ccHeaders = customCols.map(c => c.name).join(",");
+    const header = "Client ID,Name,Tier,Email,% Complete,Status,Onboard Date" + (ccHeaders ? "," + ccHeaders : "");
     const rows = filtered.map(c => {
       const pct = Math.round(c.completedTodos / c.totalTodos * 100);
-      return `${c.id},"${c.name}",${c.tier},${c.email},${pct}%,${getStatus(c)},${c.onboardDate || ""}`;
+      const ccVals = customCols.map(col => `"${(customData[c.id]?.[col.id]||"").replace(/"/g,'""')}"`).join(",");
+      return `${c.id},"${c.name}",${c.tier},${c.email},${pct}%,${getStatus(c)},${c.onboardDate || ""}` + (ccVals ? "," + ccVals : "");
     });
     const csv = [header, ...rows].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
@@ -1668,16 +1680,25 @@ function AdminClientList() {
           </button>
         </div>
         <div className="r-table-wrap">
-        <div className="r-table-grid" style={{display:"grid",gridTemplateColumns:"80px 2fr 0.8fr 1.5fr 0.8fr 0.8fr 140px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
-          {sortableHeader("Client ID","id")}{sortableHeader("Client Name","name")}{sortableHeader("Tier","tier")}<span>Email</span>{sortableHeader("% Complete","pct")}<span>Status</span><span></span>
+        <div className="r-table-grid" style={{display:"grid",gridTemplateColumns:`80px 2fr 0.8fr 1.5fr 0.8fr 0.8fr${customCols.map(()=>" 1fr").join("")} 140px 32px`,padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3,alignItems:"center"}}>
+          {sortableHeader("Client ID","id")}{sortableHeader("Client Name","name")}{sortableHeader("Tier","tier")}<span>Email</span>{sortableHeader("% Complete","pct")}<span>Status</span>{customCols.map(cc=><span key={cc.id}>{cc.name}</span>)}<span></span>
+          <button onClick={()=>setShowAddCol(true)} title="Add custom column" style={{width:24,height:24,border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",color:B.t3,fontSize:14,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",padding:0,lineHeight:1}}>+</button>
         </div>
+        {showAddCol && (
+          <div style={{padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,background:"#f8fafc",display:"flex",gap:10,alignItems:"flex-end",flexWrap:"wrap"}}>
+            <div><label style={{fontSize:10,fontWeight:600,color:B.t3,display:"block",marginBottom:3}}>Column Name</label><input value={newColName} onChange={e=>setNewColName(e.target.value)} placeholder="e.g. Account Manager" style={{padding:"7px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:12,fontFamily:"inherit",width:160,outline:"none"}} onKeyDown={e=>{if(e.key==="Enter")addCustomCol()}}/></div>
+            <div><label style={{fontSize:10,fontWeight:600,color:B.t3,display:"block",marginBottom:3}}>Type</label><select value={newColType} onChange={e=>setNewColType(e.target.value)} style={{padding:"7px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:12,fontFamily:"inherit",background:"#fff"}}><option>Text</option><option>Number</option><option>Date</option></select></div>
+            <button onClick={addCustomCol} disabled={!newColName.trim()} style={{padding:"7px 16px",border:"none",borderRadius:6,background:newColName.trim()?B.blue:B.bdr,color:"#fff",fontSize:11,fontWeight:600,cursor:newColName.trim()?"pointer":"default",fontFamily:"inherit"}}>Add Column</button>
+            <button onClick={()=>{setShowAddCol(false);setNewColName("");setNewColType("Text")}} style={{background:"none",border:"none",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit",textDecoration:"underline"}}>Cancel</button>
+          </div>
+        )}
         {filtered.length===0&&<div style={{padding:"32px 24px",textAlign:"center",fontSize:13,color:B.t3}}>No clients match your search.</div>}
         {filtered.map(c=>{
           const pct=Math.round(c.completedTodos/c.totalTodos*100);
           const pctColor=pct>=80?B.ok:pct>=50?B.blue:pct>=30?B.warn:B.err;
           const status=getStatus(c);
           return(
-            <div key={c.id} className="r-table-grid" style={{display:"grid",gridTemplateColumns:"80px 2fr 0.8fr 1.5fr 0.8fr 0.8fr 140px",padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
+            <div key={c.id} className="r-table-grid" style={{display:"grid",gridTemplateColumns:`80px 2fr 0.8fr 1.5fr 0.8fr 0.8fr${customCols.map(()=>" 1fr").join("")} 140px 32px`,padding:"14px 24px",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",transition:"background .1s"}}
               onMouseEnter={e=>e.currentTarget.style.background="#fafbfc"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
               <span style={{fontSize:11,fontWeight:600,color:B.t2,fontFamily:"monospace"}}>{c.id}</span>
               <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -1691,10 +1712,15 @@ function AdminClientList() {
                 <span style={{fontSize:12,fontWeight:600,color:pctColor}}>{pct}%</span>
               </div>
               <span style={statusPill(status)}>{status}</span>
+              {customCols.map(cc => {
+                const val = customData[c.id]?.[cc.id] || "";
+                return <input key={cc.id} value={val} onChange={e=>updateCustomCell(c.id,cc.id,e.target.value)} type={cc.type==="Number"?"number":cc.type==="Date"?"date":"text"} style={{padding:"5px 8px",border:`1px solid ${B.bdr}`,borderRadius:5,fontSize:11,fontFamily:"inherit",outline:"none",width:"100%",boxSizing:"border-box",background:"transparent"}} onFocus={e=>{e.target.style.borderColor=B.blue;e.target.style.background="#fff"}} onBlur={e=>{e.target.style.borderColor=B.bdr;e.target.style.background="transparent"}}/>;
+              })}
               <div style={{display:"flex",gap:6}}>
                 <button onClick={()=>setViewingClient(c)} style={{padding:"5px 10px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>View</button>
                 <button onClick={()=>setConfirmOffboard(c)} style={{padding:"5px 10px",border:`1px solid ${B.err}`,borderRadius:6,background:"#fff",color:B.err,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Off-board</button>
               </div>
+              <span/>
             </div>
           );
         })}
@@ -2295,7 +2321,7 @@ function ReportDateModal({ title, startDate, onGenerate, onClose }) {
   );
 }
 
-function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateReport, onLogout }) {
+function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateReport, onLogout, kpiData: allKpiData }) {
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
@@ -2393,6 +2419,67 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
             <div style={{fontSize:10,color:B.t3,marginTop:4}}>{trainees.filter(t=>daysSince(t.startDate)<=30).length} in first 30 days</div>
           </div>
         </div>
+
+        {/* Team KPI Overview Chart */}
+        {(()=>{
+          const chartW = 600, chartH = 200, padL = 40, padR = 20, padT = 10, padB = 40;
+          const plotW = chartW - padL - padR, plotH = chartH - padT - padB;
+          const maxScore = 5;
+          const benchmark = 4.0;
+          const traineeKpiData = trainees.map(t => {
+            const tk = allKpiData?.[t.id] || {};
+            const commE = tk.communication || [];
+            const teamE = tk.teamwork || [];
+            const commA = commE.length > 0 ? commE.reduce((a,e)=>a+e.score,0)/commE.length : null;
+            const teamA = teamE.length > 0 ? teamE.reduce((a,e)=>a+e.score,0)/teamE.length : null;
+            const d = daysSince(t.startDate);
+            const phaseKey = d <= 30 ? "day30" : d <= 60 ? "day60" : "day90";
+            const commTarget = ONBOARDING_KPIS.find(k=>k.id==="communication")?.targets?.[phaseKey] || 4;
+            const teamTarget = ONBOARDING_KPIS.find(k=>k.id==="teamwork")?.targets?.[phaseKey] || 4;
+            return { name: t.name.split(" ")[0], commAvg: commA, teamAvg: teamA, commTarget, teamTarget };
+          });
+          const groupW = plotW / traineeKpiData.length;
+          const barW = Math.min(groupW * 0.28, 28);
+          const barColor = (score, target) => score >= target ? B.ok : score >= target - 0.3 ? B.warn : B.err;
+          const benchmarkY = padT + plotH - (benchmark / maxScore * plotH);
+          return (
+            <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",padding:"18px 24px",marginBottom:28}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
+                <span style={{fontSize:14,fontWeight:700,color:B.navy}}>Team KPI Overview</span>
+                <div style={{display:"flex",alignItems:"center",gap:14,fontSize:10,color:B.t3}}>
+                  <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:10,borderRadius:2,background:B.blue,display:"inline-block"}}/> Communication</span>
+                  <span style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:10,height:10,borderRadius:2,background:B.purple,display:"inline-block"}}/> Teamwork</span>
+                </div>
+              </div>
+              <svg viewBox={`0 0 ${chartW} ${chartH}`} style={{width:"100%",maxHeight:200}}>
+                {/* Y-axis gridlines and labels */}
+                {[0,1,2,3,4,5].map(v => {
+                  const yy = padT + plotH - (v / maxScore * plotH);
+                  return <g key={v}><line x1={padL} y1={yy} x2={chartW-padR} y2={yy} stroke="#f1f5f9" strokeWidth="1"/><text x={padL-6} y={yy+3} textAnchor="end" fontSize="9" fill="#94a3b8">{v}</text></g>;
+                })}
+                {/* Benchmark line */}
+                <line x1={padL} y1={benchmarkY} x2={chartW-padR} y2={benchmarkY} stroke={B.blue} strokeWidth="1" strokeDasharray="5,4" opacity=".5"/>
+                <text x={chartW-padR+2} y={benchmarkY+3} fontSize="8" fill={B.blue} opacity=".7">4.0</text>
+                {/* Bars */}
+                {traineeKpiData.map((td, i) => {
+                  const cx = padL + groupW * i + groupW / 2;
+                  const commH = td.commAvg !== null ? (td.commAvg / maxScore * plotH) : 0;
+                  const teamH = td.teamAvg !== null ? (td.teamAvg / maxScore * plotH) : 0;
+                  const commColor = td.commAvg !== null ? barColor(td.commAvg, td.commTarget) : "#e2e8f0";
+                  const teamColor = td.teamAvg !== null ? barColor(td.teamAvg, td.teamTarget) : "#e2e8f0";
+                  return <g key={i}>
+                    <rect x={cx - barW - 2} y={padT + plotH - commH} width={barW} height={Math.max(commH, 2)} rx="3" fill={commColor} opacity={td.commAvg !== null ? 1 : .3}/>
+                    <rect x={cx + 2} y={padT + plotH - teamH} width={barW} height={Math.max(teamH, 2)} rx="3" fill={td.teamAvg !== null ? B.purple : "#e2e8f0"} opacity={td.teamAvg !== null ? .8 : .3}/>
+                    {td.commAvg !== null && <text x={cx - barW/2 - 2} y={padT + plotH - commH - 4} textAnchor="middle" fontSize="8" fontWeight="600" fill={commColor}>{td.commAvg.toFixed(1)}</text>}
+                    {td.teamAvg !== null && <text x={cx + barW/2 + 2} y={padT + plotH - teamH - 4} textAnchor="middle" fontSize="8" fontWeight="600" fill={B.purple}>{td.teamAvg.toFixed(1)}</text>}
+                    {td.commAvg === null && td.teamAvg === null && <text x={cx} y={padT + plotH - 10} textAnchor="middle" fontSize="8" fill="#94a3b8">No data</text>}
+                    <text x={cx} y={chartH - 8} textAnchor="middle" fontSize="10" fontWeight="600" fill="#475569">{td.name}</text>
+                  </g>;
+                })}
+              </svg>
+            </div>
+          );
+        })()}
 
         {/* Drill-Down Modal */}
         {drillDown && (
@@ -2544,6 +2631,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   const [sO, setSO] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : true);
   const [eP, setEP] = useState({week1:true});
   const [perfPage, setPerfPage] = useState(false);
+  const [expandedWeeks, setExpandedWeeks] = useState({});
   const mR = useRef(null);
   const prog = calcProg(completedTasks, quizResults);
   const cPh = PHASES.find(p=>p.id===aP);
@@ -2572,7 +2660,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
     <div style={{fontFamily:"'DM Sans',sans-serif",display:"flex",height:"100vh",width:"100%",background:B.bg,color:B.t1,overflow:"hidden"}}>
       <style>{`@keyframes milestoneGlow{0%,100%{filter:drop-shadow(0 0 4px currentColor) brightness(1)}50%{filter:drop-shadow(0 0 10px currentColor) brightness(1.15)}}`}</style>
       {sO && <div className="r-sidebar-overlay" onClick={()=>setSO(false)}/>}
-      <aside className={sO?"r-trainee-sidebar":""} style={{width:sO?240:0,minWidth:sO?240:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
+      <aside className={sO?"r-trainee-sidebar":""} style={{width:sO?280:0,minWidth:sO?280:0,background:"#fff",borderRight:`1px solid ${B.bdr}`,display:"flex",flexDirection:"column",overflow:"hidden",transition:"width .3s,min-width .3s"}}>
         <div style={{padding:"18px 20px 14px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:10}}>
           <Logo size={30}/><div><div style={{fontWeight:700,fontSize:13,color:B.navy,letterSpacing:.5}}>AIOLA CPA, PLLC</div><div style={{fontSize:10,color:B.t3,marginTop:1}}>Training Portal</div></div>
         </div>
@@ -2748,6 +2836,91 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               </div>
             </div>
 
+            {/* Weekly KPI Drill-Down */}
+            {(commEntries.length > 0 || teamEntries.length > 0) && (
+              <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
+                <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Weekly Score Breakdown</span></div>
+                <div style={{padding:"14px 18px"}}>
+                  {(()=>{
+                    const COMM_QUESTIONS = ["Responds timely and with urgency","Provides complete and accurate information","Meets deadlines","Communication clarity","Teamwork and collaboration"];
+                    const allWeeks = new Set();
+                    commEntries.forEach(e => allWeeks.add(e.week));
+                    teamEntries.forEach(e => allWeeks.add(e.week));
+                    const weekNums = [...allWeeks].sort((a,b)=>a-b);
+                    return weekNums.map(w => {
+                      const cEntry = commEntries.find(e => e.week === w);
+                      const tEntry = teamEntries.find(e => e.week === w);
+                      const isTeamPulse = tEntry && tEntry.manager === "Team Survey";
+                      const wKey = "w" + w;
+                      const isOpen = !!expandedWeeks[wKey];
+                      return (
+                        <div key={w} style={{marginBottom:6}}>
+                          <button onClick={()=>setExpandedWeeks(p=>({...p,[wKey]:!p[wKey]}))} style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"8px 12px",border:`1px solid ${B.bdr}`,borderRadius:8,background:isOpen?"#f8fafc":"#fff",cursor:"pointer",fontFamily:"inherit",fontSize:12,fontWeight:600,color:B.t1,transition:"background .15s"}}>
+                            <span>Week {w}{isTeamPulse && !cEntry ? " (Team Pulse)" : ""}</span>
+                            <div style={{display:"flex",alignItems:"center",gap:8}}>
+                              {cEntry && <span style={{fontSize:10,padding:"2px 8px",borderRadius:4,background:B.blueL,color:B.blue}}>Comm: {cEntry.score.toFixed(1)}</span>}
+                              {tEntry && <span style={{fontSize:10,padding:"2px 8px",borderRadius:4,background:"#faf5ff",color:B.purple}}>Team: {tEntry.score.toFixed(1)}</span>}
+                              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{transition:"transform .15s",transform:isOpen?"rotate(180deg)":"none"}}><path d="M2 3.5l3 3 3-3" stroke={B.t3} strokeWidth="1.5" strokeLinecap="round"/></svg>
+                            </div>
+                          </button>
+                          {isOpen && (
+                            <div style={{padding:"10px 12px 6px",borderLeft:`2px solid ${B.blueM}`,marginLeft:12,marginTop:4}}>
+                              {cEntry && (
+                                <>
+                                  <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:B.blue,marginBottom:6}}>Communication</div>
+                                  <table style={{width:"100%",borderCollapse:"collapse",marginBottom:10}}>
+                                    <thead><tr style={{borderBottom:`1px solid ${B.bdr}`}}>
+                                      <th style={{textAlign:"left",fontSize:10,fontWeight:600,color:B.t3,padding:"4px 8px"}}>Question</th>
+                                      <th style={{textAlign:"center",fontSize:10,fontWeight:600,color:B.t3,padding:"4px 8px",width:50}}>Score</th>
+                                      <th style={{textAlign:"left",fontSize:10,fontWeight:600,color:B.t3,padding:"4px 8px"}}>Comment</th>
+                                    </tr></thead>
+                                    <tbody>{COMM_QUESTIONS.map((q,qi) => (
+                                      <tr key={qi} style={{borderBottom:`1px solid #f1f5f9`}}>
+                                        <td style={{fontSize:11,color:B.t2,padding:"5px 8px"}}>{q}</td>
+                                        <td style={{textAlign:"center",fontSize:11,fontWeight:600,color:B.navy,padding:"5px 8px"}}>{cEntry.score.toFixed(1)}</td>
+                                        <td style={{fontSize:11,color:B.t3,padding:"5px 8px"}}>{qi === 0 ? (cEntry.comment || "") : ""}</td>
+                                      </tr>
+                                    ))}</tbody>
+                                  </table>
+                                </>
+                              )}
+                              {tEntry && (
+                                <>
+                                  <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:B.purple,marginBottom:6}}>Teamwork {isTeamPulse ? "(Team Pulse)" : ""}</div>
+                                  {isTeamPulse ? (
+                                    <div style={{padding:"6px 8px",background:"#faf5ff",borderRadius:6,marginBottom:6}}>
+                                      <div style={{fontSize:11,color:B.t2}}>Team Pulse averaged score: <strong style={{color:B.navy}}>{tEntry.score.toFixed(1)}</strong></div>
+                                      {tEntry.comment && <div style={{fontSize:10,color:B.t3,marginTop:2}}>{tEntry.comment}</div>}
+                                    </div>
+                                  ) : (
+                                    <table style={{width:"100%",borderCollapse:"collapse",marginBottom:6}}>
+                                      <thead><tr style={{borderBottom:`1px solid ${B.bdr}`}}>
+                                        <th style={{textAlign:"left",fontSize:10,fontWeight:600,color:B.t3,padding:"4px 8px"}}>Question</th>
+                                        <th style={{textAlign:"center",fontSize:10,fontWeight:600,color:B.t3,padding:"4px 8px",width:50}}>Score</th>
+                                        <th style={{textAlign:"left",fontSize:10,fontWeight:600,color:B.t3,padding:"4px 8px"}}>Comment</th>
+                                      </tr></thead>
+                                      <tbody>
+                                        <tr style={{borderBottom:`1px solid #f1f5f9`}}>
+                                          <td style={{fontSize:11,color:B.t2,padding:"5px 8px"}}>Teamwork and collaboration</td>
+                                          <td style={{textAlign:"center",fontSize:11,fontWeight:600,color:B.navy,padding:"5px 8px"}}>{tEntry.score.toFixed(1)}</td>
+                                          <td style={{fontSize:11,color:B.t3,padding:"5px 8px"}}>{tEntry.comment || ""}</td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  )}
+                                </>
+                              )}
+                              {!cEntry && !tEntry && <div style={{fontSize:11,color:B.t3,fontStyle:"italic"}}>No scores recorded for this week.</div>}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              </div>
+            )}
+
             {/* Achievements & Milestones */}
             <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
               <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Achievements & Milestones</span></div>
@@ -2858,10 +3031,16 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             {cIt.resources?.length>0&&(
               <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
                 <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:6}}><BookIc/><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Resources</span></div>
-                <div style={{padding:"10px 18px",display:"flex",flexWrap:"wrap",gap:6}}>
-                  {cIt.resources.map((r,i)=><span key={i} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"5px 12px",borderRadius:18,fontSize:11,fontWeight:500,background:B.blueL,color:B.blue,border:`1px solid ${B.blueM}`,cursor:"pointer"}}>
-                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 1.5h4.59L10.5 4.91V10.5h-8v-9z" stroke={B.blue} strokeWidth="1.2"/><path d="M7 1.5V5h3.5" stroke={B.blue} strokeWidth="1.2"/></svg>{r.label}
-                  </span>)}
+                <div style={{padding:"10px 18px",display:"flex",flexWrap:"wrap",gap:8}}>
+                  {cIt.resources.map((r,i)=>{
+                    const lbl = (r.label||"").toLowerCase();
+                    const typeIcon = r.type === "pdf" || lbl.includes("pdf") || lbl.includes("handbook") || lbl.includes("checklist") || lbl.includes("guide") || lbl.includes("template") || lbl.includes("overview") ? "\uD83D\uDCC4" : r.type === "video" || lbl.includes("video") ? "\uD83D\uDCF9" : "\uD83D\uDD17";
+                    const typeLabel = typeIcon === "\uD83D\uDCC4" ? "PDF Document" : typeIcon === "\uD83D\uDCF9" ? "Video" : "Link";
+                    return <span key={i} title={`${r.label} (${typeLabel})`} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"10px 14px",minHeight:44,borderRadius:22,fontSize:13,fontWeight:500,background:B.blueL,color:B.blue,border:`1px solid ${B.blueM}`,cursor:"pointer",boxSizing:"border-box",transition:"background .15s"}}
+                      onMouseEnter={e=>{e.currentTarget.style.background="#dbeafe"}} onMouseLeave={e=>{e.currentTarget.style.background=B.blueL}}>
+                      <span style={{fontSize:15}}>{typeIcon}</span>{r.label}
+                    </span>;
+                  })}
                 </div>
               </div>
             )}
@@ -3806,7 +3985,7 @@ export default function App() {
 
   let content = null;
   if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
-  else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onGenerateReport={handleGenerateReport} onLogout={handleLogout}/>;
+  else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onGenerateReport={handleGenerateReport} onLogout={handleLogout} kpiData={kpiData}/>;
   else if(view==="trainee-kpi"&&viewingTrainee) content = <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
   else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}}/>; }
   else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)}/>; }
