@@ -709,20 +709,229 @@ const PHASES = [
     }],
   },
   {
-    id: "week3", label: "Week 3", subtitle: "Entity & Strategy Basics", phase: "Days 1–30",
+    id: "week3", label: "Week 3", subtitle: "Entity Structures", phase: "Days 1–30",
     items: [{
-      id: "w3", title: "Week 3 — Entity Structures & Advisory Concepts",
-      description: "Understand LLCs, S-Corps, and how advisory clients are different from tax prep.",
-      tasks: [
-        { id: "w3t1", text: "Study entity types: Sole Prop, SMLLC, Partnership, S-Corp, C-Corp" },
-        { id: "w3t2", text: "Learn S-Corp election criteria and reasonable salary rules" },
-        { id: "w3t3", text: "Review the Wyoming Holding LLC strategy and when to recommend it" },
-        { id: "w3t4", text: "Understand the difference between tax prep and tax advisory engagements" },
-        { id: "w3t5", text: "Complete practice scenario: recommend an entity structure for a coaching business at $80K net" },
-        { id: "w3t6", text: "Review 3 past ISM transcript excerpts on entity structure discussions" },
+      id: "w3", title: "Week 3 — Entity Structures: LLCs, S-Corps, and the Real Estate Overlay",
+      description: "Understand the entity playbook for real estate clients. By Friday you should know when an LLC is the right structure, when an S-Corp election makes sense (and when it actively hurts), how to compute reasonable compensation defensibly, and why most rental real estate should NOT be in an S-Corp. We'll also cover §199A QBI fundamentals — relevant for both active businesses and the rental real estate safe harbor.",
+      topicTags: ["llc", "s_corp", "reasonable_comp", "pass_through", "entity_election", "qbi", "se_tax", "partnership_taxation"],
+      learningObjectives: [
+        "Explain pass-through taxation and why it dominates real estate",
+        "Identify when an S-Corp election makes sense (active service business with stable income above ~$80k profit) and when it doesn't (passive rentals, low or volatile income)",
+        "Compute defensible reasonable compensation using RCReports/BLS, not arbitrary percentages",
+        "Calculate the SE tax savings from an S-Corp election at varying income levels",
+        "Articulate §199A QBI at a working level: 20% deduction, SSTB rules, and the rental real estate safe harbor (Rev. Proc. 2019-38)",
       ],
-      resources: [{ label: "Entity Structure Guide", url: "#" }, { label: "S-Corp Decision Framework", url: "#" }, { label: "ISM Transcript Excerpts", url: "#" }],
-      quiz: { question: "At what approximate net income level does S-Corp election typically start making sense for a sole proprietor?", options: ["$25,000–$40,000", "$50,000–$60,000", "$75,000–$100,000+", "Any income level"], correct: 2 },
+      tasks: [
+        { id: "w3t1", text: "Read Aiola's Entity Decision Tree (TODO_NICK: link to firm SOP)" },
+        { id: "w3t2", text: "Study reasonable comp methodology: RCReports, BLS Occupational Employment Statistics, comparable position salaries" },
+        { id: "w3t3", text: "Review the Rivera return — Alex's consulting business is currently on Schedule C. Is S-Corp the right next step?" },
+        { id: "w3t4", text: "Read IRC §199A overview — focus on Sections 199A(a), (d) (SSTB), and Rev. Proc. 2019-38 (rental real estate safe harbor)" },
+        { id: "w3t5", text: "Read IRS guidance on S-Corp reasonable compensation: 'Wage Compensation for S Corporation Officers' fact sheet" },
+        { id: "w3t6", text: "Complete the entity scenario practice set in this week's assessment" },
+        { id: "w3t7", text: "Shadow Nick on an entity-recommendation client conversation (TODO_NICK: schedule)" },
+        { id: "w3t8", text: "Submit your written analysis on whether Alex Rivera should elect S-Corp for 2025 (assessment block 1 covers this)" },
+      ],
+      resources: [
+        { label: "IRC §199A QBI Overview (IRS)", url: "https://www.irs.gov/newsroom/qualified-business-income-deduction" },
+        { label: "Rev. Proc. 2019-38 (Rental Real Estate Safe Harbor)", url: "https://www.irs.gov/pub/irs-drop/rp-19-38.pdf" },
+        { label: "Wage Compensation for S Corporation Officers (IRS Fact Sheet)", url: "https://www.irs.gov/businesses/small-businesses-self-employed/wage-compensation-for-s-corporation-officers" },
+        { label: "IRC §1361 (S-Corp Eligibility)", url: "https://www.law.cornell.edu/uscode/text/26/1361" },
+        { label: "IRC §199A (QBI)", url: "https://www.law.cornell.edu/uscode/text/26/199A" },
+        { label: "BLS Occupational Wage Data", url: "https://www.bls.gov/oes/" },
+        { label: "Aiola Entity Decision Tree", url: "#" /* TODO_NICK */ },
+        { label: "Rivera 2024 Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
+      ],
+      assessment: [
+        // ── Block 1: Scenario Branching — Should Alex Rivera Elect S-Corp? ──
+        {
+          type: "SCENARIO_BRANCHING", id: "w3_scenario_alex_scorp",
+          title: "Should Alex Rivera Elect S-Corp for 2025?",
+          topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax"],
+          context: "Alex Rivera runs a consulting business currently filed on Schedule C. Per his 2024 return: net Schedule C income $145,000, ~30 hours/week worked on the business, residence in Florida (no state income tax), 3-year stable income trend. He emails on a Tuesday: 'My buddy said I should be doing an S-Corp to save on taxes. Can we set that up for 2025?' How do you handle this conversation?",
+          decisions: [
+            {
+              id: "dec1", prompt: "What's your FIRST move?",
+              options: [
+                { text: "Recommend S-Corp election immediately — at $145k net he's leaving SE tax savings on the table", weight: 1, correctness: "risky", nextId: null, terminalId: "t_premature" },
+                { text: "Ask follow-up questions: state of residence, projected stability of income, willingness to run payroll, other entities, retirement plan goals", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
+                { text: "Recommend against because S-Corp adds compliance complexity", weight: 1, correctness: "risky", nextId: null, terminalId: "t_undercoaching" },
+                { text: "Tell him to talk to a business attorney first", weight: 1, correctness: "risky", nextId: null, terminalId: "t_deflect" },
+              ],
+            },
+            {
+              id: "dec2", prompt: "He confirms FL (no state tax), stable income last 3 years, willing to do payroll, no other entities, currently no retirement plan. What's your reasonable comp anchor?",
+              options: [
+                { text: "50% of net income → $72,500 (rule of thumb)", weight: 1, correctness: "risky", nextId: null, terminalId: "t_arbitrary_comp" },
+                { text: "Pull RCReports or BLS data for 'Management Consultants' in his region — likely $90k–$110k range", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
+                { text: "$50,000 to maximize distributions and SE savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_aggressive_comp" },
+                { text: "Whatever Alex wants to pay himself", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_no_comp" },
+              ],
+            },
+            {
+              id: "dec3", prompt: "Anchoring at $95,000 reasonable comp on $145,000 net income, what's the approximate SE tax savings vs Schedule C? (Rough order of magnitude.)",
+              options: [
+                { text: "About $15,000 — 15.3% × $50k diff with no offset", weight: 1, correctness: "risky", nextId: null, terminalId: "t_overstated" },
+                { text: "About $4,000–$7,000 — savings on the SE-tax portion of the $50k diff, accounting for SS wage base interactions and the deduction for half of SE tax", weight: 3, correctness: "great", nextId: "dec4", terminalId: null },
+                { text: "About $22,000 — full 15.3% × full $145k", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_overstated" },
+                { text: "Zero — there's no SE tax savings", weight: 1, correctness: "risky", nextId: null, terminalId: "t_understated" },
+              ],
+            },
+            {
+              id: "dec4", prompt: "Alex asks: 'Wait, my friend said his S-Corp also saved him on his rental properties. Can I put my rentals into the S-Corp too?'",
+              options: [
+                { text: "Yes, putting rentals in an S-Corp adds another layer of SE tax savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
+                { text: "No — rental income is NOT subject to SE tax to begin with under IRC §1402(a)(1), so there's no SE tax to save. Worse, putting appreciated real estate INTO an S-Corp can trigger gain on later distribution. Keep rentals in LLCs (or held directly), separate from the S-Corp.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
+                { text: "It depends on whether the rental is short-term or long-term", weight: 1, correctness: "risky", nextId: null, terminalId: "t_partial_credit" },
+                { text: "Yes, but only for short-term rentals", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
+              ],
+            },
+          ],
+          terminals: [
+            { id: "t_great", label: "Pro-Level Advisory", outcome: "great", coachingNote: "Textbook. You scoped the conversation, anchored reasonable comp on defensible data, sized the savings accurately, AND caught the rental trap. Three teaching points to remember: (1) Reasonable comp uses RCReports/BLS — never percentages. (2) SE tax savings are smaller than the napkin math suggests because of SS wage base interactions and the deduction for half of SE tax. (3) S-Corp does NOT help rentals — rental income isn't subject to SE tax under §1402(a)(1), and putting appreciated real estate into an S-Corp creates exit problems. The output of this conversation is a memo: 'Recommend S-Corp election effective 1/1/2025, reasonable comp ~$95k anchored on RCReports lookup, projected SE tax savings ~$4–7k, additional admin cost ~$1.5–2k/yr (payroll provider + 1120-S return). Rentals to remain in LLC structure, separate from S-Corp.'" },
+            { id: "t_premature", label: "Premature Recommendation", outcome: "risky", coachingNote: "Recommending S-Corp without scoping is a rookie move. State (FL = no state benefit, but in CA the franchise tax matters), income stability (S-Corp election locks you in for 5 years before re-election), willingness to run payroll, retirement plan strategy, and other entities all matter. The recommendation IS probably right for Alex — but you can't know that without asking." },
+            { id: "t_undercoaching", label: "Undercoaching", outcome: "risky", coachingNote: "S-Corp does add complexity, but at $145k of stable consulting income in a no-state-tax state, the math very likely works. Defaulting to 'too complex' undersells the strategy. Aiola's job is to evaluate, not avoid." },
+            { id: "t_deflect", label: "Pure Deflection", outcome: "risky", coachingNote: "Entity election is squarely a CPA conversation. An attorney would handle the LLC formation; the S-Corp election (Form 2553) and reasonable comp determination is your lane. Punting to an attorney suggests you don't know the play — and clients notice." },
+            { id: "t_arbitrary_comp", label: "Arbitrary Percentage", outcome: "risky", coachingNote: "The IRS does not accept '50% rule of thumb.' Reasonable comp must be supportable based on what a third party would pay for the services rendered. RCReports and BLS Occupational Employment data are the defensible tools. Arbitrary percentages are how clients get reclassification challenges — and you get a hard conversation with the client about back wages and penalties." },
+            { id: "t_aggressive_comp", label: "Aggressive Comp", outcome: "harmful", coachingNote: "Setting comp artificially low to maximize distributions is the textbook IRS reclassification risk. The Watson v. Commissioner case (2012) is the cautionary tale — court reclassified $24k of comp into $91k. Never anchor a comp recommendation on 'maximize savings.' Always anchor on 'what would a third party pay for this work.'" },
+            { id: "t_no_comp", label: "No Standard", outcome: "harmful", coachingNote: "'Whatever the client wants' is malpractice territory. The client engaged Aiola for the technical answer. Defer to Alex on lifestyle preferences (timing of distributions, etc.) but never on the technical reasonable comp determination." },
+            { id: "t_overstated", label: "Overstated Savings", outcome: "risky", coachingNote: "The napkin '15.3% × distribution' calc overstates savings. Two reasons: (1) Above the SS wage base ($168,600 in 2024), the wage portion only saves Medicare (2.9%), not full 15.3%. (2) Schedule C filers get a deduction for half of SE tax (§164(f)), which reduces the apparent savings comparing apples to apples. At $145k income with $95k comp, true SE tax savings are typically in the $4k–$7k range, not $15k+. Overstating savings to clients is how trust gets broken later." },
+            { id: "t_understated", label: "Understated Savings", outcome: "risky", coachingNote: "There ARE real SE tax savings on the wage/distribution split, even after accounting for the half-SE-tax deduction and SS wage base. Saying 'zero savings' suggests you don't understand the mechanics. Walk through the math: SE tax is 15.3% on net SE earnings; S-Corp wages get FICA on the wage portion only; distributions are not subject to SE tax." },
+            { id: "t_rental_scorp_bad", label: "Wrong on Rentals", outcome: "harmful", coachingNote: "This is a critical teaching moment. Rental income is excluded from net earnings from self-employment under IRC §1402(a)(1) — there's no SE tax to begin with, so there's no SE tax to save. Worse: putting appreciated real estate INTO an S-Corp is a one-way door. Distributing real estate OUT of an S-Corp is a taxable event at FMV (§311(b)) — meaning you lock the appreciation into a corporate structure and trigger gain when the client wants to refinance, gift, or sell. Real estate goes in LLCs (single-member or partnership), never S-Corp. Memorize this — it's one of the most common mistakes new advisors make." },
+            { id: "t_partial_credit", label: "Partial Credit", outcome: "risky", coachingNote: "STR vs LTR doesn't change the answer — the §1402(a)(1) exclusion for rents from real estate applies regardless of stay duration. (Substantial-services rentals reported on Schedule C are a different animal — they ARE subject to SE tax, but you'd never put those in an S-Corp either, for the same appreciation-trap reason.) Rentals stay out of S-Corps. Period." },
+          ],
+        },
+
+        // ── Block 2: Computation — SE Tax on Schedule C Income ──
+        {
+          type: "COMPUTATION", id: "w3_comp_se_tax_schedC",
+          title: "SE Tax on Schedule C Income",
+          topicTags: ["se_tax", "pass_through"],
+          prompt: "A self-employed consultant has Schedule C net profit of $145,000 (no W-2 wages). Compute their self-employment tax for 2024. (Reminder: 2024 SS wage base = $168,600. SE tax rate = 15.3% [12.4% SS + 2.9% Medicare]. Self-employment income is multiplied by 92.35% before applying SE tax — that's the §1402(a)(12) deduction for the employer-equivalent portion.)",
+          expectedAnswer: 20492,
+          tolerance: 25,
+          unit: "dollars",
+          formLine: "Schedule SE",
+          workedSolution: [
+            "Step 1: Net SE earnings = $145,000 × 92.35% = $133,907.50",
+            "Step 2: Both SS portion ($133,907.50 × 12.4%) and Medicare ($133,907.50 × 2.9%) apply since $133,907.50 < $168,600 SS wage base",
+            "Step 3: SS portion = $133,907.50 × 0.124 = $16,604.53",
+            "Step 4: Medicare portion = $133,907.50 × 0.029 = $3,883.32",
+            "Step 5: Total SE tax = $16,604.53 + $3,883.32 = $20,487.85 (≈ $20,488)",
+            "Note: Half of SE tax ($10,244) is deductible above the line under §164(f).",
+            "Note: Additional Medicare Tax (0.9%) doesn't apply here since income is under $200k single.",
+          ],
+          commonWrongAnswers: [
+            { value: 22185, indicates: "Forgot the 92.35% adjustment under §1402(a)(12)." },
+            { value: 17980, indicates: "Used 12.4% only (forgot Medicare)." },
+            { value: 4205, indicates: "Used Medicare only (forgot SS)." },
+          ],
+        },
+
+        // ── Block 3: Computation — S-Corp FICA on Wages ──
+        {
+          type: "COMPUTATION", id: "w3_comp_scorp_savings",
+          title: "Approximate S-Corp Tax Savings",
+          topicTags: ["s_corp", "se_tax", "reasonable_comp"],
+          prompt: "Same consultant. If they elect S-Corp for 2025 with reasonable comp of $95,000 (and the remaining $50,000 as a distribution), compute the approximate FICA tax on the W-2 wage portion. (Use 2024 rates as a proxy: 15.3% combined employee+employer on wages up to $168,600 — split 7.65% each side.)",
+          expectedAnswer: 14535,
+          tolerance: 25,
+          unit: "dollars",
+          formLine: "Form 941 + W-2",
+          workedSolution: [
+            "Step 1: Wage portion = $95,000.",
+            "Step 2: Combined FICA (employee + employer) = $95,000 × 15.3% = $14,535.",
+            "Step 3: Distribution of $50,000 has no FICA — that's the savings vs Schedule C.",
+            "Step 4: Approximate SE tax savings: Schedule C SE tax (~$20,488 from prior block) − S-Corp FICA on wages ($14,535) = ~$5,953.",
+            "Caveats: The actual comparison should also account for: (a) deduction of half of SE tax on Schedule C (§164(f)); (b) deduction of employer-paid FICA as an S-Corp expense; (c) 1120-S compliance cost (~$1,500–$2,500/yr); (d) §199A QBI: S-Corp wages count toward W-2 wages limitation, which can affect QBI for high earners. Net-net the savings here are real but smaller than the napkin math suggests — typically $4k–$7k at this income level.",
+            "Important: This is the math. The conversation with the client is whether $5k of net savings justifies the compliance overhead. At $145k income — yes. At $80k — usually not worth it.",
+          ],
+          commonWrongAnswers: [
+            { value: 7268, indicates: "Used only employee-side 7.65% — but the S-Corp pays both halves." },
+            { value: 22185, indicates: "Computed SE tax on the original $145k — irrelevant to FICA on the wage portion." },
+          ],
+        },
+
+        // ── Block 4: Drag Exercise — Entity → Best-Fit Use Case ──
+        {
+          type: "DRAG_EXERCISE", id: "w3_match_entity_use",
+          title: "Entity Type → Best Real Estate Use Case",
+          topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation"],
+          prompt: "Match each entity structure to its most appropriate real estate use case.",
+          mode: "match",
+          pairs: [
+            { a: { id: "single_llc", label: "Single-Member LLC (disregarded)" }, b: { id: "use_solo_rental", label: "Solo investor's rental property — keeps Schedule E reporting, adds liability protection" } },
+            { a: { id: "multi_llc", label: "Multi-Member LLC (partnership)" }, b: { id: "use_partnership", label: "Two or more investors holding rental real estate together" } },
+            { a: { id: "scorp", label: "S-Corp election (on an LLC or corp)" }, b: { id: "use_active_biz", label: "Active service business with stable profit > ~$80k (consulting, brokerage, flipping operation)" } },
+            { a: { id: "ccorp", label: "C-Corp" }, b: { id: "use_ccorp", label: "Generally NOT recommended for real estate — double taxation, distribution gain on real estate" } },
+          ],
+          decoys: [],
+          explanation: "The cardinal rule: rental real estate goes in LLCs (single or multi-member), NOT S-Corps and NOT C-Corps. S-Corp is the right tool for ACTIVE service income above ~$80k stable. C-Corp is rarely right for real estate because of the appreciation-trap problem (gain on distribution under §311(b)) compounded with double taxation.",
+        },
+
+        // ── Block 5: MCQ — Why Not S-Corp for Rentals ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w3_mcq_no_scorp_rental",
+          question: "A client asks: 'Why can't I put my rental properties in an S-Corp to save on taxes like my consulting business?' What's the most accurate explanation?",
+          options: [
+            "You can put rentals in an S-Corp; it's actually a good idea for high-income clients",
+            "Rental income is excluded from self-employment tax under §1402(a)(1) — there's no SE tax to save. Plus, distributing real estate OUT of an S-Corp triggers gain at FMV, locking appreciation into the structure",
+            "S-Corps can't legally own real estate",
+            "It depends on whether the rentals are short-term or long-term",
+          ],
+          correct: 1,
+          topicTags: ["s_corp", "se_tax", "rental_classification"],
+          difficulty: 4,
+          explanation: "Two-part answer matters. (1) IRC §1402(a)(1) excludes rents from real estate from net earnings from SE — meaning rental income isn't subject to SE tax to begin with, so there's no SE tax for an S-Corp wage/distribution split to save. (2) §311(b) treats distribution of appreciated property as a sale at FMV — putting real estate INTO an S-Corp creates a one-way door where the client pays tax on the gain just to take the property back out. Both reasons mean LLCs (single-member disregarded or multi-member partnership) are the right structure for real estate.",
+        },
+
+        // ── Block 6: MCQ — Reasonable Comp Methodology ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w3_mcq_reasonable_comp",
+          question: "Which approach to determining S-Corp reasonable compensation is MOST defensible if the IRS challenges the wage/distribution split?",
+          options: [
+            "50% of net income — common rule of thumb",
+            "Whatever the prior CPA recommended",
+            "RCReports or BLS Occupational Employment Statistics data for the role/region, documented in the workpapers",
+            "Whatever leaves the most cash for distributions",
+          ],
+          correct: 2,
+          topicTags: ["reasonable_comp", "s_corp"],
+          difficulty: 2,
+          explanation: "The IRS standard is 'what would a third party pay for the services rendered' (see Watson v. Commissioner, 668 F.3d 1008 (8th Cir. 2012)). RCReports and BLS data are the defensible sources because they tie to actual wage data for comparable positions. Arbitrary percentages and 'maximize distributions' approaches lose in court. Aiola should document the methodology in workpapers — that's the difference between defending a reclassification challenge and losing one.",
+        },
+
+        // ── Block 7: MCQ — §199A QBI Basics ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w3_mcq_qbi_basics",
+          question: "Under §199A (QBI), a non-SSTB pass-through business generates $100,000 of qualified business income. The owner is MFJ with taxable income of $250,000 (well below the 2024 phase-in threshold of $383,900). Without applying any wage or UBIA limitation, what's the QBI deduction?",
+          options: [
+            "$10,000 — 10% of QBI",
+            "$20,000 — 20% of QBI",
+            "$25,000 — 25% of QBI",
+            "$0 — QBI doesn't apply at this income level",
+          ],
+          correct: 1,
+          topicTags: ["qbi", "pass_through"],
+          difficulty: 2,
+          explanation: "§199A allows a 20% deduction on qualified business income for pass-through entities (sole prop, partnership, S-Corp). Below the 2024 MFJ phase-in threshold of $383,900, no W-2 wage or UBIA limitations apply for non-SSTB businesses — straight 20% × QBI. So $100k QBI × 20% = $20k deduction. Above the threshold, the W-2 wage and UBIA limitations kick in, and SSTBs (specified service trades or businesses) phase out entirely above $483,900 MFJ in 2024.",
+        },
+
+        // ── Block 8: MCQ — Rental QBI Safe Harbor ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w3_mcq_rental_qbi_safe_harbor",
+          question: "A client has $40,000 of net rental income from one residential rental. Does this qualify for the §199A QBI deduction?",
+          options: [
+            "Yes, automatically — all rental income qualifies for QBI",
+            "It depends — rental qualifies as a §162 trade or business OR if the Rev. Proc. 2019-38 safe harbor is met (250+ hours of rental services, separate books, contemporaneous logs)",
+            "No, never — rental income is passive and excluded from QBI",
+            "Only if the client is a real estate professional",
+          ],
+          correct: 1,
+          topicTags: ["qbi", "rental_classification"],
+          difficulty: 4,
+          explanation: "Rental income qualifies for QBI only if the rental rises to a §162 trade or business OR meets the Rev. Proc. 2019-38 safe harbor. The safe harbor requires: (1) separate books and records for the rental enterprise, (2) 250+ hours of rental services per year (provided by owner, agents, or contractors), (3) contemporaneous time logs starting in 2020, (4) the safe harbor statement filed with the return. A single passive rental that the owner does little active work on usually does NOT qualify. This is a common missed deduction — and a real client conversation: 'are you tracking your hours? If yes, you might pick up a 20% deduction on the net rental income.' Note: REPS status is a §469 concept, separate from §199A — a real estate professional doesn't automatically get QBI on rentals.",
+        },
+      ],
     }],
   },
   {
