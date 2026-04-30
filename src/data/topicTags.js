@@ -16,6 +16,7 @@ export const TOPIC_TAGS = [
   { id: "niit", label: "NIIT", category: "Tax Foundations", description: "Net Investment Income Tax (3.8%) on high earners." },
   { id: "depreciation", label: "Depreciation", category: "Tax Foundations", description: "MACRS depreciation methods, useful lives, and conventions." },
   { id: "basis", label: "Basis Tracking", category: "Tax Foundations", description: "Cost basis, adjusted basis, and basis limitations for loss deductions." },
+  { id: "quarterly_estimates", label: "Quarterly Estimated Tax", category: "Tax Foundations", description: "Form 1040-ES, safe harbor rules under §6654, withholding interaction, annualized income method." },
 
   // ── Entity & Strategy ──
   { id: "s_corp", label: "S-Corporation", category: "Entity & Strategy", description: "S-Corp election, requirements, shareholder limitations, and tax treatment." },
