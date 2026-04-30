@@ -1278,6 +1278,7 @@ const PHASES = [
 const MOCK_TRAINEES = [
   { id: "chris_m", name: "Chris Martinez", email: "chris@aiolacpa.com", role: "trainee", startDate: "2026-04-21", track: "Advisory", avatar: "CM" },
   { id: "mary_c", name: "Mary Chen", email: "mary@aiolacpa.com", role: "trainee", startDate: "2026-02-23", track: "Advisory", avatar: "MC" },
+  { id: "jesse_s", name: "Jesse Snyder", email: "jesse.snyder@aiolacpa.com", role: "trainee", startDate: "2026-05-04", track: "Advisory", avatar: "JS" },
 ];
 const MOCK_ADMINS = [
   { id: "nick_a", name: "Nick Aiola", email: "nick@aiolacpa.com", role: "admin", avatar: "NA" },
