@@ -1287,6 +1287,17 @@ const MOCK_CLIENTS = [
   { id: "alex_r", name: "Alex Rivera", email: "alex.rivera@email.com", role: "client", avatar: "AR" },
 ];
 
+const CREDENTIALS = {
+  // Trainees — password is their email until real auth ships
+  "chris@aiolacpa.com": "chris@aiolacpa.com",
+  "mary@aiolacpa.com": "mary@aiolacpa.com",
+  "jesse.snyder@aiolacpa.com": "jesse.snyder@aiolacpa.com",
+  // Admins
+  "nick@aiolacpa.com": "AiolaAdmin2026",
+  // Client demo
+  "alex.rivera@email.com": "alex.rivera@email.com",
+};
+
 const SEED_DATA = {
   chris_m: { tasks: { d1t1:true,d1t2:true,d1t3:true,d1t4:true,d1t5:true,d1t6:true,d2t1:true,d2t2:true,d2t3:true,d3t1:true,d3t2:true }, quizzes: { d1:true, d2:true } },
   mary_c: { tasks: { d1t1:true,d1t2:true,d1t3:true,d1t4:true,d1t5:true,d1t6:true,d2t1:true,d2t2:true,d2t3:true,d2t4:true,d2t5:true,d3t1:true,d3t2:true,d3t3:true,d3t4:true,d3t5:true,d4t1:true,d4t2:true,d4t3:true,d4t4:true,d4t5:true,d5t1:true,d5t2:true,d5t3:true,d5t4:true,d5t5:true,w2t1:true,w2t2:true,w2t3:true,w2t4:true,w2t5:true,w2t6:true,w3t1:true,w3t2:true,w3t3:true,w3t4:true,w3t5:true,w3t6:true }, quizzes: { d1:true,d2:true,d3:true,d4:true,d5:true,w2:true,w3:true } },
@@ -1983,16 +1994,20 @@ const pMeta = [{ids:["week1","week2","week3","week4"],label:"Days 1–30",color:
 function LoginScreen({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showDemo, setShowDemo] = useState(false);
+  const [showAdminPicker, setShowAdminPicker] = useState(false);
   const [error, setError] = useState("");
 
   const allAccounts = [...MOCK_ADMINS, ...MOCK_TRAINEES, ...MOCK_CLIENTS];
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const found = allAccounts.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
+    const trimmedEmail = email.toLowerCase().trim();
+    if (!trimmedEmail || !password) { setError("Email or password is incorrect."); return; }
+    const expectedPw = CREDENTIALS[trimmedEmail];
+    if (expectedPw === undefined || password !== expectedPw) { setError("Email or password is incorrect."); return; }
+    const found = allAccounts.find(u => u.email.toLowerCase() === trimmedEmail);
     if (found) { setError(""); onLogin(found); }
-    else { setError("No account found with that email."); }
+    else { setError("Email or password is incorrect."); }
   };
 
   const inputStyle = {width:"100%",padding:"12px 14px",border:`1px solid ${B.bdr}`,borderRadius:10,background:"#fff",fontFamily:"inherit",fontSize:14,color:B.t1,outline:"none",transition:"border-color .2s",boxSizing:"border-box"};
@@ -2016,62 +2031,73 @@ function LoginScreen({ onLogin }) {
           </div>
         </div>
         <div style={{background:"#fff",borderRadius:16,padding:"36px 32px",boxShadow:"0 25px 50px rgba(0,0,0,.25)"}}>
-          <h2 style={{margin:"0 0 6px",fontSize:22,fontWeight:700,color:B.navy,textAlign:"center"}}>Welcome Back</h2>
-          <p style={{margin:"0 0 28px",fontSize:13,color:B.t3,textAlign:"center"}}>Sign in with your Aiola CPA credentials</p>
-          <form onSubmit={handleSubmit} style={{display:"flex",flexDirection:"column",gap:14}}>
-            <div>
-              <label style={{display:"block",fontSize:12,fontWeight:600,color:B.t2,marginBottom:6}}>Email</label>
-              <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@aiolacpa.com" style={inputStyle}
-                onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
-            </div>
-            <div>
-              <label style={{display:"block",fontSize:12,fontWeight:600,color:B.t2,marginBottom:6}}>Password</label>
-              <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter your password" style={inputStyle}
-                onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
-            </div>
-            {error && <div style={{fontSize:12,color:B.err,textAlign:"center"}}>{error}</div>}
-            <button type="submit" style={{width:"100%",padding:"14px 20px",border:"none",borderRadius:10,background:B.blue,cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:600,color:"#fff",transition:"all .2s",boxShadow:"0 2px 8px rgba(59,141,208,.3)"}}
-              onMouseEnter={e=>{e.currentTarget.style.background=B.blueD}} onMouseLeave={e=>{e.currentTarget.style.background=B.blue}}>
-              Sign In
-            </button>
-          </form>
-          <div style={{display:"flex",alignItems:"center",gap:12,margin:"20px 0"}}>
-            <div style={{flex:1,height:1,background:B.bdr}}/><span style={{fontSize:11,color:B.t3,textTransform:"uppercase",letterSpacing:1}}>Demo Access</span><div style={{flex:1,height:1,background:B.bdr}}/>
-          </div>
-          {!showDemo ? (
-            <button onClick={()=>setShowDemo(true)} style={{width:"100%",padding:"12px",border:`1px dashed ${B.blueM}`,borderRadius:10,background:B.blueL,cursor:"pointer",fontFamily:"inherit",fontSize:13,color:B.blue,fontWeight:500}}>
-              Select a demo account to preview →
-            </button>
+          {!showAdminPicker ? (
+            <>
+              <h2 style={{margin:"0 0 6px",fontSize:22,fontWeight:700,color:B.navy,textAlign:"center"}}>Aiola Training Portal</h2>
+              <p style={{margin:"0 0 28px",fontSize:13,color:B.t3,textAlign:"center"}}>Sign in to your account</p>
+              <form onSubmit={handleSubmit} style={{display:"flex",flexDirection:"column",gap:14}}>
+                <div>
+                  <label style={{display:"block",fontSize:12,fontWeight:600,color:B.t2,marginBottom:6}}>Email</label>
+                  <input type="email" value={email} onChange={e=>{setEmail(e.target.value);setError("");}} placeholder="you@aiolacpa.com" aria-label="Email address" style={inputStyle}
+                    onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
+                </div>
+                <div>
+                  <label style={{display:"block",fontSize:12,fontWeight:600,color:B.t2,marginBottom:6}}>Password</label>
+                  <input type="password" value={password} onChange={e=>{setPassword(e.target.value);setError("");}} placeholder="••••••••" aria-label="Password" style={inputStyle}
+                    onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
+                </div>
+                {error && <div style={{fontSize:12,color:B.err,textAlign:"center"}}>{error}</div>}
+                <button type="submit" style={{width:"100%",padding:"14px 20px",border:"none",borderRadius:10,background:B.blue,cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:600,color:"#fff",transition:"all .2s",boxShadow:"0 2px 8px rgba(59,141,208,.3)"}}
+                  onMouseEnter={e=>{e.currentTarget.style.background=B.blueD}} onMouseLeave={e=>{e.currentTarget.style.background=B.blue}}>
+                  Sign In
+                </button>
+              </form>
+              <div style={{textAlign:"center",marginTop:20}}>
+                <span onClick={()=>setShowAdminPicker(true)} style={{fontSize:11,color:B.t3,cursor:"pointer",textDecoration:"none",transition:"color .15s"}}
+                  onMouseEnter={e=>{e.currentTarget.style.color=B.blue}} onMouseLeave={e=>{e.currentTarget.style.color=B.t3}}>
+                  Need administrator access? <span style={{textDecoration:"underline"}}>Admin login</span>
+                </span>
+              </div>
+            </>
           ) : (
-            <div style={{display:"flex",flexDirection:"column",gap:6}}>
-              <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"8px 0 4px"}}>Admin</div>
-              {MOCK_ADMINS.map(u=>(
-                <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
-                  onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
-                  <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
-                  <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
-                  <div style={{marginLeft:"auto",...roleBadge(u.role)}}>ADMIN</div>
-                </button>
-              ))}
-              <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"12px 0 4px"}}>Trainee</div>
-              {MOCK_TRAINEES.map(u=>(
-                <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
-                  onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
-                  <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
-                  <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
-                  <div style={{marginLeft:"auto",...roleBadge(u.role)}}>TRAINEE</div>
-                </button>
-              ))}
-              <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"12px 0 4px"}}>Client</div>
-              {MOCK_CLIENTS.map(u=>(
-                <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
-                  onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
-                  <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
-                  <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
-                  <div style={{marginLeft:"auto",...roleBadge(u.role)}}>CLIENT</div>
-                </button>
-              ))}
-            </div>
+            <>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
+                <h2 style={{margin:0,fontSize:18,fontWeight:700,color:B.navy}}>Admin Access</h2>
+                <span onClick={()=>setShowAdminPicker(false)} style={{fontSize:12,color:B.blue,cursor:"pointer",fontWeight:500}}
+                  onMouseEnter={e=>{e.currentTarget.style.textDecoration="underline"}} onMouseLeave={e=>{e.currentTarget.style.textDecoration="none"}}>
+                  ← Back to standard login
+                </span>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"8px 0 4px"}}>Admin</div>
+                {MOCK_ADMINS.map(u=>(
+                  <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
+                    onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
+                    <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
+                    <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
+                    <div style={{marginLeft:"auto",...roleBadge(u.role)}}>ADMIN</div>
+                  </button>
+                ))}
+                <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"12px 0 4px"}}>Trainee</div>
+                {MOCK_TRAINEES.map(u=>(
+                  <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
+                    onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
+                    <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
+                    <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
+                    <div style={{marginLeft:"auto",...roleBadge(u.role)}}>TRAINEE</div>
+                  </button>
+                ))}
+                <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.5,color:B.t3,padding:"12px 0 4px"}}>Client</div>
+                {MOCK_CLIENTS.map(u=>(
+                  <button key={u.id} onClick={()=>onLogin(u)} style={{width:"100%",padding:"12px 16px",border:`1px solid ${B.bdr}`,borderRadius:8,background:"#fff",cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:12,transition:"all .15s",textAlign:"left"}}
+                    onMouseEnter={e=>{e.currentTarget.style.background=B.blueL;e.currentTarget.style.borderColor=B.blue}} onMouseLeave={e=>{e.currentTarget.style.background="#fff";e.currentTarget.style.borderColor=B.bdr}}>
+                    <div style={{width:36,height:36,borderRadius:18,background:avatarBg(u.role),color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,flexShrink:0}}>{u.avatar}</div>
+                    <div><div style={{fontSize:13,fontWeight:600,color:B.t1}}>{u.name}</div><div style={{fontSize:11,color:B.t3}}>{u.email}</div></div>
+                    <div style={{marginLeft:"auto",...roleBadge(u.role)}}>CLIENT</div>
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
         <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,.3)",marginTop:24}}>© 2026 Aiola CPA, PLLC. All rights reserved.</p>
