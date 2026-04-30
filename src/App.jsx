@@ -935,20 +935,237 @@ const PHASES = [
     }],
   },
   {
-    id: "week4", label: "Week 4", subtitle: "Real Estate Tax Strategy", phase: "Days 1–30",
+    id: "week4", label: "Week 4", subtitle: "STR Loophole & REPS", phase: "Days 1–30",
     items: [{
-      id: "w4", title: "Week 4 — Short-Term Rental & Real Estate Strategies",
-      description: "Master the STR loophole, cost segregation, and material participation.",
-      tasks: [
-        { id: "w4t1", text: "Study IRC §469 passive activity rules and the 7-day average stay exception" },
-        { id: "w4t2", text: "Learn the 3 material participation tests relevant to STRs (100hrs, more-than-anyone, 500hrs)" },
-        { id: "w4t3", text: "Understand cost segregation studies: what they are, when to recommend, ROI" },
-        { id: "w4t4", text: "Review bonus depreciation rules and phase-down schedule (2023–2027)" },
-        { id: "w4t5", text: "Complete the STR Loophole case study with the Rivera mock client" },
-        { id: "w4t6", text: "Quiz: Calculate the tax savings from reclassifying a rental loss as non-passive" },
+      id: "w4", title: "Week 4 — The §469 Deep Dive: STR Loophole, Material Participation, and REPS",
+      description: "This is the most important week of the program. By Friday you must be able to: (1) explain the §469 framework that determines when rental losses are passive vs nonpassive, (2) qualify a client for the STR strategy by checking BOTH the average-stay test AND material participation, (3) qualify a client for Real Estate Professional Status under §469(c)(7) by checking the >50% AND >750-hour requirements, and (4) explain the aggregation election. These are the two largest dollar-impact strategies Aiola delivers. Get this wrong with a client and the IRS unwinds the strategy plus penalties — get it right and clients see five-to-six-figure tax savings.",
+      topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation", "reps_750hr", "reps_50pct_test", "reps_aggregation_election", "w2_real_estate_employee", "passive_loss", "suspended_losses", "schedule_e_vs_c"],
+      learningObjectives: [
+        "Explain the §469 framework: passive vs nonpassive activity, and why losses default to suspended",
+        "Apply the STR test: average customer use ≤ 7 days excludes from 'rental activity' definition under Reg. §1.469-1T(e)(3)(ii)(A) — materially participate and losses are nonpassive",
+        "Recite the 7 material participation tests under Reg. §1.469-5T(a) and identify which one(s) apply to a given client fact pattern",
+        "Apply the REPS test under §469(c)(7): >50% of personal services in real property trades AND >750 hours — both required",
+        "Explain the §469(c)(7)(A) aggregation election: when, how, and the binding effect under Reg. §1.469-9(g)",
+        "Identify the W-2 real-estate-employee disqualifier under §469(c)(7)(D)(ii) (must own ≥5%)",
+        "Distinguish 'substantial services' (Reg. §1.469-1T(e)(3)(ii)) from 'hotel-like services' (Reg. §1.1402(a)-4) — different tests at different thresholds",
       ],
-      resources: [{ label: "STR Loophole Explainer", url: "#" }, { label: "Cost Seg ROI Calculator", url: "#" }, { label: "Rivera Case Study (PDF)", url: "#" }, { label: "Bonus Depreciation Schedule", url: "#" }],
-      quiz: { question: "What is the key requirement to convert a short-term rental loss from passive to non-passive?", options: ["Own the property for at least 2 years", "Average guest stay ≤ 7 days + meet material participation (≥100 hrs, more than anyone else)", "File Schedule E Part II instead of Part I", "Elect Real Estate Professional Status"], correct: 1 },
+      tasks: [
+        { id: "w4t1", text: "Read IRC §469 in full — focus on §469(c)(2) (rental activity defined), §469(c)(7) (REPS), §469(g) (suspended loss release on disposition)" },
+        { id: "w4t2", text: "Read Reg. §1.469-1T(e)(3)(ii) — the 6 exceptions to 'rental activity' classification (most importantly the avg-stay-≤7-days exclusion)" },
+        { id: "w4t3", text: "Read Reg. §1.469-5T(a) — the 7 material participation tests" },
+        { id: "w4t4", text: "Read Reg. §1.469-9(g) — the aggregation election for real estate professionals" },
+        { id: "w4t5", text: "Watch: Aiola's STR Loophole Walkthrough (TODO_NICK: record video)" },
+        { id: "w4t6", text: "Watch: Aiola's REPS Qualification Walkthrough (TODO_NICK: record video)" },
+        { id: "w4t7", text: "Read 3 sample TSRs where Aiola recommended STR strategy (TODO_NICK: link to past TSRs)" },
+        { id: "w4t8", text: "Read 3 sample TSRs where Aiola recommended REPS qualification (TODO_NICK: link to past TSRs)" },
+        { id: "w4t9", text: "Complete this week's assessment — the scenario branching exercise is the centerpiece" },
+        { id: "w4t10", text: "Schedule a 60-min review with Nick to red-team your understanding before Week 5 (TODO_NICK)" },
+      ],
+      resources: [
+        { label: "IRC §469 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
+        { label: "Reg. §1.469-1T (rental activity definition)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-1T" },
+        { label: "Reg. §1.469-5T (material participation)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-5T" },
+        { label: "Reg. §1.469-9 (REPS rules + aggregation election)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-9" },
+        { label: "IRS Audit Technique Guide — Passive Activity Losses", url: "https://www.irs.gov/businesses/small-businesses-self-employed/passive-activity-loss-atg" },
+        { label: "IRS Audit Technique Guide — Real Estate Professional", url: "#" /* TODO_NICK: find direct link */ },
+        { label: "Aiola STR Strategy Walkthrough Video", url: "#" /* TODO_NICK */ },
+        { label: "Aiola REPS Qualification Walkthrough Video", url: "#" /* TODO_NICK */ },
+        { label: "Sample STR TSRs", url: "#" /* TODO_NICK */ },
+        { label: "Sample REPS TSRs", url: "#" /* TODO_NICK */ },
+      ],
+      assessment: [
+        // ── Block 1: Scenario Branching — Three-Client Diagnosis ──
+        {
+          type: "SCENARIO_BRANCHING", id: "w4_scenario_three_clients",
+          title: "The Three-Client Diagnosis",
+          topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "reps_750hr", "reps_50pct_test", "passive_loss"],
+          context: "Three new prospects are on this week's discovery calls. Each owns rental real estate and each wants to know if they can offset W-2 income with rental losses. Walk through each one and identify the right §469 path: STR strategy, REPS qualification, neither, or 'needs more facts.' All three are MFJ.\n\nClient A — DAVID & PRIYA: David is a W-2 anesthesiologist ($420k W-2). Priya doesn't work outside the home. They own one Airbnb in Asheville with average guest stay of 4 nights. Priya manages it directly: bookings, guest comms, hires the cleaner, coordinates repairs — about 180 hours/year. No other rental properties.\n\nClient B — MARCUS: W-2 software engineer ($260k). Owns three long-term rentals (12-month leases) plus one STR (avg 5-night stay). Total rental activity time: roughly 200 hours/year. No real estate W-2 job, no real estate license.\n\nClient C — JENNIFER: Licensed real estate broker with her own brokerage (S-Corp, $180k W-2 from her S-Corp). Spends ~1,400 hours/year on the brokerage. Also owns five long-term rentals; spends ~200 hours/year managing them. No aggregation election filed.",
+          decisions: [
+            {
+              id: "dec1", prompt: "CLIENT A — DAVID & PRIYA: Avg stay 4 nights, Priya 180 hours/year on the property. Which §469 path applies?",
+              options: [
+                { text: "STR strategy: avg ≤ 7 days excludes from rental activity classification under Reg. §1.469-1T(e)(3)(ii)(A); Priya's 180 hours likely meets material participation Test 3 (100+ hours AND more than anyone else) — losses are nonpassive against W-2 income", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
+                { text: "REPS qualification: Priya isn't working W-2, so all her time counts toward REPS", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_a_reps_wrong" },
+                { text: "Standard active participation $25k allowance", weight: 1, correctness: "risky", nextId: null, terminalId: "t_a_25k_wrong" },
+                { text: "Losses are passive and suspended; nothing they can do", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_a_suspended_wrong" },
+              ],
+            },
+            {
+              id: "dec2", prompt: "CLIENT B — MARCUS: Three LTRs + one STR, 200 total hours, W-2 software engineer. Which §469 path applies?",
+              options: [
+                { text: "STR strategy on the one STR property only (the 3 LTRs remain passive). Marcus's hours on the STR specifically are what matter — verify hours allocated to that property and whether material participation is met for that property alone", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
+                { text: "REPS qualification: 200 hours of rental activity counts", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_b_reps_wrong" },
+                { text: "STR strategy on all four properties combined", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_b_aggregation_wrong" },
+                { text: "Standard active participation: $25k allowance phased out at $260k AGI anyway, so no benefit", weight: 2, correctness: "acceptable", nextId: null, terminalId: "t_b_partial_credit" },
+              ],
+            },
+            {
+              id: "dec3", prompt: "CLIENT C — JENNIFER: Real estate broker, $180k W-2 from her S-Corp, 1,400 brokerage hours, 200 rental hours, 5 LTRs, no aggregation election. Does she qualify for REPS this year?",
+              options: [
+                { text: "Yes, both REPS tests met: 1,400 brokerage hours easily exceeds 750, and brokerage (1,400) > non-real-estate W-2 (zero) so >50% test passes. BUT critical caveat: REPS qualifies HER; material participation in each rental still required, OR she files the §469(c)(7)(A) aggregation election under Reg. §1.469-9(g) so 200 hours suffices across all 5 properties. Without aggregation, 200 hrs / 5 = ~40 hrs per property — likely fails MP for each.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
+                { text: "Yes, automatically — she's a real estate broker with 1,400 hours, that's all that matters", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_auto_wrong" },
+                { text: "No — her W-2 brokerage hours don't count toward REPS", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_w2_wrong" },
+                { text: "Yes for REPS, but the 200 rental hours alone make her materially participate in the rentals without aggregation", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_mp_wrong" },
+              ],
+            },
+          ],
+          terminals: [
+            { id: "t_great", label: "Master-Level §469 Diagnosis", outcome: "great", coachingNote: "This is the level Nick wants you operating at within 60 days. Three teaching points: (1) STR strategy hinges on TWO things — avg stay ≤ 7 days AND material participation; both required. (2) The STR exception under Reg. §1.469-1T(e)(3)(ii)(A) is per-activity, not portfolio-wide. (3) REPS qualifies the TAXPAYER, but each rental still requires material participation (or the aggregation election). The aggregation election under Reg. §1.469-9(g) is the unlock for clients like Jennifer with multiple smaller rentals — without it, hours scattered across properties may not hit MP on any single one. Note: aggregation, once made, is binding until revoked with IRS consent — don't recommend it lightly." },
+            { id: "t_a_reps_wrong", label: "REPS-Misapplied", outcome: "harmful", coachingNote: "REPS isn't the right tool for Priya — and even if it were, she'd need >750 hours in real property trades, not just 'no W-2 job.' The STR strategy is far simpler and cleaner here: avg stay ≤ 7 days excludes the activity from passive classification, material participation makes the loss nonpassive. No need to invoke REPS. Don't reach for the more complex tool when the simpler one works." },
+            { id: "t_a_25k_wrong", label: "$25k Allowance Wrong Tool", outcome: "risky", coachingNote: "$25k active participation allowance phases out fully at $150k MAGI MFJ. David & Priya's $420k W-2 income alone blows past that — the allowance is zero. Plus, the allowance is for properties classified as 'rental activity' under §469. A property with avg stay ≤ 7 days is NOT a rental activity for §469 purposes — it falls under the activity-exclusion under Reg. §1.469-1T(e)(3)(ii)(A). The right tool is the STR strategy, not the §469(i) allowance." },
+            { id: "t_a_suspended_wrong", label: "Premature Surrender", outcome: "harmful", coachingNote: "Defaulting to 'losses are suspended' on a 4-night-average-stay rental is leaving the entire STR strategy on the table — typically $30k–$80k+ of W-2 offset for clients in this profile. This is malpractice-by-omission territory. Always check the avg stay test before assuming passive treatment." },
+            { id: "t_b_reps_wrong", label: "Confusing Hours With REPS", outcome: "harmful", coachingNote: "REPS requires >750 hours in real property trades or businesses AND >50% of total personal services in those trades. Marcus has a full-time W-2 software job (~2,000 hours) and only 200 rental hours. He fails both tests by miles. Don't conflate 'time spent on rentals' with REPS qualification." },
+            { id: "t_b_aggregation_wrong", label: "Aggregation Misuse", outcome: "harmful", coachingNote: "The aggregation election under §469(c)(7)(A) is for REAL ESTATE PROFESSIONALS to aggregate rentals for material participation purposes — not for combining LTRs and STRs to qualify for the STR exception. The STR exception applies on a per-activity basis. Marcus's three LTRs stay passive regardless. Only the one STR can potentially qualify for nonpassive treatment, and only if Marcus materially participates in that specific property." },
+            { id: "t_b_partial_credit", label: "Partial Credit", outcome: "acceptable", coachingNote: "You're right that the $25k allowance is phased out at $260k AGI — fully eliminated above $150k MFJ. But you missed the bigger play: the one STR property might qualify for nonpassive treatment via the avg-stay-≤-7-days exception. Check Marcus's hours on that specific property and whether MP is met. Even one property's worth of nonpassive losses can move the needle." },
+            { id: "t_c_auto_wrong", label: "Skipped Material Participation", outcome: "harmful", coachingNote: "REPS qualifies the TAXPAYER, but each rental property still needs material participation to be nonpassive. Without the aggregation election under Reg. §1.469-9(g), Jennifer would need to materially participate in EACH of her 5 rentals separately. 200 hours / 5 properties = 40 hours/property — well below the 100-hour and 500-hour MP thresholds. The aggregation election is the unlock here. Without it, she's a real estate professional whose rental losses are still passive." },
+            { id: "t_c_w2_wrong", label: "W-2 Disqualifier Misapplied", outcome: "harmful", coachingNote: "The §469(c)(7)(D)(ii) W-2 disqualifier applies when a taxpayer is a W-2 employee in a real property trade or business AND owns less than 5% of the employer. Jennifer owns her own S-Corp brokerage — she's the owner, so the W-2 disqualifier doesn't apply. Her brokerage hours absolutely count toward REPS. The disqualifier is for situations like a rank-and-file W-2 employee at a big developer or property management company." },
+            { id: "t_c_mp_wrong", label: "MP Math Wrong", outcome: "harmful", coachingNote: "200 rental hours spread across 5 properties = ~40 hours per property. None of the 7 material participation tests are met at 40 hours per activity. Test 1 requires 500 hours; Test 3 requires 100 hours AND more than anyone else; Test 4 requires significant participation activities (100+ hrs each and 500 total in aggregate of significant participation activities). Without aggregation, Jennifer's rentals stay passive even though she's a qualifying real estate professional. The aggregation election fixes this — combining hours, 200 hours easily exceeds 500-hour Test 1 in the aggregated activity. THIS is the unlock." },
+          ],
+        },
+
+        // ── Block 2: Drag Exercise — 7 Material Participation Tests ──
+        {
+          type: "DRAG_EXERCISE", id: "w4_order_mp_tests",
+          title: "The 7 Material Participation Tests",
+          topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation"],
+          prompt: "Drag the 7 material participation tests under Reg. §1.469-5T(a) into the order they appear in the regulation. (You'll cite these by number in TSRs and client memos.)",
+          mode: "order",
+          items: [
+            { id: "mp1", label: "More than 500 hours in the activity during the year" },
+            { id: "mp2", label: "Substantially all participation in the activity (i.e., taxpayer is the only one who participates meaningfully)" },
+            { id: "mp3", label: "More than 100 hours AND not less than any other individual's participation" },
+            { id: "mp4", label: "Significant participation activities (SPA): 100+ hours in this activity, and 500+ hours total across all SPAs" },
+            { id: "mp5", label: "Material participation in 5 of the prior 10 tax years" },
+            { id: "mp6", label: "Personal service activity: material participation in any 3 prior years (for personal service activities only)" },
+            { id: "mp7", label: "Facts and circumstances: regular, continuous, and substantial participation (≥100 hours required)" },
+          ],
+          correctSequence: ["mp1", "mp2", "mp3", "mp4", "mp5", "mp6", "mp7"],
+          explanation: "Reg. §1.469-5T(a) lists these in this order. In practice for real estate clients, Tests 1, 3, and 7 do most of the work. Test 1 (500+ hours) is the cleanest — pass it and you're done. Test 3 (100+ AND more than anyone else) is the typical STR strategy test for couples where one spouse manages the property. Test 7 (facts and circumstances ≥ 100 hours) is the fallback when records are imperfect — but the IRS scrutinizes it heavily. Test 4 (significant participation activities) rarely applies to real estate. Tests 5/6 require historical participation patterns. Always document hours contemporaneously — courts have rejected 'reconstructed' time logs.",
+        },
+
+        // ── Block 3: Computation — STR Strategy Tax Savings ──
+        {
+          type: "COMPUTATION", id: "w4_comp_str_savings",
+          title: "STR Strategy — Estimated Tax Savings",
+          topicTags: ["str_loophole", "passive_loss"],
+          prompt: "Client profile: MFJ, $400,000 combined W-2 income, no other entities. Acquired one STR for $700,000 (allocated $150k to land, $550k to building). Avg guest stay 4 nights. Cost segregation study yields $180,000 of bonus depreciation in year 1. Operating loss before depreciation: $5,000. Spouse who is not employed manages the STR — 220 hours documented. Federal marginal rate: 32%. Compute the approximate FEDERAL income tax savings in year 1 from the STR strategy. (Ignore state, NIIT, and AMT for this problem.)",
+          expectedAnswer: 59200,
+          tolerance: 200,
+          unit: "dollars",
+          formLine: "Form 1040 + Schedule E + Form 4562",
+          workedSolution: [
+            "Step 1: Verify STR exception applies. Avg guest stay 4 nights ≤ 7 → activity is excluded from 'rental activity' classification under Reg. §1.469-1T(e)(3)(ii)(A).",
+            "Step 2: Verify material participation. Spouse: 220 documented hours. Likely meets Test 3 (100+ hours AND more than any other individual — assuming nobody else has >220 hrs on this property). MP = yes.",
+            "Step 3: Compute year-1 loss. Operating loss $5,000 + depreciation $180,000 = $185,000 net loss on Schedule E.",
+            "Step 4: Loss is nonpassive (because: STR exception + MP). It offsets W-2 income.",
+            "Step 5: Tax savings ≈ $185,000 × 32% = $59,200.",
+            "Important caveats not in this calc: (a) NIIT impact — STR rentals classified as nonpassive trade-or-business may avoid NIIT (3.8%) on positive income years. (b) Eventual depreciation recapture (§1245/§1250) on sale. (c) State tax savings on top. (d) §199A QBI may apply if the activity is a §162 trade or business — but loss years don't generate QBI deduction. (e) Strategy requires CONTEMPORANEOUS hour logs — reconstructed records lose in audit. (f) The MP test is per-year — Year 2's status depends on Year 2's hours.",
+            "This is the conversation you walk a client through before recommending. The headline number is $59k — the asterisks are what protect the client from over-relying on the strategy.",
+          ],
+          commonWrongAnswers: [
+            { value: 60800, indicates: "Used 32.85% (avg of 32 and 33.85) — stick to the stated 32% marginal." },
+            { value: 6800, indicates: "Forgot to add depreciation to operating loss." },
+            { value: 0, indicates: "Assumed losses are passive — but this client meets BOTH the STR exception and MP." },
+            { value: 8000, indicates: "Applied $25k cap — that's the active participation allowance, not relevant here. STR exception bypasses §469 passive treatment entirely." },
+          ],
+        },
+
+        // ── Block 4: MCQ — Avg Stay Test Reg Cite ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w4_mcq_str_reg_cite",
+          question: "The STR strategy is built on a regulatory exclusion that says: if average customer use is _____ or less, the activity is NOT a 'rental activity' for §469 passive activity purposes. Which is correct?",
+          options: [
+            "30 days, under Reg. §1.469-1T(e)(3)(i)",
+            "7 days, under Reg. §1.469-1T(e)(3)(ii)(A)",
+            "14 days, under §280A",
+            "15 days, under Reg. §1.469-2T",
+          ],
+          correct: 1,
+          topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
+          difficulty: 3,
+          explanation: "Reg. §1.469-1T(e)(3)(ii)(A) excludes activities with average customer use of 7 days or less from the 'rental activity' definition. There's also a 30-day exception under (e)(3)(ii)(B) that requires significant personal services — that's a different exception. The 14-day rule from §280A is the personal-use rule for vacation homes (different concept). Always cite the right reg in TSRs — Aiola's clients are sophisticated and the firm's credibility hinges on being precise.",
+        },
+
+        // ── Block 5: MCQ — REPS Two-Part Test ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_two_part",
+          question: "To qualify as a Real Estate Professional under §469(c)(7), a taxpayer must meet:",
+          options: [
+            "More than 750 hours in real property trades or businesses",
+            "More than 50% of personal services in real property trades or businesses",
+            "BOTH: more than 50% of personal services AND more than 750 hours in real property trades or businesses",
+            "Either one of: 750 hours OR 50% of services",
+          ],
+          correct: 2,
+          topicTags: ["reps_750hr", "reps_50pct_test"],
+          difficulty: 3,
+          explanation: "Both tests, both met. §469(c)(7)(B) requires (i) more than half of personal services in real property trades or businesses in which the taxpayer materially participates, AND (ii) more than 750 hours of services performed in those trades. The 50% test alone fails clients with significant non-real-estate work. The 750-hour test alone fails clients who have a full-time non-real-estate job and dabble in real estate. Both required. Spouses qualify independently — only one spouse needs REPS for a joint return. Common error: counting hours toward REPS that don't qualify (e.g., investor activities like reading market reports, looking at properties to buy — those don't count under §469(c)(7)(C)).",
+        },
+
+        // ── Block 6: MCQ — REPS Qualifies Taxpayer, Not Property ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_per_property",
+          question: "Once a taxpayer qualifies as a Real Estate Professional, are all their rental losses automatically nonpassive?",
+          options: [
+            "Yes — REPS automatically converts all rental losses to nonpassive",
+            "No — REPS qualifies the taxpayer, but material participation in each rental is still required (or the aggregation election under Reg. §1.469-9(g) must be made to combine activities)",
+            "Yes, but only for short-term rentals",
+            "Only if the rentals are titled in a single LLC",
+          ],
+          correct: 1,
+          topicTags: ["reps_750hr", "reps_aggregation_election", "material_participation_tests", "mp_aggregation"],
+          difficulty: 4,
+          explanation: "This is the most commonly missed nuance. §469(c)(7) qualifies the TAXPAYER as a real estate professional — meaning rental activities are no longer per-se passive. But each rental activity is still subject to the material participation test SEPARATELY unless the taxpayer makes the aggregation election under §469(c)(7)(A) (regulations at Reg. §1.469-9(g)). Without aggregation, hours scattered across multiple properties often fail MP on each one individually. The election treats all rentals as one activity for MP testing — usually the right move for REPS clients with multiple properties. Caveat: aggregation is binding once made; revocation requires IRS consent (Reg. §1.469-9(g)(3)).",
+        },
+
+        // ── Block 7: MCQ — W-2 Real Estate Employee Disqualifier ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w4_mcq_w2_disqualifier",
+          question: "A client works full-time as a W-2 leasing manager at a large apartment REIT. They want to count their 2,200 work hours toward the REPS 750-hour test. Can they?",
+          options: [
+            "Yes — leasing is a real property trade or business",
+            "Yes, but only 50% of the hours count",
+            "No — under §469(c)(7)(D)(ii), W-2 employee hours don't count toward REPS unless the employee owns at least 5% of the employer",
+            "Yes, automatically — REIT employees always qualify",
+          ],
+          correct: 2,
+          topicTags: ["reps_750hr", "w2_real_estate_employee"],
+          difficulty: 3,
+          explanation: "§469(c)(7)(D)(ii) says personal services performed as a W-2 employee don't count as services in a real property trade or business UNLESS the employee owns at least 5% of the employer. A leasing manager at a large REIT is a W-2 employee with no meaningful equity — those hours do NOT count toward REPS. This is a common qualification trap. Counter-example: an owner-operator of a real estate brokerage who takes a W-2 from their own S-Corp owns 100% — those W-2 hours absolutely count. The key question is always: does the taxpayer own ≥5% of the employer?",
+        },
+
+        // ── Block 8: MCQ — Don't Confuse the Tests ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w4_mcq_substantial_vs_hotel",
+          question: "A client has an Airbnb with avg guest stay of 5 nights. They provide WiFi, basic cleaning between guests, and a welcome basket. They materially participate. How is the activity treated?",
+          options: [
+            "Schedule C, with SE tax — because 'substantial services' makes it an active business",
+            "Schedule E, nonpassive — because avg stay ≤ 7 days excludes from rental activity classification, MP makes loss nonpassive; substantial services for SCHEDULE PURPOSES (Reg. §1.1402(a)-4) requires a higher threshold (daily housekeeping, meals, concierge) that this client does NOT meet",
+            "Schedule E, passive — short-term rentals are still rentals",
+            "Form 4835 — farm rental income",
+          ],
+          correct: 1,
+          topicTags: ["str_loophole", "schedule_e_vs_c", "substantial_services", "rental_classification"],
+          difficulty: 5,
+          explanation: "TWO DIFFERENT TESTS at TWO DIFFERENT THRESHOLDS — this is the most common conceptual error. (1) The §469 'rental activity' exclusion (Reg. §1.469-1T(e)(3)(ii)(A)) uses a 7-day average customer use threshold to determine passive classification. (2) The Schedule C / SE tax test (Reg. §1.1402(a)-4 + Pub 527) uses a 'substantial services' standard — services 'similar to those rendered by a hotel' (daily maid service, meals, concierge). Most STRs meet the 7-day test (so they escape passive treatment) but DO NOT meet the substantial services test (so they stay on Schedule E, no SE tax). WiFi + turnover cleaning + welcome basket is NOT substantial services. The activity is correctly: Schedule E + nonpassive (because of MP) + no SE tax. Memorize this distinction — many CPAs (and online articles) conflate these.",
+        },
+
+        // ── Block 9: MCQ — Aggregation Election Mechanics ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w4_mcq_aggregation",
+          question: "A real estate professional client wants to make the §469(c)(7)(A) aggregation election. Which statement is most accurate?",
+          options: [
+            "It's an annual election — file each year you want it to apply",
+            "It's filed by attaching a statement to a timely-filed return; once made, it's binding for all future years until revoked with IRS consent (per Reg. §1.469-9(g)(3))",
+            "It's automatic for any taxpayer who qualifies as REPS",
+            "It can only be made in the first year of ownership",
+          ],
+          correct: 1,
+          topicTags: ["reps_aggregation_election", "mp_aggregation"],
+          difficulty: 4,
+          explanation: "The aggregation election under §469(c)(7)(A) is made by attaching a statement to the timely-filed (including extensions) original return for the year of the election. It's NOT automatic. Once made, it's binding for that year and ALL FUTURE YEARS until revoked — and revocation requires IRS consent except in narrow cases (material change in facts, per Reg. §1.469-9(g)(3)). This is why Aiola's process is: don't recommend aggregation lightly. Run the math both ways before electing. For some clients, aggregating helps THIS year but hurts in a future year (e.g., a future property sold at a loss where you'd want it treated as a separate activity for §469(g) suspended-loss release). The decision is irreversible without IRS pain.",
+        },
+      ],
     }],
   },
   {
