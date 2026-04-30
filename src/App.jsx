@@ -103,10 +103,10 @@ const PHASES = [
           { id: "d1t7", text: "Read the Aiola CPA Employee Handbook (TODO_NICK: link to handbook), pages 1–end" },
         ],
         resources: [
-          { label: "Employee Handbook", url: "#" /* TODO_NICK */ },
-          { label: "IT Setup Checklist", url: "#" /* TODO_NICK */ },
-          { label: "Email Signature Template", url: "#" /* TODO_NICK */ },
-          { label: "Required Slack Channels", url: "#" /* TODO_NICK */ },
+          { label: "Employee Handbook", url: null /* TODO_NICK */ },
+          { label: "IT Setup Checklist", url: null /* TODO_NICK */ },
+          { label: "Email Signature Template", url: null /* TODO_NICK */ },
+          { label: "Required Slack Channels", url: null /* TODO_NICK */ },
           { label: "Microsoft 365 Admin Portal", url: "https://admin.microsoft.com" },
         ],
         assessment: [
@@ -172,8 +172,8 @@ const PHASES = [
         ],
         resources: [
           { label: "ClickUp University", url: "https://university.clickup.com/" },
-          { label: "Aiola ClickUp SOP & Naming Conventions", url: "#" /* TODO_NICK */ },
-          { label: "Active Client Engagement Board", url: "#" /* TODO_NICK */ },
+          { label: "Aiola ClickUp SOP & Naming Conventions", url: null /* TODO_NICK */ },
+          { label: "Active Client Engagement Board", url: null /* TODO_NICK */ },
         ],
         assessment: [
           {
@@ -239,9 +239,9 @@ const PHASES = [
         ],
         resources: [
           { label: "Front Help Center", url: "https://help.front.com/" },
-          { label: "Aiola Front Protocol SOP", url: "#" /* TODO_NICK */ },
-          { label: "Response Time SLA Matrix", url: "#" /* TODO_NICK */ },
-          { label: "Reply Template Library", url: "#" /* TODO_NICK */ },
+          { label: "Aiola Front Protocol SOP", url: null /* TODO_NICK */ },
+          { label: "Response Time SLA Matrix", url: null /* TODO_NICK */ },
+          { label: "Reply Template Library", url: null /* TODO_NICK */ },
         ],
         assessment: [
           {
@@ -330,10 +330,10 @@ const PHASES = [
           { id: "d4t6", text: "Submit 3 questions about Aiola's advisory model to your manager via ClickUp" },
         ],
         resources: [
-          { label: "Aiola Culture Manual", url: "#" /* TODO_NICK */ },
-          { label: "Advisory vs Tax Prep Overview", url: "#" /* TODO_NICK */ },
+          { label: "Aiola Culture Manual", url: null /* TODO_NICK */ },
+          { label: "Advisory vs Tax Prep Overview", url: null /* TODO_NICK */ },
           { label: "Sample Onboarding Questionnaire (Tjahjadi)", url: "/docs/Michael_Tjahjadi_Onboarding.pdf" },
-          { label: "Standard Engagement Flow Diagram", url: "#" /* TODO_NICK */ },
+          { label: "Standard Engagement Flow Diagram", url: null /* TODO_NICK */ },
         ],
         assessment: [
           {
@@ -397,7 +397,7 @@ const PHASES = [
           { id: "d5t5", text: "30-min Friday wrap-up call with Sam (TODO_NICK: confirm cadence)" },
         ],
         resources: [
-          { label: "Week 1 Self-Reflection Form", url: "#" /* TODO_NICK */ },
+          { label: "Week 1 Self-Reflection Form", url: null /* TODO_NICK */ },
         ],
         assessment: [
           // Cross-topic retention checks — spaced repetition will also auto-prepend missed items
@@ -449,724 +449,881 @@ const PHASES = [
   },
   {
     id: "week2", label: "Week 2", subtitle: "Real Estate Tax Foundations", phase: "Days 1–30",
-    items: [{
-      id: "w2", title: "Week 2 — Schedule E & Rental Real Estate Fundamentals",
-      description: "Build fluency reading and reviewing rental real estate on Form 1040. By Friday, you should be able to read a Schedule E line by line, spot the most common errors, and explain the basic rules on rental classification, deductions, and passive losses. This is foundational — Weeks 3–4 build on this with entity overlay and the §469 deep dive.",
-      topicTags: ["schedule_e", "rental_classification", "passive_loss", "special_25k_allowance", "depreciation", "form_1040", "schedule_e_vs_c", "substantial_services"],
-      learningObjectives: [
-        "Read a Schedule E and identify income, expenses, depreciation, and net rental result",
-        "Explain when a rental is reported on Schedule E vs Schedule C (substantial services test)",
-        "Apply the $25,000 special allowance for active participation, including the phase-out math",
-        "Identify the most common Schedule E errors: missing depreciation, mis-categorized expenses, vacation home use violations",
-        "Recognize when rental losses are suspended under the passive activity rules (preview of Week 4)",
-      ],
-      tasks: [
-        { id: "w2t1", text: "Read IRS Pub 527 (Residential Rental Property), focusing on chapters 1–3 (rental income, expenses, depreciation)" },
-        { id: "w2t2", text: "Read Schedule E instructions for Form 1040 — Part I covers rental real estate" },
-        { id: "w2t3", text: "Review the Rivera 2024 Federal Return end-to-end (in resources). Pay specific attention to the Schedule E." },
-        { id: "w2t4", text: "Watch: Schedule E line-by-line walkthrough by Nick (TODO_NICK: record 30-min video)" },
-        { id: "w2t5", text: "Read Aiola's Rental Income Review Checklist (TODO_NICK: link to firm SOP)" },
-        { id: "w2t6", text: "Shadow a senior advisor reviewing a rental return for 30 minutes (TODO_NICK: schedule with Sam)" },
-        { id: "w2t7", text: "Read IRC §469 overview at a high level (passive activity rules) — don't dive deep, that's Week 4" },
-        { id: "w2t8", text: "Document your Week 2 questions in a single ClickUp task before Friday wrap-up" },
-      ],
-      resources: [
-        { label: "IRS Pub 527 (Residential Rental Property)", url: "https://www.irs.gov/pub/irs-pdf/p527.pdf" },
-        { label: "Schedule E Instructions (2024)", url: "https://www.irs.gov/pub/irs-pdf/i1040se.pdf" },
-        { label: "Form 1040 Schedule E (blank)", url: "https://www.irs.gov/pub/irs-pdf/f1040se.pdf" },
-        { label: "IRC §469 Overview (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
-        { label: "IRC §280A (Vacation Home Rules)", url: "https://www.law.cornell.edu/uscode/text/26/280A" },
-        { label: "Rivera 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
-        { label: "Aiola Rental Review Checklist", url: "#" /* TODO_NICK */ },
-        { label: "Schedule E Walkthrough Video", url: "#" /* TODO_NICK */ },
-      ],
-      assessment: [
-        // ── Block 1: Document Markup — Rivera Schedule E Review ──
-        {
-          type: "DOCUMENT_MARKUP", id: "w2_doc_rivera_schedule_e",
-          title: "Review Rivera's Schedule E",
-          topicTags: ["schedule_e", "rental_classification", "depreciation", "passive_loss"],
-          context: "This is the Alex & Aerin Rivera 2024 federal return (anonymized mock client). Aerin is a W-2 software engineer; Alex runs a consulting business. They have one rental property in Florida. Open the return, find the Schedule E, and flag every line you'd want to follow up on before considering this return final. Click on the area, choose a category, and write a 1-2 sentence note on what concerns you.",
-          documentUrl: "/docs/Rivera_2024_Federal_Return.pdf",
-          documentType: "pdf",
-          // TODO_SAM: After running this prompt, open the actual PDF, screenshot the Schedule E page,
-          // and translate the regions below into actual % coordinates. Conceptual answer key follows.
-          regions: [
-            {
-              id: "r_property_type",
-              label: "Property type classification (Schedule E Line 1b)",
-              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM: real coords from PDF
-              severity: "critical", category: "risk",
-              explanation: "Property type drives passive activity treatment. If marked '1 - Single Family' but client mentioned short-term renting (avg stay ≤ 7 days), this opens the STR loophole and the property may NOT be a 'rental activity' under Reg. §1.469-1T(e)(3)(ii). Verify avg stay before accepting the classification.",
-            },
-            {
-              id: "r_fair_rental_days",
-              label: "Fair rental days vs personal use days (Schedule E Line 2)",
-              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-              severity: "critical", category: "risk",
-              explanation: "Personal use > 14 days OR > 10% of fair rental days triggers vacation home rules under §280A — deductions limited to rental income. If personal use is non-zero, verify the math. If client used the property at all (including for 'maintenance' beyond a reasonable amount), this is in scope.",
-            },
-            {
-              id: "r_depreciation_zero",
-              label: "Depreciation expense (Schedule E Line 18)",
-              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-              severity: "critical", category: "missing",
-              explanation: "Most rentals should be claiming depreciation. Residential rental real estate = 27.5 years straight-line MACRS. If line 18 is zero or suspiciously low, either depreciation is missing (malpractice-adjacent — client overpaying tax) or the property hasn't been placed in service yet. Verify the basis worksheet exists and Form 4562 is filed.",
-            },
-            {
-              id: "r_repairs_vs_improvements",
-              label: "Repairs (Line 14) vs Capital Improvements",
-              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-              severity: "important", category: "risk",
-              explanation: "If 'Repairs' is unusually large (e.g., > 20% of rental income, or > $10k), inspect — could be capitalized improvements miscategorized as repairs. Tangible Property Regulations (Reg. §1.263(a)-3) draw the line: betterment, restoration, or adaptation = capitalize. Routine maintenance = expense. Misclassifying improvements as repairs is a common audit issue.",
-            },
-            {
-              id: "r_net_loss_suspended",
-              label: "Net rental result (Schedule E Line 26) interaction with AGI",
-              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-              severity: "critical", category: "risk",
-              explanation: "If the rental shows a net loss AND combined AGI is high, verify the loss is properly suspended. The $25k special allowance for active participation phases out 50% per dollar of MAGI over $100k MFJ, fully phased out at $150k. Above $150k, losses are suspended entirely (carry forward) UNLESS the taxpayer qualifies as a real estate professional under §469(c)(7). Form 8582 should reflect this.",
-            },
-            {
-              id: "r_mortgage_interest",
-              label: "Mortgage interest (Schedule E Line 12)",
-              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-              severity: "important", category: "missing",
-              explanation: "Should tie exactly to Form 1098 from the lender. Common error: mixing personal-use months with rental months on a property that converted use during the year. If mortgage interest splits between Schedule A (personal) and Schedule E (rental), verify the allocation method matches the use period.",
-            },
-            {
-              id: "r_insurance",
-              label: "Insurance (Line 9)",
-              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-              severity: "nice", category: "opportunity",
-              explanation: "Verify it's landlord/dwelling policy not personal homeowner's insurance. Also check if PMI is included — generally deductible against rental income.",
-            },
-            {
-              id: "r_property_tax",
-              label: "Taxes (Line 16)",
-              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-              severity: "nice", category: "opportunity",
-              explanation: "Property tax on the rental is fully deductible against rental income, NOT subject to the $10k SALT cap (which applies only to Schedule A personal SALT). Easy money left on the table if the trainee thinks SALT cap applies here.",
-            },
-          ],
-          answerKeyExplanation: "A thorough Schedule E review for a real estate advisory client examines: classification (property type, schedule choice), use (personal vs rental days), depreciation (claimed correctly?), expense categorization (repair vs improvement), and loss treatment (active participation vs REPS vs suspended). Missing any of these is how clients overpay or underclaim. The big four flags in priority order: (1) depreciation correctness, (2) §280A personal use trip, (3) loss suspension under §469, (4) repair/improvement classification.",
-        },
-
-        // ── Block 2a: Computation — Net Rental Result ──
-        {
-          type: "COMPUTATION", id: "w2_comp_net_rental",
-          title: "Net Rental Result",
-          topicTags: ["schedule_e", "form_1040"],
-          prompt: "A rental property generated $42,000 of rental income for the year. Operating expenses (excluding depreciation and interest): $11,500. Depreciation expense: $9,800. Mortgage interest: $14,200. What is the net rental result reported on Schedule E Line 26?",
-          expectedAnswer: 6500,
-          tolerance: 25,
-          unit: "dollars",
-          formLine: "Schedule E, Line 26",
-          workedSolution: [
-            "Step 1: Total rental income = $42,000",
-            "Step 2: Total expenses = Operating $11,500 + Depreciation $9,800 + Mortgage Interest $14,200 = $35,500",
-            "Step 3: Net rental result = $42,000 − $35,500 = $6,500 (net rental income)",
-            "Reported on Schedule E Line 26 (and flows to Form 1040 Schedule 1 Line 5).",
-          ],
-          commonWrongAnswers: [
-            { value: 16300, indicates: "Forgot to subtract depreciation. Depreciation IS a deduction on Schedule E even though it's a non-cash expense." },
-            { value: 30500, indicates: "Forgot mortgage interest — verify Line 12 isn't being missed." },
-            { value: -6500, indicates: "Sign error — rental had a net positive result, not a loss." },
-          ],
-        },
-
-        // ── Block 2b: Computation — $25k Allowance Partial Phase-Out ──
-        {
-          type: "COMPUTATION", id: "w2_comp_25k_allowance_partial",
-          title: "$25k Special Allowance — Partial Phase-Out",
-          topicTags: ["special_25k_allowance", "passive_loss", "schedule_e"],
-          prompt: "A married-filing-jointly taxpayer has a rental net loss of $18,000. They actively participate (made management decisions, approved tenants). Their MAGI before the rental loss is $135,000. How much rental loss can they deduct against their other (active) income this year? (Provide a dollar amount.)",
-          expectedAnswer: 7500,
-          tolerance: 0,
-          unit: "dollars",
-          formLine: "Form 8582 Worksheet",
-          workedSolution: [
-            "Step 1: Confirm active participation requirement met (it is).",
-            "Step 2: Base allowance is $25,000 for MFJ with active participation.",
-            "Step 3: Phase-out begins at $100,000 MAGI. Reduces by $0.50 per $1.00 over the threshold.",
-            "Step 4: MAGI excess = $135,000 − $100,000 = $35,000",
-            "Step 5: Allowance reduction = $35,000 × 0.50 = $17,500",
-            "Step 6: Available allowance = $25,000 − $17,500 = $7,500",
-            "Step 7: Loss is $18,000; allowance limits the deduction to $7,500. The remaining $10,500 is suspended under §469 and carries forward.",
-            "Note: Phase-out is fully complete at $150k MAGI for MFJ.",
-          ],
-          commonWrongAnswers: [
-            { value: 18000, indicates: "Ignored the phase-out — full loss claimed." },
-            { value: 25000, indicates: "Applied base allowance without phase-out adjustment." },
-            { value: 0, indicates: "Assumed full phase-out, but $135k is below the $150k complete phase-out threshold." },
-          ],
-        },
-
-        // ── Block 2c: Computation — $25k Allowance Full Phase-Out ──
-        {
-          type: "COMPUTATION", id: "w2_comp_25k_allowance_full",
-          title: "$25k Special Allowance — Full Phase-Out",
-          topicTags: ["special_25k_allowance", "passive_loss", "suspended_losses"],
-          prompt: "Same client as before, same $18,000 rental loss, same active participation. But now their MAGI is $165,000 (MFJ). How much rental loss can they deduct against active income this year?",
-          expectedAnswer: 0,
-          tolerance: 0,
-          unit: "dollars",
-          formLine: "Form 8582 Worksheet",
-          workedSolution: [
-            "Step 1: Check phase-out: at $150,000 MAGI MFJ, the $25k allowance is fully eliminated.",
-            "Step 2: $165,000 > $150,000 → allowance = $0.",
-            "Step 3: Entire $18,000 loss is suspended under §469 and carries forward indefinitely.",
-            "Step 4: Suspended loss is released when (a) future passive income offsets it, or (b) the property is sold in a fully taxable disposition (§469(g)).",
-            "Note: This client is a candidate to discuss real estate professional status (§469(c)(7)) if their facts support it — Week 4 topic.",
-          ],
-          commonWrongAnswers: [
-            { value: 7500, indicates: "Used same allowance as the $135k MAGI case — but at $165k the allowance is fully phased out." },
-            { value: 18000, indicates: "Ignored phase-out entirely." },
-            { value: 25000, indicates: "Applied full allowance — phase-out begins at $100k and ends at $150k MFJ." },
-          ],
-        },
-
-        // ── Block 3a: MCQ — Schedule E Location ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w2_mcq_schedule_e_location",
-          question: "On Form 1040, where does rental real estate income or loss appear?",
-          options: [
-            "Schedule C, Line 31",
-            "Schedule E, Part I",
-            "Schedule D, Part II",
-            "Form 8949",
-          ],
-          correct: 1,
-          topicTags: ["schedule_e", "form_1040"],
-          difficulty: 1,
-          explanation: "Schedule E Part I is for rental real estate and royalties. Schedule C is for active trade or business (e.g., hotels, B&Bs with substantial services). Schedule D / Form 8949 are for capital gain/loss on asset sales. Most residential rentals belong on Schedule E.",
-        },
-
-        // ── Block 3b: MCQ — Substantial Services ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w2_mcq_substantial_services",
-          question: "A client rents out their cabin via Airbnb. Average guest stay is 5 days. They provide WiFi and basic cleaning between guests, but no daily housekeeping, no meals, no concierge service. What schedule does this rental belong on?",
-          options: [
-            "Schedule C — short stays mean it's an active business",
-            "Schedule E — substantial services threshold isn't met",
-            "Schedule F — vacation rental",
-            "Both Schedule C and E, split based on days",
-          ],
-          correct: 1,
-          topicTags: ["schedule_e_vs_c", "substantial_services", "rental_classification"],
-          difficulty: 3,
-          explanation: "Schedule C requires 'substantial services' (Reg. §1.469-1T(e)(3)(ii)) — daily housekeeping, meals, concierge, or other services 'substantially the same as those typically provided in a hotel.' WiFi and turnover cleaning are NOT substantial services. The activity stays on Schedule E. Note: short stays (avg ≤ 7 days) DO matter for §469 passive classification (the STR loophole — Week 4), but they don't change the schedule choice.",
-        },
-
-        // ── Block 3c: MCQ — $25k Phase-Out Threshold ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w2_mcq_25k_phaseout",
-          question: "The $25,000 special allowance for active participation in rental real estate phases out as MAGI increases. At what MAGI is the allowance FULLY phased out for a married-filing-jointly couple?",
-          options: [
-            "$100,000",
-            "$150,000",
-            "$200,000",
-            "There is no phase-out",
-          ],
-          correct: 1,
-          topicTags: ["special_25k_allowance", "passive_loss"],
-          difficulty: 2,
-          explanation: "Phase-out begins at $100,000 MAGI (MFJ), reducing the $25k allowance by $0.50 per $1.00 of excess MAGI. At $150,000 MAGI, the allowance is fully eliminated. (For married-filing-separately who lived apart all year: thresholds are $50k and $75k. MFS who lived together: $0 allowance.)",
-        },
-
-        // ── Block 3d: MCQ — Depreciation Method ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w2_mcq_depreciation_method",
-          question: "Residential rental real estate placed in service after 1986 is depreciated over what period using what method?",
-          options: [
-            "15 years, MACRS 200% declining balance",
-            "27.5 years, straight-line MACRS",
-            "39 years, straight-line MACRS",
-            "25 years, 150% declining balance",
-          ],
-          correct: 1,
-          topicTags: ["depreciation", "schedule_e"],
-          difficulty: 2,
-          explanation: "Residential rental real estate = 27.5 years straight-line under MACRS. Non-residential (commercial) = 39 years straight-line. 15-year is for qualified improvement property and certain land improvements. Land itself is never depreciated. The cost basis allocation between land (non-depreciable) and building (depreciable) matters — Aiola typically uses the property tax assessor's ratio as a defensible starting point.",
-        },
-
-        // ── Block 3e: MCQ — Average Stay Foreshadow ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w2_mcq_avg_stay_foreshadow",
-          question: "Why does Aiola's onboarding questionnaire specifically ask about the AVERAGE GUEST STAY duration on rental properties?",
-          options: [
-            "To compute occupancy rate for the client's records",
-            "Because average stay ≤ 7 days excludes the activity from the §469 'rental activity' definition, opening the STR loophole",
-            "To estimate cleaning expense deductions",
-            "Because the IRS requires it on Schedule E Line 2",
-          ],
-          correct: 1,
-          topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
-          difficulty: 4,
-          explanation: "This is the bridge to Week 4. Under Reg. §1.469-1T(e)(3)(ii)(A), if average customer use is 7 days or less, the activity is NOT a 'rental activity' for §469 purposes. That means losses are NOT automatically passive — if the taxpayer materially participates, losses can offset W-2 income WITHOUT real estate professional status. This is the foundation of the so-called 'STR loophole.' The schedule (E vs C) is determined separately by substantial services. We're foreshadowing this so you understand WHY Aiola asks the question — it's a $25k+ tax savings indicator.",
-        },
-      ],
-    }],
+    items: [
+      {
+        id: "d6", title: "Day 6 — Schedule E Orientation & Rivera Return Review",
+        description: "Begin building your Schedule E fluency. Today is about reading — absorb the IRS guidance, then open the Rivera return and start getting comfortable with what a rental real estate section looks like on a real 1040.",
+        topicTags: ["schedule_e", "rental_classification", "depreciation", "passive_loss"],
+        learningObjectives: [
+          "Identify the key sections of Schedule E Part I and what each line captures",
+          "Explain the difference between rental income, expenses, depreciation, and net result",
+          "Navigate the Rivera 2024 Federal Return and locate the Schedule E",
+        ],
+        tasks: [
+          { id: "d6t1", text: "Read IRS Pub 527 (Residential Rental Property), focusing on chapters 1–3 (rental income, expenses, depreciation)" },
+          { id: "d6t2", text: "Read Schedule E instructions for Form 1040 — Part I covers rental real estate" },
+          { id: "d6t3", text: "Review the Rivera 2024 Federal Return end-to-end (in resources). Pay specific attention to the Schedule E." },
+        ],
+        resources: [
+          { label: "IRS Pub 527 (Residential Rental Property)", url: "https://www.irs.gov/pub/irs-pdf/p527.pdf" },
+          { label: "Schedule E Instructions (2024)", url: "https://www.irs.gov/pub/irs-pdf/i1040se.pdf" },
+          { label: "Form 1040 Schedule E (blank)", url: "https://www.irs.gov/pub/irs-pdf/f1040se.pdf" },
+          { label: "Rivera 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
+        ],
+        assessment: [
+          // ── Document Markup — Rivera Schedule E Review ──
+          {
+            type: "DOCUMENT_MARKUP", id: "w2_doc_rivera_schedule_e",
+            title: "Review Rivera's Schedule E",
+            topicTags: ["schedule_e", "rental_classification", "depreciation", "passive_loss"],
+            context: "This is the Alex & Aerin Rivera 2024 federal return (anonymized mock client). Aerin is a W-2 software engineer; Alex runs a consulting business. They have one rental property in Florida. Open the return, find the Schedule E, and flag every line you'd want to follow up on before considering this return final. Click on the area, choose a category, and write a 1-2 sentence note on what concerns you.",
+            documentUrl: "/docs/Rivera_2024_Federal_Return.pdf",
+            documentType: "pdf",
+            // TODO_SAM: After running this prompt, open the actual PDF, screenshot the Schedule E page,
+            // and translate the regions below into actual % coordinates. Conceptual answer key follows.
+            regions: [
+              {
+                id: "r_property_type",
+                label: "Property type classification (Schedule E Line 1b)",
+                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM: real coords from PDF
+                severity: "critical", category: "risk",
+                explanation: "Property type drives passive activity treatment. If marked '1 - Single Family' but client mentioned short-term renting (avg stay ≤ 7 days), this opens the STR loophole and the property may NOT be a 'rental activity' under Reg. §1.469-1T(e)(3)(ii). Verify avg stay before accepting the classification.",
+              },
+              {
+                id: "r_fair_rental_days",
+                label: "Fair rental days vs personal use days (Schedule E Line 2)",
+                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+                severity: "critical", category: "risk",
+                explanation: "Personal use > 14 days OR > 10% of fair rental days triggers vacation home rules under §280A — deductions limited to rental income. If personal use is non-zero, verify the math. If client used the property at all (including for 'maintenance' beyond a reasonable amount), this is in scope.",
+              },
+              {
+                id: "r_depreciation_zero",
+                label: "Depreciation expense (Schedule E Line 18)",
+                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+                severity: "critical", category: "missing",
+                explanation: "Most rentals should be claiming depreciation. Residential rental real estate = 27.5 years straight-line MACRS. If line 18 is zero or suspiciously low, either depreciation is missing (malpractice-adjacent — client overpaying tax) or the property hasn't been placed in service yet. Verify the basis worksheet exists and Form 4562 is filed.",
+              },
+              {
+                id: "r_repairs_vs_improvements",
+                label: "Repairs (Line 14) vs Capital Improvements",
+                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+                severity: "important", category: "risk",
+                explanation: "If 'Repairs' is unusually large (e.g., > 20% of rental income, or > $10k), inspect — could be capitalized improvements miscategorized as repairs. Tangible Property Regulations (Reg. §1.263(a)-3) draw the line: betterment, restoration, or adaptation = capitalize. Routine maintenance = expense. Misclassifying improvements as repairs is a common audit issue.",
+              },
+              {
+                id: "r_net_loss_suspended",
+                label: "Net rental result (Schedule E Line 26) interaction with AGI",
+                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+                severity: "critical", category: "risk",
+                explanation: "If the rental shows a net loss AND combined AGI is high, verify the loss is properly suspended. The $25k special allowance for active participation phases out 50% per dollar of MAGI over $100k MFJ, fully phased out at $150k. Above $150k, losses are suspended entirely (carry forward) UNLESS the taxpayer qualifies as a real estate professional under §469(c)(7). Form 8582 should reflect this.",
+              },
+              {
+                id: "r_mortgage_interest",
+                label: "Mortgage interest (Schedule E Line 12)",
+                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+                severity: "important", category: "missing",
+                explanation: "Should tie exactly to Form 1098 from the lender. Common error: mixing personal-use months with rental months on a property that converted use during the year. If mortgage interest splits between Schedule A (personal) and Schedule E (rental), verify the allocation method matches the use period.",
+              },
+              {
+                id: "r_insurance",
+                label: "Insurance (Line 9)",
+                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+                severity: "nice", category: "opportunity",
+                explanation: "Verify it's landlord/dwelling policy not personal homeowner's insurance. Also check if PMI is included — generally deductible against rental income.",
+              },
+              {
+                id: "r_property_tax",
+                label: "Taxes (Line 16)",
+                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+                severity: "nice", category: "opportunity",
+                explanation: "Property tax on the rental is fully deductible against rental income, NOT subject to the $10k SALT cap (which applies only to Schedule A personal SALT). Easy money left on the table if the trainee thinks SALT cap applies here.",
+              },
+            ],
+            answerKeyExplanation: "A thorough Schedule E review for a real estate advisory client examines: classification (property type, schedule choice), use (personal vs rental days), depreciation (claimed correctly?), expense categorization (repair vs improvement), and loss treatment (active participation vs REPS vs suspended). Missing any of these is how clients overpay or underclaim. The big four flags in priority order: (1) depreciation correctness, (2) §280A personal use trip, (3) loss suspension under §469, (4) repair/improvement classification.",
+          },
+        ],
+      },
+      {
+        id: "d7", title: "Day 7 — Schedule E Computation & Form Placement",
+        description: "Move from reading to doing. Today you compute a net rental result from scratch and reinforce where rental income lives on the 1040.",
+        topicTags: ["schedule_e", "form_1040"],
+        learningObjectives: [
+          "Compute a net rental result from income, expenses, depreciation, and mortgage interest",
+          "Identify the correct schedule and line for rental real estate on Form 1040",
+        ],
+        tasks: [
+          { id: "d7t1", text: "Watch: Schedule E line-by-line walkthrough by Nick (TODO_NICK: record 30-min video)" },
+          { id: "d7t2", text: "Practice computing net rental results from sample data sets" },
+        ],
+        resources: [
+          { label: "Schedule E Walkthrough Video", url: null /* TODO_NICK */ },
+          { label: "Form 1040 Schedule E (blank)", url: "https://www.irs.gov/pub/irs-pdf/f1040se.pdf" },
+        ],
+        assessment: [
+          {
+            type: "COMPUTATION", id: "w2_comp_net_rental",
+            title: "Net Rental Result",
+            topicTags: ["schedule_e", "form_1040"],
+            prompt: "A rental property generated $42,000 of rental income for the year. Operating expenses (excluding depreciation and interest): $11,500. Depreciation expense: $9,800. Mortgage interest: $14,200. What is the net rental result reported on Schedule E Line 26?",
+            expectedAnswer: 6500,
+            tolerance: 25,
+            unit: "dollars",
+            formLine: "Schedule E, Line 26",
+            workedSolution: [
+              "Step 1: Total rental income = $42,000",
+              "Step 2: Total expenses = Operating $11,500 + Depreciation $9,800 + Mortgage Interest $14,200 = $35,500",
+              "Step 3: Net rental result = $42,000 − $35,500 = $6,500 (net rental income)",
+              "Reported on Schedule E Line 26 (and flows to Form 1040 Schedule 1 Line 5).",
+            ],
+            commonWrongAnswers: [
+              { value: 16300, indicates: "Forgot to subtract depreciation. Depreciation IS a deduction on Schedule E even though it's a non-cash expense." },
+              { value: 30500, indicates: "Forgot mortgage interest — verify Line 12 isn't being missed." },
+              { value: -6500, indicates: "Sign error — rental had a net positive result, not a loss." },
+            ],
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w2_mcq_schedule_e_location",
+            question: "On Form 1040, where does rental real estate income or loss appear?",
+            options: [
+              "Schedule C, Line 31",
+              "Schedule E, Part I",
+              "Schedule D, Part II",
+              "Form 8949",
+            ],
+            correct: 1,
+            topicTags: ["schedule_e", "form_1040"],
+            difficulty: 1,
+            explanation: "Schedule E Part I is for rental real estate and royalties. Schedule C is for active trade or business (e.g., hotels, B&Bs with substantial services). Schedule D / Form 8949 are for capital gain/loss on asset sales. Most residential rentals belong on Schedule E.",
+          },
+        ],
+      },
+      {
+        id: "d8", title: "Day 8 — $25k Special Allowance & Passive Loss Rules",
+        description: "Learn the $25,000 special allowance for active participation, including the MAGI phase-out math. This is the first line of defense for clients with rental losses — and most Aiola clients blow past it.",
+        topicTags: ["special_25k_allowance", "passive_loss", "schedule_e", "suspended_losses"],
+        learningObjectives: [
+          "Apply the $25,000 special allowance for active participation, including the $100k–$150k MAGI phase-out",
+          "Calculate the allowance reduction at any MAGI level",
+          "Determine when rental losses are fully suspended vs partially deductible",
+        ],
+        tasks: [
+          { id: "d8t1", text: "Read IRC §469 overview at a high level (passive activity rules) — don't dive deep, that's Week 4" },
+          { id: "d8t2", text: "Work through 3 phase-out scenarios at different MAGI levels" },
+        ],
+        resources: [
+          { label: "IRC §469 Overview (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
+          { label: "IRC §280A (Vacation Home Rules)", url: "https://www.law.cornell.edu/uscode/text/26/280A" },
+        ],
+        assessment: [
+          {
+            type: "COMPUTATION", id: "w2_comp_25k_allowance_partial",
+            title: "$25k Special Allowance — Partial Phase-Out",
+            topicTags: ["special_25k_allowance", "passive_loss", "schedule_e"],
+            prompt: "A married-filing-jointly taxpayer has a rental net loss of $18,000. They actively participate (made management decisions, approved tenants). Their MAGI before the rental loss is $135,000. How much rental loss can they deduct against their other (active) income this year? (Provide a dollar amount.)",
+            expectedAnswer: 7500,
+            tolerance: 0,
+            unit: "dollars",
+            formLine: "Form 8582 Worksheet",
+            workedSolution: [
+              "Step 1: Confirm active participation requirement met (it is).",
+              "Step 2: Base allowance is $25,000 for MFJ with active participation.",
+              "Step 3: Phase-out begins at $100,000 MAGI. Reduces by $0.50 per $1.00 over the threshold.",
+              "Step 4: MAGI excess = $135,000 − $100,000 = $35,000",
+              "Step 5: Allowance reduction = $35,000 × 0.50 = $17,500",
+              "Step 6: Available allowance = $25,000 − $17,500 = $7,500",
+              "Step 7: Loss is $18,000; allowance limits the deduction to $7,500. The remaining $10,500 is suspended under §469 and carries forward.",
+              "Note: Phase-out is fully complete at $150k MAGI for MFJ.",
+            ],
+            commonWrongAnswers: [
+              { value: 18000, indicates: "Ignored the phase-out — full loss claimed." },
+              { value: 25000, indicates: "Applied base allowance without phase-out adjustment." },
+              { value: 0, indicates: "Assumed full phase-out, but $135k is below the $150k complete phase-out threshold." },
+            ],
+          },
+          {
+            type: "COMPUTATION", id: "w2_comp_25k_allowance_full",
+            title: "$25k Special Allowance — Full Phase-Out",
+            topicTags: ["special_25k_allowance", "passive_loss", "suspended_losses"],
+            prompt: "Same client as before, same $18,000 rental loss, same active participation. But now their MAGI is $165,000 (MFJ). How much rental loss can they deduct against active income this year?",
+            expectedAnswer: 0,
+            tolerance: 0,
+            unit: "dollars",
+            formLine: "Form 8582 Worksheet",
+            workedSolution: [
+              "Step 1: Check phase-out: at $150,000 MAGI MFJ, the $25k allowance is fully eliminated.",
+              "Step 2: $165,000 > $150,000 → allowance = $0.",
+              "Step 3: Entire $18,000 loss is suspended under §469 and carries forward indefinitely.",
+              "Step 4: Suspended loss is released when (a) future passive income offsets it, or (b) the property is sold in a fully taxable disposition (§469(g)).",
+              "Note: This client is a candidate to discuss real estate professional status (§469(c)(7)) if their facts support it — Week 4 topic.",
+            ],
+            commonWrongAnswers: [
+              { value: 7500, indicates: "Used same allowance as the $135k MAGI case — but at $165k the allowance is fully phased out." },
+              { value: 18000, indicates: "Ignored phase-out entirely." },
+              { value: 25000, indicates: "Applied full allowance — phase-out begins at $100k and ends at $150k MFJ." },
+            ],
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w2_mcq_25k_phaseout",
+            question: "The $25,000 special allowance for active participation in rental real estate phases out as MAGI increases. At what MAGI is the allowance FULLY phased out for a married-filing-jointly couple?",
+            options: [
+              "$100,000",
+              "$150,000",
+              "$200,000",
+              "There is no phase-out",
+            ],
+            correct: 1,
+            topicTags: ["special_25k_allowance", "passive_loss"],
+            difficulty: 2,
+            explanation: "Phase-out begins at $100,000 MAGI (MFJ), reducing the $25k allowance by $0.50 per $1.00 of excess MAGI. At $150,000 MAGI, the allowance is fully eliminated. (For married-filing-separately who lived apart all year: thresholds are $50k and $75k. MFS who lived together: $0 allowance.)",
+          },
+        ],
+      },
+      {
+        id: "d9", title: "Day 9 — Rental Classification & Depreciation",
+        description: "Dive into classification: when does a rental go on Schedule E vs Schedule C? What's the substantial services test? Then lock in the depreciation rules for residential rental property.",
+        topicTags: ["schedule_e_vs_c", "substantial_services", "rental_classification", "depreciation"],
+        learningObjectives: [
+          "Explain when a rental is reported on Schedule E vs Schedule C (substantial services test)",
+          "State the depreciation period and method for residential rental real estate (27.5 years straight-line MACRS)",
+          "Identify the most common Schedule E errors: missing depreciation, mis-categorized expenses",
+        ],
+        tasks: [
+          { id: "d9t1", text: "Read Aiola's Rental Income Review Checklist (TODO_NICK: link to firm SOP)" },
+          { id: "d9t2", text: "Shadow a senior advisor reviewing a rental return for 30 minutes (TODO_NICK: schedule with Sam)" },
+        ],
+        resources: [
+          { label: "Aiola Rental Review Checklist", url: null /* TODO_NICK */ },
+          { label: "IRS Pub 527 (Residential Rental Property)", url: "https://www.irs.gov/pub/irs-pdf/p527.pdf" },
+        ],
+        assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "w2_mcq_substantial_services",
+            question: "A client rents out their cabin via Airbnb. Average guest stay is 5 days. They provide WiFi and basic cleaning between guests, but no daily housekeeping, no meals, no concierge service. What schedule does this rental belong on?",
+            options: [
+              "Schedule C — short stays mean it's an active business",
+              "Schedule E — substantial services threshold isn't met",
+              "Schedule F — vacation rental",
+              "Both Schedule C and E, split based on days",
+            ],
+            correct: 1,
+            topicTags: ["schedule_e_vs_c", "substantial_services", "rental_classification"],
+            difficulty: 3,
+            explanation: "Schedule C requires 'substantial services' (Reg. §1.469-1T(e)(3)(ii)) — daily housekeeping, meals, concierge, or other services 'substantially the same as those typically provided in a hotel.' WiFi and turnover cleaning are NOT substantial services. The activity stays on Schedule E. Note: short stays (avg ≤ 7 days) DO matter for §469 passive classification (the STR loophole — Week 4), but they don't change the schedule choice.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w2_mcq_depreciation_method",
+            question: "Residential rental real estate placed in service after 1986 is depreciated over what period using what method?",
+            options: [
+              "15 years, MACRS 200% declining balance",
+              "27.5 years, straight-line MACRS",
+              "39 years, straight-line MACRS",
+              "25 years, 150% declining balance",
+            ],
+            correct: 1,
+            topicTags: ["depreciation", "schedule_e"],
+            difficulty: 2,
+            explanation: "Residential rental real estate = 27.5 years straight-line under MACRS. Non-residential (commercial) = 39 years straight-line. 15-year is for qualified improvement property and certain land improvements. Land itself is never depreciated. The cost basis allocation between land (non-depreciable) and building (depreciable) matters — Aiola typically uses the property tax assessor's ratio as a defensible starting point.",
+          },
+        ],
+      },
+      {
+        id: "d10", title: "Day 10 — Week 2 Wrap-Up & Week 4 Foreshadow",
+        description: "Consolidate everything you've learned this week. The final assessment block foreshadows why Aiola asks about average guest stay — setting up Week 4's STR deep dive.",
+        topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
+        learningObjectives: [
+          "Recognize when rental losses are suspended under the passive activity rules (preview of Week 4)",
+          "Explain why average guest stay duration matters for §469 classification",
+        ],
+        tasks: [
+          { id: "d10t1", text: "Document your Week 2 questions in a single ClickUp task before Friday wrap-up" },
+          { id: "d10t2", text: "Review any missed assessment blocks from this week" },
+        ],
+        resources: [
+          { label: "Rivera 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
+        ],
+        assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "w2_mcq_avg_stay_foreshadow",
+            question: "Why does Aiola's onboarding questionnaire specifically ask about the AVERAGE GUEST STAY duration on rental properties?",
+            options: [
+              "To compute occupancy rate for the client's records",
+              "Because average stay ≤ 7 days excludes the activity from the §469 'rental activity' definition, opening the STR loophole",
+              "To estimate cleaning expense deductions",
+              "Because the IRS requires it on Schedule E Line 2",
+            ],
+            correct: 1,
+            topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
+            difficulty: 4,
+            explanation: "This is the bridge to Week 4. Under Reg. §1.469-1T(e)(3)(ii)(A), if average customer use is 7 days or less, the activity is NOT a 'rental activity' for §469 purposes. That means losses are NOT automatically passive — if the taxpayer materially participates, losses can offset W-2 income WITHOUT real estate professional status. This is the foundation of the so-called 'STR loophole.' The schedule (E vs C) is determined separately by substantial services. We're foreshadowing this so you understand WHY Aiola asks the question — it's a $25k+ tax savings indicator.",
+          },
+        ],
+      },
+    ],
   },
   {
     id: "week3", label: "Week 3", subtitle: "Entity Structures", phase: "Days 1–30",
-    items: [{
-      id: "w3", title: "Week 3 — Entity Structures: LLCs, S-Corps, and the Real Estate Overlay",
-      description: "Understand the entity playbook for real estate clients. By Friday you should know when an LLC is the right structure, when an S-Corp election makes sense (and when it actively hurts), how to compute reasonable compensation defensibly, and why most rental real estate should NOT be in an S-Corp. We'll also cover §199A QBI fundamentals — relevant for both active businesses and the rental real estate safe harbor.",
-      topicTags: ["llc", "s_corp", "reasonable_comp", "pass_through", "entity_election", "qbi", "se_tax", "partnership_taxation"],
-      learningObjectives: [
-        "Explain pass-through taxation and why it dominates real estate",
-        "Identify when an S-Corp election makes sense (active service business with stable income above ~$80k profit) and when it doesn't (passive rentals, low or volatile income)",
-        "Compute defensible reasonable compensation using RCReports/BLS, not arbitrary percentages",
-        "Calculate the SE tax savings from an S-Corp election at varying income levels",
-        "Articulate §199A QBI at a working level: 20% deduction, SSTB rules, and the rental real estate safe harbor (Rev. Proc. 2019-38)",
-      ],
-      tasks: [
-        { id: "w3t1", text: "Read Aiola's Entity Decision Tree (TODO_NICK: link to firm SOP)" },
-        { id: "w3t2", text: "Study reasonable comp methodology: RCReports, BLS Occupational Employment Statistics, comparable position salaries" },
-        { id: "w3t3", text: "Review the Rivera return — Alex's consulting business is currently on Schedule C. Is S-Corp the right next step?" },
-        { id: "w3t4", text: "Read IRC §199A overview — focus on Sections 199A(a), (d) (SSTB), and Rev. Proc. 2019-38 (rental real estate safe harbor)" },
-        { id: "w3t5", text: "Read IRS guidance on S-Corp reasonable compensation: 'Wage Compensation for S Corporation Officers' fact sheet" },
-        { id: "w3t6", text: "Complete the entity scenario practice set in this week's assessment" },
-        { id: "w3t7", text: "Shadow Nick on an entity-recommendation client conversation (TODO_NICK: schedule)" },
-        { id: "w3t8", text: "Submit your written analysis on whether Alex Rivera should elect S-Corp for 2025 (assessment block 1 covers this)" },
-      ],
-      resources: [
-        { label: "IRC §199A QBI Overview (IRS)", url: "https://www.irs.gov/newsroom/qualified-business-income-deduction" },
-        { label: "Rev. Proc. 2019-38 (Rental Real Estate Safe Harbor)", url: "https://www.irs.gov/pub/irs-drop/rp-19-38.pdf" },
-        { label: "Wage Compensation for S Corporation Officers (IRS Fact Sheet)", url: "https://www.irs.gov/businesses/small-businesses-self-employed/wage-compensation-for-s-corporation-officers" },
-        { label: "IRC §1361 (S-Corp Eligibility)", url: "https://www.law.cornell.edu/uscode/text/26/1361" },
-        { label: "IRC §199A (QBI)", url: "https://www.law.cornell.edu/uscode/text/26/199A" },
-        { label: "BLS Occupational Wage Data", url: "https://www.bls.gov/oes/" },
-        { label: "Aiola Entity Decision Tree", url: "#" /* TODO_NICK */ },
-        { label: "Rivera 2024 Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
-      ],
-      assessment: [
-        // ── Block 1: Scenario Branching — Should Alex Rivera Elect S-Corp? ──
-        {
-          type: "SCENARIO_BRANCHING", id: "w3_scenario_alex_scorp",
-          title: "Should Alex Rivera Elect S-Corp for 2025?",
-          topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax"],
-          context: "Alex Rivera runs a consulting business currently filed on Schedule C. Per his 2024 return: net Schedule C income $145,000, ~30 hours/week worked on the business, residence in Florida (no state income tax), 3-year stable income trend. He emails on a Tuesday: 'My buddy said I should be doing an S-Corp to save on taxes. Can we set that up for 2025?' How do you handle this conversation?",
-          decisions: [
-            {
-              id: "dec1", prompt: "What's your FIRST move?",
-              options: [
-                { text: "Recommend S-Corp election immediately — at $145k net he's leaving SE tax savings on the table", weight: 1, correctness: "risky", nextId: null, terminalId: "t_premature" },
-                { text: "Ask follow-up questions: state of residence, projected stability of income, willingness to run payroll, other entities, retirement plan goals", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
-                { text: "Recommend against because S-Corp adds compliance complexity", weight: 1, correctness: "risky", nextId: null, terminalId: "t_undercoaching" },
-                { text: "Tell him to talk to a business attorney first", weight: 1, correctness: "risky", nextId: null, terminalId: "t_deflect" },
-              ],
-            },
-            {
-              id: "dec2", prompt: "He confirms FL (no state tax), stable income last 3 years, willing to do payroll, no other entities, currently no retirement plan. What's your reasonable comp anchor?",
-              options: [
-                { text: "50% of net income → $72,500 (rule of thumb)", weight: 1, correctness: "risky", nextId: null, terminalId: "t_arbitrary_comp" },
-                { text: "Pull RCReports or BLS data for 'Management Consultants' in his region — likely $90k–$110k range", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
-                { text: "$50,000 to maximize distributions and SE savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_aggressive_comp" },
-                { text: "Whatever Alex wants to pay himself", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_no_comp" },
-              ],
-            },
-            {
-              id: "dec3", prompt: "Anchoring at $95,000 reasonable comp on $145,000 net income, what's the approximate SE tax savings vs Schedule C? (Rough order of magnitude.)",
-              options: [
-                { text: "About $15,000 — 15.3% × $50k diff with no offset", weight: 1, correctness: "risky", nextId: null, terminalId: "t_overstated" },
-                { text: "About $4,000–$7,000 — savings on the SE-tax portion of the $50k diff, accounting for SS wage base interactions and the deduction for half of SE tax", weight: 3, correctness: "great", nextId: "dec4", terminalId: null },
-                { text: "About $22,000 — full 15.3% × full $145k", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_overstated" },
-                { text: "Zero — there's no SE tax savings", weight: 1, correctness: "risky", nextId: null, terminalId: "t_understated" },
-              ],
-            },
-            {
-              id: "dec4", prompt: "Alex asks: 'Wait, my friend said his S-Corp also saved him on his rental properties. Can I put my rentals into the S-Corp too?'",
-              options: [
-                { text: "Yes, putting rentals in an S-Corp adds another layer of SE tax savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
-                { text: "No — rental income is NOT subject to SE tax to begin with under IRC §1402(a)(1), so there's no SE tax to save. Worse, putting appreciated real estate INTO an S-Corp can trigger gain on later distribution. Keep rentals in LLCs (or held directly), separate from the S-Corp.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
-                { text: "It depends on whether the rental is short-term or long-term", weight: 1, correctness: "risky", nextId: null, terminalId: "t_partial_credit" },
-                { text: "Yes, but only for short-term rentals", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
-              ],
-            },
-          ],
-          terminals: [
-            { id: "t_great", label: "Pro-Level Advisory", outcome: "great", coachingNote: "Textbook. You scoped the conversation, anchored reasonable comp on defensible data, sized the savings accurately, AND caught the rental trap. Three teaching points to remember: (1) Reasonable comp uses RCReports/BLS — never percentages. (2) SE tax savings are smaller than the napkin math suggests because of SS wage base interactions and the deduction for half of SE tax. (3) S-Corp does NOT help rentals — rental income isn't subject to SE tax under §1402(a)(1), and putting appreciated real estate into an S-Corp creates exit problems. The output of this conversation is a memo: 'Recommend S-Corp election effective 1/1/2025, reasonable comp ~$95k anchored on RCReports lookup, projected SE tax savings ~$4–7k, additional admin cost ~$1.5–2k/yr (payroll provider + 1120-S return). Rentals to remain in LLC structure, separate from S-Corp.'" },
-            { id: "t_premature", label: "Premature Recommendation", outcome: "risky", coachingNote: "Recommending S-Corp without scoping is a rookie move. State (FL = no state benefit, but in CA the franchise tax matters), income stability (S-Corp election locks you in for 5 years before re-election), willingness to run payroll, retirement plan strategy, and other entities all matter. The recommendation IS probably right for Alex — but you can't know that without asking." },
-            { id: "t_undercoaching", label: "Undercoaching", outcome: "risky", coachingNote: "S-Corp does add complexity, but at $145k of stable consulting income in a no-state-tax state, the math very likely works. Defaulting to 'too complex' undersells the strategy. Aiola's job is to evaluate, not avoid." },
-            { id: "t_deflect", label: "Pure Deflection", outcome: "risky", coachingNote: "Entity election is squarely a CPA conversation. An attorney would handle the LLC formation; the S-Corp election (Form 2553) and reasonable comp determination is your lane. Punting to an attorney suggests you don't know the play — and clients notice." },
-            { id: "t_arbitrary_comp", label: "Arbitrary Percentage", outcome: "risky", coachingNote: "The IRS does not accept '50% rule of thumb.' Reasonable comp must be supportable based on what a third party would pay for the services rendered. RCReports and BLS Occupational Employment data are the defensible tools. Arbitrary percentages are how clients get reclassification challenges — and you get a hard conversation with the client about back wages and penalties." },
-            { id: "t_aggressive_comp", label: "Aggressive Comp", outcome: "harmful", coachingNote: "Setting comp artificially low to maximize distributions is the textbook IRS reclassification risk. The Watson v. Commissioner case (2012) is the cautionary tale — court reclassified $24k of comp into $91k. Never anchor a comp recommendation on 'maximize savings.' Always anchor on 'what would a third party pay for this work.'" },
-            { id: "t_no_comp", label: "No Standard", outcome: "harmful", coachingNote: "'Whatever the client wants' is malpractice territory. The client engaged Aiola for the technical answer. Defer to Alex on lifestyle preferences (timing of distributions, etc.) but never on the technical reasonable comp determination." },
-            { id: "t_overstated", label: "Overstated Savings", outcome: "risky", coachingNote: "The napkin '15.3% × distribution' calc overstates savings. Two reasons: (1) Above the SS wage base ($168,600 in 2024), the wage portion only saves Medicare (2.9%), not full 15.3%. (2) Schedule C filers get a deduction for half of SE tax (§164(f)), which reduces the apparent savings comparing apples to apples. At $145k income with $95k comp, true SE tax savings are typically in the $4k–$7k range, not $15k+. Overstating savings to clients is how trust gets broken later." },
-            { id: "t_understated", label: "Understated Savings", outcome: "risky", coachingNote: "There ARE real SE tax savings on the wage/distribution split, even after accounting for the half-SE-tax deduction and SS wage base. Saying 'zero savings' suggests you don't understand the mechanics. Walk through the math: SE tax is 15.3% on net SE earnings; S-Corp wages get FICA on the wage portion only; distributions are not subject to SE tax." },
-            { id: "t_rental_scorp_bad", label: "Wrong on Rentals", outcome: "harmful", coachingNote: "This is a critical teaching moment. Rental income is excluded from net earnings from self-employment under IRC §1402(a)(1) — there's no SE tax to begin with, so there's no SE tax to save. Worse: putting appreciated real estate INTO an S-Corp is a one-way door. Distributing real estate OUT of an S-Corp is a taxable event at FMV (§311(b)) — meaning you lock the appreciation into a corporate structure and trigger gain when the client wants to refinance, gift, or sell. Real estate goes in LLCs (single-member or partnership), never S-Corp. Memorize this — it's one of the most common mistakes new advisors make." },
-            { id: "t_partial_credit", label: "Partial Credit", outcome: "risky", coachingNote: "STR vs LTR doesn't change the answer — the §1402(a)(1) exclusion for rents from real estate applies regardless of stay duration. (Substantial-services rentals reported on Schedule C are a different animal — they ARE subject to SE tax, but you'd never put those in an S-Corp either, for the same appreciation-trap reason.) Rentals stay out of S-Corps. Period." },
-          ],
-        },
-
-        // ── Block 2: Computation — SE Tax on Schedule C Income ──
-        {
-          type: "COMPUTATION", id: "w3_comp_se_tax_schedC",
-          title: "SE Tax on Schedule C Income",
-          topicTags: ["se_tax", "pass_through"],
-          prompt: "A self-employed consultant has Schedule C net profit of $145,000 (no W-2 wages). Compute their self-employment tax for 2024. (Reminder: 2024 SS wage base = $168,600. SE tax rate = 15.3% [12.4% SS + 2.9% Medicare]. Self-employment income is multiplied by 92.35% before applying SE tax — that's the §1402(a)(12) deduction for the employer-equivalent portion.)",
-          expectedAnswer: 20492,
-          tolerance: 25,
-          unit: "dollars",
-          formLine: "Schedule SE",
-          workedSolution: [
-            "Step 1: Net SE earnings = $145,000 × 92.35% = $133,907.50",
-            "Step 2: Both SS portion ($133,907.50 × 12.4%) and Medicare ($133,907.50 × 2.9%) apply since $133,907.50 < $168,600 SS wage base",
-            "Step 3: SS portion = $133,907.50 × 0.124 = $16,604.53",
-            "Step 4: Medicare portion = $133,907.50 × 0.029 = $3,883.32",
-            "Step 5: Total SE tax = $16,604.53 + $3,883.32 = $20,487.85 (≈ $20,488)",
-            "Note: Half of SE tax ($10,244) is deductible above the line under §164(f).",
-            "Note: Additional Medicare Tax (0.9%) doesn't apply here since income is under $200k single.",
-          ],
-          commonWrongAnswers: [
-            { value: 22185, indicates: "Forgot the 92.35% adjustment under §1402(a)(12)." },
-            { value: 17980, indicates: "Used 12.4% only (forgot Medicare)." },
-            { value: 4205, indicates: "Used Medicare only (forgot SS)." },
-          ],
-        },
-
-        // ── Block 3: Computation — S-Corp FICA on Wages ──
-        {
-          type: "COMPUTATION", id: "w3_comp_scorp_savings",
-          title: "Approximate S-Corp Tax Savings",
-          topicTags: ["s_corp", "se_tax", "reasonable_comp"],
-          prompt: "Same consultant. If they elect S-Corp for 2025 with reasonable comp of $95,000 (and the remaining $50,000 as a distribution), compute the approximate FICA tax on the W-2 wage portion. (Use 2024 rates as a proxy: 15.3% combined employee+employer on wages up to $168,600 — split 7.65% each side.)",
-          expectedAnswer: 14535,
-          tolerance: 25,
-          unit: "dollars",
-          formLine: "Form 941 + W-2",
-          workedSolution: [
-            "Step 1: Wage portion = $95,000.",
-            "Step 2: Combined FICA (employee + employer) = $95,000 × 15.3% = $14,535.",
-            "Step 3: Distribution of $50,000 has no FICA — that's the savings vs Schedule C.",
-            "Step 4: Approximate SE tax savings: Schedule C SE tax (~$20,488 from prior block) − S-Corp FICA on wages ($14,535) = ~$5,953.",
-            "Caveats: The actual comparison should also account for: (a) deduction of half of SE tax on Schedule C (§164(f)); (b) deduction of employer-paid FICA as an S-Corp expense; (c) 1120-S compliance cost (~$1,500–$2,500/yr); (d) §199A QBI: S-Corp wages count toward W-2 wages limitation, which can affect QBI for high earners. Net-net the savings here are real but smaller than the napkin math suggests — typically $4k–$7k at this income level.",
-            "Important: This is the math. The conversation with the client is whether $5k of net savings justifies the compliance overhead. At $145k income — yes. At $80k — usually not worth it.",
-          ],
-          commonWrongAnswers: [
-            { value: 7268, indicates: "Used only employee-side 7.65% — but the S-Corp pays both halves." },
-            { value: 22185, indicates: "Computed SE tax on the original $145k — irrelevant to FICA on the wage portion." },
-          ],
-        },
-
-        // ── Block 4: Drag Exercise — Entity → Best-Fit Use Case ──
-        {
-          type: "DRAG_EXERCISE", id: "w3_match_entity_use",
-          title: "Entity Type → Best Real Estate Use Case",
-          topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation"],
-          prompt: "Match each entity structure to its most appropriate real estate use case.",
-          mode: "match",
-          pairs: [
-            { a: { id: "single_llc", label: "Single-Member LLC (disregarded)" }, b: { id: "use_solo_rental", label: "Solo investor's rental property — keeps Schedule E reporting, adds liability protection" } },
-            { a: { id: "multi_llc", label: "Multi-Member LLC (partnership)" }, b: { id: "use_partnership", label: "Two or more investors holding rental real estate together" } },
-            { a: { id: "scorp", label: "S-Corp election (on an LLC or corp)" }, b: { id: "use_active_biz", label: "Active service business with stable profit > ~$80k (consulting, brokerage, flipping operation)" } },
-            { a: { id: "ccorp", label: "C-Corp" }, b: { id: "use_ccorp", label: "Generally NOT recommended for real estate — double taxation, distribution gain on real estate" } },
-          ],
-          decoys: [],
-          explanation: "The cardinal rule: rental real estate goes in LLCs (single or multi-member), NOT S-Corps and NOT C-Corps. S-Corp is the right tool for ACTIVE service income above ~$80k stable. C-Corp is rarely right for real estate because of the appreciation-trap problem (gain on distribution under §311(b)) compounded with double taxation.",
-        },
-
-        // ── Block 5: MCQ — Why Not S-Corp for Rentals ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w3_mcq_no_scorp_rental",
-          question: "A client asks: 'Why can't I put my rental properties in an S-Corp to save on taxes like my consulting business?' What's the most accurate explanation?",
-          options: [
-            "You can put rentals in an S-Corp; it's actually a good idea for high-income clients",
-            "Rental income is excluded from self-employment tax under §1402(a)(1) — there's no SE tax to save. Plus, distributing real estate OUT of an S-Corp triggers gain at FMV, locking appreciation into the structure",
-            "S-Corps can't legally own real estate",
-            "It depends on whether the rentals are short-term or long-term",
-          ],
-          correct: 1,
-          topicTags: ["s_corp", "se_tax", "rental_classification"],
-          difficulty: 4,
-          explanation: "Two-part answer matters. (1) IRC §1402(a)(1) excludes rents from real estate from net earnings from SE — meaning rental income isn't subject to SE tax to begin with, so there's no SE tax for an S-Corp wage/distribution split to save. (2) §311(b) treats distribution of appreciated property as a sale at FMV — putting real estate INTO an S-Corp creates a one-way door where the client pays tax on the gain just to take the property back out. Both reasons mean LLCs (single-member disregarded or multi-member partnership) are the right structure for real estate.",
-        },
-
-        // ── Block 6: MCQ — Reasonable Comp Methodology ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w3_mcq_reasonable_comp",
-          question: "Which approach to determining S-Corp reasonable compensation is MOST defensible if the IRS challenges the wage/distribution split?",
-          options: [
-            "50% of net income — common rule of thumb",
-            "Whatever the prior CPA recommended",
-            "RCReports or BLS Occupational Employment Statistics data for the role/region, documented in the workpapers",
-            "Whatever leaves the most cash for distributions",
-          ],
-          correct: 2,
-          topicTags: ["reasonable_comp", "s_corp"],
-          difficulty: 2,
-          explanation: "The IRS standard is 'what would a third party pay for the services rendered' (see Watson v. Commissioner, 668 F.3d 1008 (8th Cir. 2012)). RCReports and BLS data are the defensible sources because they tie to actual wage data for comparable positions. Arbitrary percentages and 'maximize distributions' approaches lose in court. Aiola should document the methodology in workpapers — that's the difference between defending a reclassification challenge and losing one.",
-        },
-
-        // ── Block 7: MCQ — §199A QBI Basics ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w3_mcq_qbi_basics",
-          question: "Under §199A (QBI), a non-SSTB pass-through business generates $100,000 of qualified business income. The owner is MFJ with taxable income of $250,000 (well below the 2024 phase-in threshold of $383,900). Without applying any wage or UBIA limitation, what's the QBI deduction?",
-          options: [
-            "$10,000 — 10% of QBI",
-            "$20,000 — 20% of QBI",
-            "$25,000 — 25% of QBI",
-            "$0 — QBI doesn't apply at this income level",
-          ],
-          correct: 1,
-          topicTags: ["qbi", "pass_through"],
-          difficulty: 2,
-          explanation: "§199A allows a 20% deduction on qualified business income for pass-through entities (sole prop, partnership, S-Corp). Below the 2024 MFJ phase-in threshold of $383,900, no W-2 wage or UBIA limitations apply for non-SSTB businesses — straight 20% × QBI. So $100k QBI × 20% = $20k deduction. Above the threshold, the W-2 wage and UBIA limitations kick in, and SSTBs (specified service trades or businesses) phase out entirely above $483,900 MFJ in 2024.",
-        },
-
-        // ── Block 8: MCQ — Rental QBI Safe Harbor ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w3_mcq_rental_qbi_safe_harbor",
-          question: "A client has $40,000 of net rental income from one residential rental. Does this qualify for the §199A QBI deduction?",
-          options: [
-            "Yes, automatically — all rental income qualifies for QBI",
-            "It depends — rental qualifies as a §162 trade or business OR if the Rev. Proc. 2019-38 safe harbor is met (250+ hours of rental services, separate books, contemporaneous logs)",
-            "No, never — rental income is passive and excluded from QBI",
-            "Only if the client is a real estate professional",
-          ],
-          correct: 1,
-          topicTags: ["qbi", "rental_classification"],
-          difficulty: 4,
-          explanation: "Rental income qualifies for QBI only if the rental rises to a §162 trade or business OR meets the Rev. Proc. 2019-38 safe harbor. The safe harbor requires: (1) separate books and records for the rental enterprise, (2) 250+ hours of rental services per year (provided by owner, agents, or contractors), (3) contemporaneous time logs starting in 2020, (4) the safe harbor statement filed with the return. A single passive rental that the owner does little active work on usually does NOT qualify. This is a common missed deduction — and a real client conversation: 'are you tracking your hours? If yes, you might pick up a 20% deduction on the net rental income.' Note: REPS status is a §469 concept, separate from §199A — a real estate professional doesn't automatically get QBI on rentals.",
-        },
-      ],
-    }],
+    items: [
+      {
+        id: "d11", title: "Day 11 — Entity Fundamentals & the S-Corp Conversation",
+        description: "Understand pass-through taxation and walk through a complete S-Corp advisory conversation. The scenario branching exercise is the centerpiece — it mirrors a real client email Aiola receives weekly.",
+        topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax", "pass_through"],
+        learningObjectives: [
+          "Explain pass-through taxation and why it dominates real estate",
+          "Walk through a complete S-Corp advisory conversation: scoping, reasonable comp, savings sizing, and the rental trap",
+        ],
+        tasks: [
+          { id: "d11t1", text: "Read Aiola's Entity Decision Tree (TODO_NICK: link to firm SOP)" },
+          { id: "d11t2", text: "Review the Rivera return — Alex's consulting business is currently on Schedule C. Is S-Corp the right next step?" },
+          { id: "d11t3", text: "Submit your written analysis on whether Alex Rivera should elect S-Corp for 2025 (assessment block 1 covers this)" },
+        ],
+        resources: [
+          { label: "Aiola Entity Decision Tree", url: null /* TODO_NICK */ },
+          { label: "Rivera 2024 Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
+          { label: "IRC §1361 (S-Corp Eligibility)", url: "https://www.law.cornell.edu/uscode/text/26/1361" },
+        ],
+        assessment: [
+          {
+            type: "SCENARIO_BRANCHING", id: "w3_scenario_alex_scorp",
+            title: "Should Alex Rivera Elect S-Corp for 2025?",
+            topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax"],
+            context: "Alex Rivera runs a consulting business currently filed on Schedule C. Per his 2024 return: net Schedule C income $145,000, ~30 hours/week worked on the business, residence in Florida (no state income tax), 3-year stable income trend. He emails on a Tuesday: 'My buddy said I should be doing an S-Corp to save on taxes. Can we set that up for 2025?' How do you handle this conversation?",
+            decisions: [
+              {
+                id: "dec1", prompt: "What's your FIRST move?",
+                options: [
+                  { text: "Recommend S-Corp election immediately — at $145k net he's leaving SE tax savings on the table", weight: 1, correctness: "risky", nextId: null, terminalId: "t_premature" },
+                  { text: "Ask follow-up questions: state of residence, projected stability of income, willingness to run payroll, other entities, retirement plan goals", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
+                  { text: "Recommend against because S-Corp adds compliance complexity", weight: 1, correctness: "risky", nextId: null, terminalId: "t_undercoaching" },
+                  { text: "Tell him to talk to a business attorney first", weight: 1, correctness: "risky", nextId: null, terminalId: "t_deflect" },
+                ],
+              },
+              {
+                id: "dec2", prompt: "He confirms FL (no state tax), stable income last 3 years, willing to do payroll, no other entities, currently no retirement plan. What's your reasonable comp anchor?",
+                options: [
+                  { text: "50% of net income → $72,500 (rule of thumb)", weight: 1, correctness: "risky", nextId: null, terminalId: "t_arbitrary_comp" },
+                  { text: "Pull RCReports or BLS data for 'Management Consultants' in his region — likely $90k–$110k range", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
+                  { text: "$50,000 to maximize distributions and SE savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_aggressive_comp" },
+                  { text: "Whatever Alex wants to pay himself", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_no_comp" },
+                ],
+              },
+              {
+                id: "dec3", prompt: "Anchoring at $95,000 reasonable comp on $145,000 net income, what's the approximate SE tax savings vs Schedule C? (Rough order of magnitude.)",
+                options: [
+                  { text: "About $15,000 — 15.3% × $50k diff with no offset", weight: 1, correctness: "risky", nextId: null, terminalId: "t_overstated" },
+                  { text: "About $4,000–$7,000 — savings on the SE-tax portion of the $50k diff, accounting for SS wage base interactions and the deduction for half of SE tax", weight: 3, correctness: "great", nextId: "dec4", terminalId: null },
+                  { text: "About $22,000 — full 15.3% × full $145k", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_overstated" },
+                  { text: "Zero — there's no SE tax savings", weight: 1, correctness: "risky", nextId: null, terminalId: "t_understated" },
+                ],
+              },
+              {
+                id: "dec4", prompt: "Alex asks: 'Wait, my friend said his S-Corp also saved him on his rental properties. Can I put my rentals into the S-Corp too?'",
+                options: [
+                  { text: "Yes, putting rentals in an S-Corp adds another layer of SE tax savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
+                  { text: "No — rental income is NOT subject to SE tax to begin with under IRC §1402(a)(1), so there's no SE tax to save. Worse, putting appreciated real estate INTO an S-Corp can trigger gain on later distribution. Keep rentals in LLCs (or held directly), separate from the S-Corp.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
+                  { text: "It depends on whether the rental is short-term or long-term", weight: 1, correctness: "risky", nextId: null, terminalId: "t_partial_credit" },
+                  { text: "Yes, but only for short-term rentals", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
+                ],
+              },
+            ],
+            terminals: [
+              { id: "t_great", label: "Pro-Level Advisory", outcome: "great", coachingNote: "Textbook. You scoped the conversation, anchored reasonable comp on defensible data, sized the savings accurately, AND caught the rental trap. Three teaching points to remember: (1) Reasonable comp uses RCReports/BLS — never percentages. (2) SE tax savings are smaller than the napkin math suggests because of SS wage base interactions and the deduction for half of SE tax. (3) S-Corp does NOT help rentals — rental income isn't subject to SE tax under §1402(a)(1), and putting appreciated real estate into an S-Corp creates exit problems. The output of this conversation is a memo: 'Recommend S-Corp election effective 1/1/2025, reasonable comp ~$95k anchored on RCReports lookup, projected SE tax savings ~$4–7k, additional admin cost ~$1.5–2k/yr (payroll provider + 1120-S return). Rentals to remain in LLC structure, separate from S-Corp.'" },
+              { id: "t_premature", label: "Premature Recommendation", outcome: "risky", coachingNote: "Recommending S-Corp without scoping is a rookie move. State (FL = no state benefit, but in CA the franchise tax matters), income stability (S-Corp election locks you in for 5 years before re-election), willingness to run payroll, retirement plan strategy, and other entities all matter. The recommendation IS probably right for Alex — but you can't know that without asking." },
+              { id: "t_undercoaching", label: "Undercoaching", outcome: "risky", coachingNote: "S-Corp does add complexity, but at $145k of stable consulting income in a no-state-tax state, the math very likely works. Defaulting to 'too complex' undersells the strategy. Aiola's job is to evaluate, not avoid." },
+              { id: "t_deflect", label: "Pure Deflection", outcome: "risky", coachingNote: "Entity election is squarely a CPA conversation. An attorney would handle the LLC formation; the S-Corp election (Form 2553) and reasonable comp determination is your lane. Punting to an attorney suggests you don't know the play — and clients notice." },
+              { id: "t_arbitrary_comp", label: "Arbitrary Percentage", outcome: "risky", coachingNote: "The IRS does not accept '50% rule of thumb.' Reasonable comp must be supportable based on what a third party would pay for the services rendered. RCReports and BLS Occupational Employment data are the defensible tools. Arbitrary percentages are how clients get reclassification challenges — and you get a hard conversation with the client about back wages and penalties." },
+              { id: "t_aggressive_comp", label: "Aggressive Comp", outcome: "harmful", coachingNote: "Setting comp artificially low to maximize distributions is the textbook IRS reclassification risk. The Watson v. Commissioner case (2012) is the cautionary tale — court reclassified $24k of comp into $91k. Never anchor a comp recommendation on 'maximize savings.' Always anchor on 'what would a third party pay for this work.'" },
+              { id: "t_no_comp", label: "No Standard", outcome: "harmful", coachingNote: "'Whatever the client wants' is malpractice territory. The client engaged Aiola for the technical answer. Defer to Alex on lifestyle preferences (timing of distributions, etc.) but never on the technical reasonable comp determination." },
+              { id: "t_overstated", label: "Overstated Savings", outcome: "risky", coachingNote: "The napkin '15.3% × distribution' calc overstates savings. Two reasons: (1) Above the SS wage base ($168,600 in 2024), the wage portion only saves Medicare (2.9%), not full 15.3%. (2) Schedule C filers get a deduction for half of SE tax (§164(f)), which reduces the apparent savings comparing apples to apples. At $145k income with $95k comp, true SE tax savings are typically in the $4k–$7k range, not $15k+. Overstating savings to clients is how trust gets broken later." },
+              { id: "t_understated", label: "Understated Savings", outcome: "risky", coachingNote: "There ARE real SE tax savings on the wage/distribution split, even after accounting for the half-SE-tax deduction and SS wage base. Saying 'zero savings' suggests you don't understand the mechanics. Walk through the math: SE tax is 15.3% on net SE earnings; S-Corp wages get FICA on the wage portion only; distributions are not subject to SE tax." },
+              { id: "t_rental_scorp_bad", label: "Wrong on Rentals", outcome: "harmful", coachingNote: "This is a critical teaching moment. Rental income is excluded from net earnings from self-employment under IRC §1402(a)(1) — there's no SE tax to begin with, so there's no SE tax to save. Worse: putting appreciated real estate INTO an S-Corp is a one-way door. Distributing real estate OUT of an S-Corp is a taxable event at FMV (§311(b)) — meaning you lock the appreciation into a corporate structure and trigger gain when the client wants to refinance, gift, or sell. Real estate goes in LLCs (single-member or partnership), never S-Corp. Memorize this — it's one of the most common mistakes new advisors make." },
+              { id: "t_partial_credit", label: "Partial Credit", outcome: "risky", coachingNote: "STR vs LTR doesn't change the answer — the §1402(a)(1) exclusion for rents from real estate applies regardless of stay duration. (Substantial-services rentals reported on Schedule C are a different animal — they ARE subject to SE tax, but you'd never put those in an S-Corp either, for the same appreciation-trap reason.) Rentals stay out of S-Corps. Period." },
+            ],
+          },
+        ],
+      },
+      {
+        id: "d12", title: "Day 12 — SE Tax Math: Schedule C vs S-Corp",
+        description: "Get hands-on with the SE tax computation. You'll compute SE tax on Schedule C income, then compute FICA on S-Corp wages, and see exactly where the savings come from (and where the napkin math overstates them).",
+        topicTags: ["se_tax", "pass_through", "s_corp", "reasonable_comp"],
+        learningObjectives: [
+          "Calculate SE tax on Schedule C net profit using the 92.35% adjustment",
+          "Calculate FICA on S-Corp W-2 wages and quantify the approximate savings",
+        ],
+        tasks: [
+          { id: "d12t1", text: "Study reasonable comp methodology: RCReports, BLS Occupational Employment Statistics, comparable position salaries" },
+          { id: "d12t2", text: "Read IRS guidance on S-Corp reasonable compensation: 'Wage Compensation for S Corporation Officers' fact sheet" },
+        ],
+        resources: [
+          { label: "Wage Compensation for S Corporation Officers (IRS Fact Sheet)", url: "https://www.irs.gov/businesses/small-businesses-self-employed/wage-compensation-for-s-corporation-officers" },
+          { label: "BLS Occupational Wage Data", url: "https://www.bls.gov/oes/" },
+        ],
+        assessment: [
+          {
+            type: "COMPUTATION", id: "w3_comp_se_tax_schedC",
+            title: "SE Tax on Schedule C Income",
+            topicTags: ["se_tax", "pass_through"],
+            prompt: "A self-employed consultant has Schedule C net profit of $145,000 (no W-2 wages). Compute their self-employment tax for 2024. (Reminder: 2024 SS wage base = $168,600. SE tax rate = 15.3% [12.4% SS + 2.9% Medicare]. Self-employment income is multiplied by 92.35% before applying SE tax — that's the §1402(a)(12) deduction for the employer-equivalent portion.)",
+            expectedAnswer: 20492,
+            tolerance: 25,
+            unit: "dollars",
+            formLine: "Schedule SE",
+            workedSolution: [
+              "Step 1: Net SE earnings = $145,000 × 92.35% = $133,907.50",
+              "Step 2: Both SS portion ($133,907.50 × 12.4%) and Medicare ($133,907.50 × 2.9%) apply since $133,907.50 < $168,600 SS wage base",
+              "Step 3: SS portion = $133,907.50 × 0.124 = $16,604.53",
+              "Step 4: Medicare portion = $133,907.50 × 0.029 = $3,883.32",
+              "Step 5: Total SE tax = $16,604.53 + $3,883.32 = $20,487.85 (≈ $20,488)",
+              "Note: Half of SE tax ($10,244) is deductible above the line under §164(f).",
+              "Note: Additional Medicare Tax (0.9%) doesn't apply here since income is under $200k single.",
+            ],
+            commonWrongAnswers: [
+              { value: 22185, indicates: "Forgot the 92.35% adjustment under §1402(a)(12)." },
+              { value: 17980, indicates: "Used 12.4% only (forgot Medicare)." },
+              { value: 4205, indicates: "Used Medicare only (forgot SS)." },
+            ],
+          },
+          {
+            type: "COMPUTATION", id: "w3_comp_scorp_savings",
+            title: "Approximate S-Corp Tax Savings",
+            topicTags: ["s_corp", "se_tax", "reasonable_comp"],
+            prompt: "Same consultant. If they elect S-Corp for 2025 with reasonable comp of $95,000 (and the remaining $50,000 as a distribution), compute the approximate FICA tax on the W-2 wage portion. (Use 2024 rates as a proxy: 15.3% combined employee+employer on wages up to $168,600 — split 7.65% each side.)",
+            expectedAnswer: 14535,
+            tolerance: 25,
+            unit: "dollars",
+            formLine: "Form 941 + W-2",
+            workedSolution: [
+              "Step 1: Wage portion = $95,000.",
+              "Step 2: Combined FICA (employee + employer) = $95,000 × 15.3% = $14,535.",
+              "Step 3: Distribution of $50,000 has no FICA — that's the savings vs Schedule C.",
+              "Step 4: Approximate SE tax savings: Schedule C SE tax (~$20,488 from prior block) − S-Corp FICA on wages ($14,535) = ~$5,953.",
+              "Caveats: The actual comparison should also account for: (a) deduction of half of SE tax on Schedule C (§164(f)); (b) deduction of employer-paid FICA as an S-Corp expense; (c) 1120-S compliance cost (~$1,500–$2,500/yr); (d) §199A QBI: S-Corp wages count toward W-2 wages limitation, which can affect QBI for high earners. Net-net the savings here are real but smaller than the napkin math suggests — typically $4k–$7k at this income level.",
+              "Important: This is the math. The conversation with the client is whether $5k of net savings justifies the compliance overhead. At $145k income — yes. At $80k — usually not worth it.",
+            ],
+            commonWrongAnswers: [
+              { value: 7268, indicates: "Used only employee-side 7.65% — but the S-Corp pays both halves." },
+              { value: 22185, indicates: "Computed SE tax on the original $145k — irrelevant to FICA on the wage portion." },
+            ],
+          },
+        ],
+      },
+      {
+        id: "d13", title: "Day 13 — Entity Matching & the Rental S-Corp Trap",
+        description: "Match entity types to their best-fit real estate use cases and understand why putting rentals in an S-Corp is almost always wrong.",
+        topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation", "rental_classification"],
+        learningObjectives: [
+          "Match each entity structure (SMLLC, multi-member LLC, S-Corp, C-Corp) to its best real estate use case",
+          "Articulate the two-part reason why rental real estate should NOT be in an S-Corp",
+        ],
+        tasks: [
+          { id: "d13t1", text: "Complete the entity scenario practice set in this day's assessment" },
+          { id: "d13t2", text: "Shadow Nick on an entity-recommendation client conversation (TODO_NICK: schedule)" },
+        ],
+        resources: [
+          { label: "IRC §199A (QBI)", url: "https://www.law.cornell.edu/uscode/text/26/199A" },
+        ],
+        assessment: [
+          {
+            type: "DRAG_EXERCISE", id: "w3_match_entity_use",
+            title: "Entity Type → Best Real Estate Use Case",
+            topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation"],
+            prompt: "Match each entity structure to its most appropriate real estate use case.",
+            mode: "match",
+            pairs: [
+              { a: { id: "single_llc", label: "Single-Member LLC (disregarded)" }, b: { id: "use_solo_rental", label: "Solo investor's rental property — keeps Schedule E reporting, adds liability protection" } },
+              { a: { id: "multi_llc", label: "Multi-Member LLC (partnership)" }, b: { id: "use_partnership", label: "Two or more investors holding rental real estate together" } },
+              { a: { id: "scorp", label: "S-Corp election (on an LLC or corp)" }, b: { id: "use_active_biz", label: "Active service business with stable profit > ~$80k (consulting, brokerage, flipping operation)" } },
+              { a: { id: "ccorp", label: "C-Corp" }, b: { id: "use_ccorp", label: "Generally NOT recommended for real estate — double taxation, distribution gain on real estate" } },
+            ],
+            decoys: [],
+            explanation: "The cardinal rule: rental real estate goes in LLCs (single or multi-member), NOT S-Corps and NOT C-Corps. S-Corp is the right tool for ACTIVE service income above ~$80k stable. C-Corp is rarely right for real estate because of the appreciation-trap problem (gain on distribution under §311(b)) compounded with double taxation.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_no_scorp_rental",
+            question: "A client asks: 'Why can't I put my rental properties in an S-Corp to save on taxes like my consulting business?' What's the most accurate explanation?",
+            options: [
+              "You can put rentals in an S-Corp; it's actually a good idea for high-income clients",
+              "Rental income is excluded from self-employment tax under §1402(a)(1) — there's no SE tax to save. Plus, distributing real estate OUT of an S-Corp triggers gain at FMV, locking appreciation into the structure",
+              "S-Corps can't legally own real estate",
+              "It depends on whether the rentals are short-term or long-term",
+            ],
+            correct: 1,
+            topicTags: ["s_corp", "se_tax", "rental_classification"],
+            difficulty: 4,
+            explanation: "Two-part answer matters. (1) IRC §1402(a)(1) excludes rents from real estate from net earnings from SE — meaning rental income isn't subject to SE tax to begin with, so there's no SE tax for an S-Corp wage/distribution split to save. (2) §311(b) treats distribution of appreciated property as a sale at FMV — putting real estate INTO an S-Corp creates a one-way door where the client pays tax on the gain just to take the property back out. Both reasons mean LLCs (single-member disregarded or multi-member partnership) are the right structure for real estate.",
+          },
+        ],
+      },
+      {
+        id: "d14", title: "Day 14 — QBI, Reasonable Comp, & Rental Safe Harbor",
+        description: "Round out entity structures with §199A QBI fundamentals, defensible reasonable comp methodology, and the rental real estate safe harbor under Rev. Proc. 2019-38.",
+        topicTags: ["qbi", "pass_through", "reasonable_comp", "s_corp", "rental_classification"],
+        learningObjectives: [
+          "Compute defensible reasonable compensation using RCReports/BLS, not arbitrary percentages",
+          "Articulate §199A QBI at a working level: 20% deduction, SSTB rules, and the rental real estate safe harbor (Rev. Proc. 2019-38)",
+        ],
+        tasks: [
+          { id: "d14t1", text: "Read IRC §199A overview — focus on Sections 199A(a), (d) (SSTB), and Rev. Proc. 2019-38 (rental real estate safe harbor)" },
+        ],
+        resources: [
+          { label: "IRC §199A QBI Overview (IRS)", url: "https://www.irs.gov/newsroom/qualified-business-income-deduction" },
+          { label: "Rev. Proc. 2019-38 (Rental Real Estate Safe Harbor)", url: "https://www.irs.gov/pub/irs-drop/rp-19-38.pdf" },
+        ],
+        assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_reasonable_comp",
+            question: "Which approach to determining S-Corp reasonable compensation is MOST defensible if the IRS challenges the wage/distribution split?",
+            options: [
+              "50% of net income — common rule of thumb",
+              "Whatever the prior CPA recommended",
+              "RCReports or BLS Occupational Employment Statistics data for the role/region, documented in the workpapers",
+              "Whatever leaves the most cash for distributions",
+            ],
+            correct: 2,
+            topicTags: ["reasonable_comp", "s_corp"],
+            difficulty: 2,
+            explanation: "The IRS standard is 'what would a third party pay for the services rendered' (see Watson v. Commissioner, 668 F.3d 1008 (8th Cir. 2012)). RCReports and BLS data are the defensible sources because they tie to actual wage data for comparable positions. Arbitrary percentages and 'maximize distributions' approaches lose in court. Aiola should document the methodology in workpapers — that's the difference between defending a reclassification challenge and losing one.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_qbi_basics",
+            question: "Under §199A (QBI), a non-SSTB pass-through business generates $100,000 of qualified business income. The owner is MFJ with taxable income of $250,000 (well below the 2024 phase-in threshold of $383,900). Without applying any wage or UBIA limitation, what's the QBI deduction?",
+            options: [
+              "$10,000 — 10% of QBI",
+              "$20,000 — 20% of QBI",
+              "$25,000 — 25% of QBI",
+              "$0 — QBI doesn't apply at this income level",
+            ],
+            correct: 1,
+            topicTags: ["qbi", "pass_through"],
+            difficulty: 2,
+            explanation: "§199A allows a 20% deduction on qualified business income for pass-through entities (sole prop, partnership, S-Corp). Below the 2024 MFJ phase-in threshold of $383,900, no W-2 wage or UBIA limitations apply for non-SSTB businesses — straight 20% × QBI. So $100k QBI × 20% = $20k deduction. Above the threshold, the W-2 wage and UBIA limitations kick in, and SSTBs (specified service trades or businesses) phase out entirely above $483,900 MFJ in 2024.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_rental_qbi_safe_harbor",
+            question: "A client has $40,000 of net rental income from one residential rental. Does this qualify for the §199A QBI deduction?",
+            options: [
+              "Yes, automatically — all rental income qualifies for QBI",
+              "It depends — rental qualifies as a §162 trade or business OR if the Rev. Proc. 2019-38 safe harbor is met (250+ hours of rental services, separate books, contemporaneous logs)",
+              "No, never — rental income is passive and excluded from QBI",
+              "Only if the client is a real estate professional",
+            ],
+            correct: 1,
+            topicTags: ["qbi", "rental_classification"],
+            difficulty: 4,
+            explanation: "Rental income qualifies for QBI only if the rental rises to a §162 trade or business OR meets the Rev. Proc. 2019-38 safe harbor. The safe harbor requires: (1) separate books and records for the rental enterprise, (2) 250+ hours of rental services per year (provided by owner, agents, or contractors), (3) contemporaneous time logs starting in 2020, (4) the safe harbor statement filed with the return. A single passive rental that the owner does little active work on usually does NOT qualify. This is a common missed deduction — and a real client conversation: 'are you tracking your hours? If yes, you might pick up a 20% deduction on the net rental income.' Note: REPS status is a §469 concept, separate from §199A — a real estate professional doesn't automatically get QBI on rentals.",
+          },
+        ],
+      },
+      {
+        id: "d15", title: "Day 15 — Week 3 Review & Synthesis",
+        description: "Consolidate your entity structures knowledge. Review any missed blocks, re-read the S-Corp scenario coaching notes, and prepare questions for Nick before moving to the §469 deep dive next week.",
+        topicTags: ["llc", "s_corp", "entity_election", "qbi"],
+        learningObjectives: [
+          "Identify when an S-Corp election makes sense and when it doesn't",
+          "Synthesize entity structure, SE tax, and QBI concepts into a coherent advisory framework",
+        ],
+        tasks: [
+          { id: "d15t1", text: "Review all missed assessment blocks from this week — re-read coaching notes" },
+          { id: "d15t2", text: "Document your Week 3 questions in a single ClickUp task" },
+          { id: "d15t3", text: "Prepare for Week 4: skim IRC §469 and Reg. §1.469-1T(e)(3)(ii) to preview the STR framework" },
+        ],
+        resources: [
+          { label: "IRC §469 Overview (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
+        ],
+      },
+    ],
   },
   {
     id: "week4", label: "Week 4", subtitle: "STR Loophole & REPS", phase: "Days 1–30",
-    items: [{
-      id: "w4", title: "Week 4 — The §469 Deep Dive: STR Loophole, Material Participation, and REPS",
-      description: "This is the most important week of the program. By Friday you must be able to: (1) explain the §469 framework that determines when rental losses are passive vs nonpassive, (2) qualify a client for the STR strategy by checking BOTH the average-stay test AND material participation, (3) qualify a client for Real Estate Professional Status under §469(c)(7) by checking the >50% AND >750-hour requirements, and (4) explain the aggregation election. These are the two largest dollar-impact strategies Aiola delivers. Get this wrong with a client and the IRS unwinds the strategy plus penalties — get it right and clients see five-to-six-figure tax savings.",
-      topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation", "reps_750hr", "reps_50pct_test", "reps_aggregation_election", "w2_real_estate_employee", "passive_loss", "suspended_losses", "schedule_e_vs_c"],
-      learningObjectives: [
-        "Explain the §469 framework: passive vs nonpassive activity, and why losses default to suspended",
-        "Apply the STR test: average customer use ≤ 7 days excludes from 'rental activity' definition under Reg. §1.469-1T(e)(3)(ii)(A) — materially participate and losses are nonpassive",
-        "Recite the 7 material participation tests under Reg. §1.469-5T(a) and identify which one(s) apply to a given client fact pattern",
-        "Apply the REPS test under §469(c)(7): >50% of personal services in real property trades AND >750 hours — both required",
-        "Explain the §469(c)(7)(A) aggregation election: when, how, and the binding effect under Reg. §1.469-9(g)",
-        "Identify the W-2 real-estate-employee disqualifier under §469(c)(7)(D)(ii) (must own ≥5%)",
-        "Distinguish 'substantial services' (Reg. §1.469-1T(e)(3)(ii)) from 'hotel-like services' (Reg. §1.1402(a)-4) — different tests at different thresholds",
-      ],
-      tasks: [
-        { id: "w4t1", text: "Read IRC §469 in full — focus on §469(c)(2) (rental activity defined), §469(c)(7) (REPS), §469(g) (suspended loss release on disposition)" },
-        { id: "w4t2", text: "Read Reg. §1.469-1T(e)(3)(ii) — the 6 exceptions to 'rental activity' classification (most importantly the avg-stay-≤7-days exclusion)" },
-        { id: "w4t3", text: "Read Reg. §1.469-5T(a) — the 7 material participation tests" },
-        { id: "w4t4", text: "Read Reg. §1.469-9(g) — the aggregation election for real estate professionals" },
-        { id: "w4t5", text: "Watch: Aiola's STR Loophole Walkthrough (TODO_NICK: record video)" },
-        { id: "w4t6", text: "Watch: Aiola's REPS Qualification Walkthrough (TODO_NICK: record video)" },
-        { id: "w4t7", text: "Read 3 sample TSRs where Aiola recommended STR strategy (TODO_NICK: link to past TSRs)" },
-        { id: "w4t8", text: "Read 3 sample TSRs where Aiola recommended REPS qualification (TODO_NICK: link to past TSRs)" },
-        { id: "w4t9", text: "Complete this week's assessment — the scenario branching exercise is the centerpiece" },
-        { id: "w4t10", text: "Schedule a 60-min review with Nick to red-team your understanding before Week 5 (TODO_NICK)" },
-      ],
-      resources: [
-        { label: "IRC §469 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
-        { label: "Reg. §1.469-1T (rental activity definition)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-1T" },
-        { label: "Reg. §1.469-5T (material participation)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-5T" },
-        { label: "Reg. §1.469-9 (REPS rules + aggregation election)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-9" },
-        { label: "IRS Audit Technique Guide — Passive Activity Losses", url: "https://www.irs.gov/businesses/small-businesses-self-employed/passive-activity-loss-atg" },
-        { label: "IRS Audit Technique Guide — Real Estate Professional", url: "#" /* TODO_NICK: find direct link */ },
-        { label: "Aiola STR Strategy Walkthrough Video", url: "#" /* TODO_NICK */ },
-        { label: "Aiola REPS Qualification Walkthrough Video", url: "#" /* TODO_NICK */ },
-        { label: "Sample STR TSRs", url: "#" /* TODO_NICK */ },
-        { label: "Sample REPS TSRs", url: "#" /* TODO_NICK */ },
-      ],
-      assessment: [
-        // ── Block 1: Scenario Branching — Three-Client Diagnosis ──
-        {
-          type: "SCENARIO_BRANCHING", id: "w4_scenario_three_clients",
-          title: "The Three-Client Diagnosis",
-          topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "reps_750hr", "reps_50pct_test", "passive_loss"],
-          context: "Three new prospects are on this week's discovery calls. Each owns rental real estate and each wants to know if they can offset W-2 income with rental losses. Walk through each one and identify the right §469 path: STR strategy, REPS qualification, neither, or 'needs more facts.' All three are MFJ.\n\nClient A — DAVID & PRIYA: David is a W-2 anesthesiologist ($420k W-2). Priya doesn't work outside the home. They own one Airbnb in Asheville with average guest stay of 4 nights. Priya manages it directly: bookings, guest comms, hires the cleaner, coordinates repairs — about 180 hours/year. No other rental properties.\n\nClient B — MARCUS: W-2 software engineer ($260k). Owns three long-term rentals (12-month leases) plus one STR (avg 5-night stay). Total rental activity time: roughly 200 hours/year. No real estate W-2 job, no real estate license.\n\nClient C — JENNIFER: Licensed real estate broker with her own brokerage (S-Corp, $180k W-2 from her S-Corp). Spends ~1,400 hours/year on the brokerage. Also owns five long-term rentals; spends ~200 hours/year managing them. No aggregation election filed.",
-          decisions: [
-            {
-              id: "dec1", prompt: "CLIENT A — DAVID & PRIYA: Avg stay 4 nights, Priya 180 hours/year on the property. Which §469 path applies?",
-              options: [
-                { text: "STR strategy: avg ≤ 7 days excludes from rental activity classification under Reg. §1.469-1T(e)(3)(ii)(A); Priya's 180 hours likely meets material participation Test 3 (100+ hours AND more than anyone else) — losses are nonpassive against W-2 income", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
-                { text: "REPS qualification: Priya isn't working W-2, so all her time counts toward REPS", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_a_reps_wrong" },
-                { text: "Standard active participation $25k allowance", weight: 1, correctness: "risky", nextId: null, terminalId: "t_a_25k_wrong" },
-                { text: "Losses are passive and suspended; nothing they can do", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_a_suspended_wrong" },
-              ],
-            },
-            {
-              id: "dec2", prompt: "CLIENT B — MARCUS: Three LTRs + one STR, 200 total hours, W-2 software engineer. Which §469 path applies?",
-              options: [
-                { text: "STR strategy on the one STR property only (the 3 LTRs remain passive). Marcus's hours on the STR specifically are what matter — verify hours allocated to that property and whether material participation is met for that property alone", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
-                { text: "REPS qualification: 200 hours of rental activity counts", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_b_reps_wrong" },
-                { text: "STR strategy on all four properties combined", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_b_aggregation_wrong" },
-                { text: "Standard active participation: $25k allowance phased out at $260k AGI anyway, so no benefit", weight: 2, correctness: "acceptable", nextId: null, terminalId: "t_b_partial_credit" },
-              ],
-            },
-            {
-              id: "dec3", prompt: "CLIENT C — JENNIFER: Real estate broker, $180k W-2 from her S-Corp, 1,400 brokerage hours, 200 rental hours, 5 LTRs, no aggregation election. Does she qualify for REPS this year?",
-              options: [
-                { text: "Yes, both REPS tests met: 1,400 brokerage hours easily exceeds 750, and brokerage (1,400) > non-real-estate W-2 (zero) so >50% test passes. BUT critical caveat: REPS qualifies HER; material participation in each rental still required, OR she files the §469(c)(7)(A) aggregation election under Reg. §1.469-9(g) so 200 hours suffices across all 5 properties. Without aggregation, 200 hrs / 5 = ~40 hrs per property — likely fails MP for each.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
-                { text: "Yes, automatically — she's a real estate broker with 1,400 hours, that's all that matters", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_auto_wrong" },
-                { text: "No — her W-2 brokerage hours don't count toward REPS", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_w2_wrong" },
-                { text: "Yes for REPS, but the 200 rental hours alone make her materially participate in the rentals without aggregation", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_mp_wrong" },
-              ],
-            },
-          ],
-          terminals: [
-            { id: "t_great", label: "Master-Level §469 Diagnosis", outcome: "great", coachingNote: "This is the level Nick wants you operating at within 60 days. Three teaching points: (1) STR strategy hinges on TWO things — avg stay ≤ 7 days AND material participation; both required. (2) The STR exception under Reg. §1.469-1T(e)(3)(ii)(A) is per-activity, not portfolio-wide. (3) REPS qualifies the TAXPAYER, but each rental still requires material participation (or the aggregation election). The aggregation election under Reg. §1.469-9(g) is the unlock for clients like Jennifer with multiple smaller rentals — without it, hours scattered across properties may not hit MP on any single one. Note: aggregation, once made, is binding until revoked with IRS consent — don't recommend it lightly." },
-            { id: "t_a_reps_wrong", label: "REPS-Misapplied", outcome: "harmful", coachingNote: "REPS isn't the right tool for Priya — and even if it were, she'd need >750 hours in real property trades, not just 'no W-2 job.' The STR strategy is far simpler and cleaner here: avg stay ≤ 7 days excludes the activity from passive classification, material participation makes the loss nonpassive. No need to invoke REPS. Don't reach for the more complex tool when the simpler one works." },
-            { id: "t_a_25k_wrong", label: "$25k Allowance Wrong Tool", outcome: "risky", coachingNote: "$25k active participation allowance phases out fully at $150k MAGI MFJ. David & Priya's $420k W-2 income alone blows past that — the allowance is zero. Plus, the allowance is for properties classified as 'rental activity' under §469. A property with avg stay ≤ 7 days is NOT a rental activity for §469 purposes — it falls under the activity-exclusion under Reg. §1.469-1T(e)(3)(ii)(A). The right tool is the STR strategy, not the §469(i) allowance." },
-            { id: "t_a_suspended_wrong", label: "Premature Surrender", outcome: "harmful", coachingNote: "Defaulting to 'losses are suspended' on a 4-night-average-stay rental is leaving the entire STR strategy on the table — typically $30k–$80k+ of W-2 offset for clients in this profile. This is malpractice-by-omission territory. Always check the avg stay test before assuming passive treatment." },
-            { id: "t_b_reps_wrong", label: "Confusing Hours With REPS", outcome: "harmful", coachingNote: "REPS requires >750 hours in real property trades or businesses AND >50% of total personal services in those trades. Marcus has a full-time W-2 software job (~2,000 hours) and only 200 rental hours. He fails both tests by miles. Don't conflate 'time spent on rentals' with REPS qualification." },
-            { id: "t_b_aggregation_wrong", label: "Aggregation Misuse", outcome: "harmful", coachingNote: "The aggregation election under §469(c)(7)(A) is for REAL ESTATE PROFESSIONALS to aggregate rentals for material participation purposes — not for combining LTRs and STRs to qualify for the STR exception. The STR exception applies on a per-activity basis. Marcus's three LTRs stay passive regardless. Only the one STR can potentially qualify for nonpassive treatment, and only if Marcus materially participates in that specific property." },
-            { id: "t_b_partial_credit", label: "Partial Credit", outcome: "acceptable", coachingNote: "You're right that the $25k allowance is phased out at $260k AGI — fully eliminated above $150k MFJ. But you missed the bigger play: the one STR property might qualify for nonpassive treatment via the avg-stay-≤-7-days exception. Check Marcus's hours on that specific property and whether MP is met. Even one property's worth of nonpassive losses can move the needle." },
-            { id: "t_c_auto_wrong", label: "Skipped Material Participation", outcome: "harmful", coachingNote: "REPS qualifies the TAXPAYER, but each rental property still needs material participation to be nonpassive. Without the aggregation election under Reg. §1.469-9(g), Jennifer would need to materially participate in EACH of her 5 rentals separately. 200 hours / 5 properties = 40 hours/property — well below the 100-hour and 500-hour MP thresholds. The aggregation election is the unlock here. Without it, she's a real estate professional whose rental losses are still passive." },
-            { id: "t_c_w2_wrong", label: "W-2 Disqualifier Misapplied", outcome: "harmful", coachingNote: "The §469(c)(7)(D)(ii) W-2 disqualifier applies when a taxpayer is a W-2 employee in a real property trade or business AND owns less than 5% of the employer. Jennifer owns her own S-Corp brokerage — she's the owner, so the W-2 disqualifier doesn't apply. Her brokerage hours absolutely count toward REPS. The disqualifier is for situations like a rank-and-file W-2 employee at a big developer or property management company." },
-            { id: "t_c_mp_wrong", label: "MP Math Wrong", outcome: "harmful", coachingNote: "200 rental hours spread across 5 properties = ~40 hours per property. None of the 7 material participation tests are met at 40 hours per activity. Test 1 requires 500 hours; Test 3 requires 100 hours AND more than anyone else; Test 4 requires significant participation activities (100+ hrs each and 500 total in aggregate of significant participation activities). Without aggregation, Jennifer's rentals stay passive even though she's a qualifying real estate professional. The aggregation election fixes this — combining hours, 200 hours easily exceeds 500-hour Test 1 in the aggregated activity. THIS is the unlock." },
-          ],
-        },
-
-        // ── Block 2: Drag Exercise — 7 Material Participation Tests ──
-        {
-          type: "DRAG_EXERCISE", id: "w4_order_mp_tests",
-          title: "The 7 Material Participation Tests",
-          topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation"],
-          prompt: "Drag the 7 material participation tests under Reg. §1.469-5T(a) into the order they appear in the regulation. (You'll cite these by number in TSRs and client memos.)",
-          mode: "order",
-          items: [
-            { id: "mp1", label: "More than 500 hours in the activity during the year" },
-            { id: "mp2", label: "Substantially all participation in the activity (i.e., taxpayer is the only one who participates meaningfully)" },
-            { id: "mp3", label: "More than 100 hours AND not less than any other individual's participation" },
-            { id: "mp4", label: "Significant participation activities (SPA): 100+ hours in this activity, and 500+ hours total across all SPAs" },
-            { id: "mp5", label: "Material participation in 5 of the prior 10 tax years" },
-            { id: "mp6", label: "Personal service activity: material participation in any 3 prior years (for personal service activities only)" },
-            { id: "mp7", label: "Facts and circumstances: regular, continuous, and substantial participation (≥100 hours required)" },
-          ],
-          correctSequence: ["mp1", "mp2", "mp3", "mp4", "mp5", "mp6", "mp7"],
-          explanation: "Reg. §1.469-5T(a) lists these in this order. In practice for real estate clients, Tests 1, 3, and 7 do most of the work. Test 1 (500+ hours) is the cleanest — pass it and you're done. Test 3 (100+ AND more than anyone else) is the typical STR strategy test for couples where one spouse manages the property. Test 7 (facts and circumstances ≥ 100 hours) is the fallback when records are imperfect — but the IRS scrutinizes it heavily. Test 4 (significant participation activities) rarely applies to real estate. Tests 5/6 require historical participation patterns. Always document hours contemporaneously — courts have rejected 'reconstructed' time logs.",
-        },
-
-        // ── Block 3: Computation — STR Strategy Tax Savings ──
-        {
-          type: "COMPUTATION", id: "w4_comp_str_savings",
-          title: "STR Strategy — Estimated Tax Savings",
-          topicTags: ["str_loophole", "passive_loss"],
-          prompt: "Client profile: MFJ, $400,000 combined W-2 income, no other entities. Acquired one STR for $700,000 (allocated $150k to land, $550k to building). Avg guest stay 4 nights. Cost segregation study yields $180,000 of bonus depreciation in year 1. Operating loss before depreciation: $5,000. Spouse who is not employed manages the STR — 220 hours documented. Federal marginal rate: 32%. Compute the approximate FEDERAL income tax savings in year 1 from the STR strategy. (Ignore state, NIIT, and AMT for this problem.)",
-          expectedAnswer: 59200,
-          tolerance: 200,
-          unit: "dollars",
-          formLine: "Form 1040 + Schedule E + Form 4562",
-          workedSolution: [
-            "Step 1: Verify STR exception applies. Avg guest stay 4 nights ≤ 7 → activity is excluded from 'rental activity' classification under Reg. §1.469-1T(e)(3)(ii)(A).",
-            "Step 2: Verify material participation. Spouse: 220 documented hours. Likely meets Test 3 (100+ hours AND more than any other individual — assuming nobody else has >220 hrs on this property). MP = yes.",
-            "Step 3: Compute year-1 loss. Operating loss $5,000 + depreciation $180,000 = $185,000 net loss on Schedule E.",
-            "Step 4: Loss is nonpassive (because: STR exception + MP). It offsets W-2 income.",
-            "Step 5: Tax savings ≈ $185,000 × 32% = $59,200.",
-            "Important caveats not in this calc: (a) NIIT impact — STR rentals classified as nonpassive trade-or-business may avoid NIIT (3.8%) on positive income years. (b) Eventual depreciation recapture (§1245/§1250) on sale. (c) State tax savings on top. (d) §199A QBI may apply if the activity is a §162 trade or business — but loss years don't generate QBI deduction. (e) Strategy requires CONTEMPORANEOUS hour logs — reconstructed records lose in audit. (f) The MP test is per-year — Year 2's status depends on Year 2's hours.",
-            "This is the conversation you walk a client through before recommending. The headline number is $59k — the asterisks are what protect the client from over-relying on the strategy.",
-          ],
-          commonWrongAnswers: [
-            { value: 60800, indicates: "Used 32.85% (avg of 32 and 33.85) — stick to the stated 32% marginal." },
-            { value: 6800, indicates: "Forgot to add depreciation to operating loss." },
-            { value: 0, indicates: "Assumed losses are passive — but this client meets BOTH the STR exception and MP." },
-            { value: 8000, indicates: "Applied $25k cap — that's the active participation allowance, not relevant here. STR exception bypasses §469 passive treatment entirely." },
-          ],
-        },
-
-        // ── Block 4: MCQ — Avg Stay Test Reg Cite ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w4_mcq_str_reg_cite",
-          question: "The STR strategy is built on a regulatory exclusion that says: if average customer use is _____ or less, the activity is NOT a 'rental activity' for §469 passive activity purposes. Which is correct?",
-          options: [
-            "30 days, under Reg. §1.469-1T(e)(3)(i)",
-            "7 days, under Reg. §1.469-1T(e)(3)(ii)(A)",
-            "14 days, under §280A",
-            "15 days, under Reg. §1.469-2T",
-          ],
-          correct: 1,
-          topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
-          difficulty: 3,
-          explanation: "Reg. §1.469-1T(e)(3)(ii)(A) excludes activities with average customer use of 7 days or less from the 'rental activity' definition. There's also a 30-day exception under (e)(3)(ii)(B) that requires significant personal services — that's a different exception. The 14-day rule from §280A is the personal-use rule for vacation homes (different concept). Always cite the right reg in TSRs — Aiola's clients are sophisticated and the firm's credibility hinges on being precise.",
-        },
-
-        // ── Block 5: MCQ — REPS Two-Part Test ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_two_part",
-          question: "To qualify as a Real Estate Professional under §469(c)(7), a taxpayer must meet:",
-          options: [
-            "More than 750 hours in real property trades or businesses",
-            "More than 50% of personal services in real property trades or businesses",
-            "BOTH: more than 50% of personal services AND more than 750 hours in real property trades or businesses",
-            "Either one of: 750 hours OR 50% of services",
-          ],
-          correct: 2,
-          topicTags: ["reps_750hr", "reps_50pct_test"],
-          difficulty: 3,
-          explanation: "Both tests, both met. §469(c)(7)(B) requires (i) more than half of personal services in real property trades or businesses in which the taxpayer materially participates, AND (ii) more than 750 hours of services performed in those trades. The 50% test alone fails clients with significant non-real-estate work. The 750-hour test alone fails clients who have a full-time non-real-estate job and dabble in real estate. Both required. Spouses qualify independently — only one spouse needs REPS for a joint return. Common error: counting hours toward REPS that don't qualify (e.g., investor activities like reading market reports, looking at properties to buy — those don't count under §469(c)(7)(C)).",
-        },
-
-        // ── Block 6: MCQ — REPS Qualifies Taxpayer, Not Property ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_per_property",
-          question: "Once a taxpayer qualifies as a Real Estate Professional, are all their rental losses automatically nonpassive?",
-          options: [
-            "Yes — REPS automatically converts all rental losses to nonpassive",
-            "No — REPS qualifies the taxpayer, but material participation in each rental is still required (or the aggregation election under Reg. §1.469-9(g) must be made to combine activities)",
-            "Yes, but only for short-term rentals",
-            "Only if the rentals are titled in a single LLC",
-          ],
-          correct: 1,
-          topicTags: ["reps_750hr", "reps_aggregation_election", "material_participation_tests", "mp_aggregation"],
-          difficulty: 4,
-          explanation: "This is the most commonly missed nuance. §469(c)(7) qualifies the TAXPAYER as a real estate professional — meaning rental activities are no longer per-se passive. But each rental activity is still subject to the material participation test SEPARATELY unless the taxpayer makes the aggregation election under §469(c)(7)(A) (regulations at Reg. §1.469-9(g)). Without aggregation, hours scattered across multiple properties often fail MP on each one individually. The election treats all rentals as one activity for MP testing — usually the right move for REPS clients with multiple properties. Caveat: aggregation is binding once made; revocation requires IRS consent (Reg. §1.469-9(g)(3)).",
-        },
-
-        // ── Block 7: MCQ — W-2 Real Estate Employee Disqualifier ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w4_mcq_w2_disqualifier",
-          question: "A client works full-time as a W-2 leasing manager at a large apartment REIT. They want to count their 2,200 work hours toward the REPS 750-hour test. Can they?",
-          options: [
-            "Yes — leasing is a real property trade or business",
-            "Yes, but only 50% of the hours count",
-            "No — under §469(c)(7)(D)(ii), W-2 employee hours don't count toward REPS unless the employee owns at least 5% of the employer",
-            "Yes, automatically — REIT employees always qualify",
-          ],
-          correct: 2,
-          topicTags: ["reps_750hr", "w2_real_estate_employee"],
-          difficulty: 3,
-          explanation: "§469(c)(7)(D)(ii) says personal services performed as a W-2 employee don't count as services in a real property trade or business UNLESS the employee owns at least 5% of the employer. A leasing manager at a large REIT is a W-2 employee with no meaningful equity — those hours do NOT count toward REPS. This is a common qualification trap. Counter-example: an owner-operator of a real estate brokerage who takes a W-2 from their own S-Corp owns 100% — those W-2 hours absolutely count. The key question is always: does the taxpayer own ≥5% of the employer?",
-        },
-
-        // ── Block 8: MCQ — Don't Confuse the Tests ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w4_mcq_substantial_vs_hotel",
-          question: "A client has an Airbnb with avg guest stay of 5 nights. They provide WiFi, basic cleaning between guests, and a welcome basket. They materially participate. How is the activity treated?",
-          options: [
-            "Schedule C, with SE tax — because 'substantial services' makes it an active business",
-            "Schedule E, nonpassive — because avg stay ≤ 7 days excludes from rental activity classification, MP makes loss nonpassive; substantial services for SCHEDULE PURPOSES (Reg. §1.1402(a)-4) requires a higher threshold (daily housekeeping, meals, concierge) that this client does NOT meet",
-            "Schedule E, passive — short-term rentals are still rentals",
-            "Form 4835 — farm rental income",
-          ],
-          correct: 1,
-          topicTags: ["str_loophole", "schedule_e_vs_c", "substantial_services", "rental_classification"],
-          difficulty: 5,
-          explanation: "TWO DIFFERENT TESTS at TWO DIFFERENT THRESHOLDS — this is the most common conceptual error. (1) The §469 'rental activity' exclusion (Reg. §1.469-1T(e)(3)(ii)(A)) uses a 7-day average customer use threshold to determine passive classification. (2) The Schedule C / SE tax test (Reg. §1.1402(a)-4 + Pub 527) uses a 'substantial services' standard — services 'similar to those rendered by a hotel' (daily maid service, meals, concierge). Most STRs meet the 7-day test (so they escape passive treatment) but DO NOT meet the substantial services test (so they stay on Schedule E, no SE tax). WiFi + turnover cleaning + welcome basket is NOT substantial services. The activity is correctly: Schedule E + nonpassive (because of MP) + no SE tax. Memorize this distinction — many CPAs (and online articles) conflate these.",
-        },
-
-        // ── Block 9: MCQ — Aggregation Election Mechanics ──
-        {
-          type: "CONFIDENCE_MCQ", id: "w4_mcq_aggregation",
-          question: "A real estate professional client wants to make the §469(c)(7)(A) aggregation election. Which statement is most accurate?",
-          options: [
-            "It's an annual election — file each year you want it to apply",
-            "It's filed by attaching a statement to a timely-filed return; once made, it's binding for all future years until revoked with IRS consent (per Reg. §1.469-9(g)(3))",
-            "It's automatic for any taxpayer who qualifies as REPS",
-            "It can only be made in the first year of ownership",
-          ],
-          correct: 1,
-          topicTags: ["reps_aggregation_election", "mp_aggregation"],
-          difficulty: 4,
-          explanation: "The aggregation election under §469(c)(7)(A) is made by attaching a statement to the timely-filed (including extensions) original return for the year of the election. It's NOT automatic. Once made, it's binding for that year and ALL FUTURE YEARS until revoked — and revocation requires IRS consent except in narrow cases (material change in facts, per Reg. §1.469-9(g)(3)). This is why Aiola's process is: don't recommend aggregation lightly. Run the math both ways before electing. For some clients, aggregating helps THIS year but hurts in a future year (e.g., a future property sold at a loss where you'd want it treated as a separate activity for §469(g) suspended-loss release). The decision is irreversible without IRS pain.",
-        },
-      ],
-    }],
+    items: [
+      {
+        id: "d16", title: "Day 16 — The §469 Framework & STR Exception",
+        description: "This is the most important week of the program. Today introduces the §469 passive activity framework: why rental losses default to suspended, the 6 exceptions to 'rental activity' classification, and the foundation of the STR strategy.",
+        topicTags: ["str_loophole", "avg_stay_test", "rental_classification", "passive_loss"],
+        learningObjectives: [
+          "Explain the §469 framework: passive vs nonpassive activity, and why losses default to suspended",
+          "Apply the STR test: average customer use ≤ 7 days excludes from 'rental activity' definition under Reg. §1.469-1T(e)(3)(ii)(A)",
+        ],
+        tasks: [
+          { id: "d16t1", text: "Read IRC §469 in full — focus on §469(c)(2) (rental activity defined), §469(c)(7) (REPS), §469(g) (suspended loss release on disposition)" },
+          { id: "d16t2", text: "Read Reg. §1.469-1T(e)(3)(ii) — the 6 exceptions to 'rental activity' classification (most importantly the avg-stay-≤7-days exclusion)" },
+        ],
+        resources: [
+          { label: "IRC §469 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
+          { label: "Reg. §1.469-1T (rental activity definition)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-1T" },
+          { label: "IRS Audit Technique Guide — Passive Activity Losses", url: "https://www.irs.gov/businesses/small-businesses-self-employed/passive-activity-loss-atg" },
+        ],
+        assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "d16_mcq_469_framework",
+            question: "Under IRC §469, a rental activity generates a $30,000 loss for a taxpayer with $250,000 of W-2 income (MFJ). Assuming no special elections or exceptions apply, what happens to the rental loss?",
+            options: [
+              "It offsets the W-2 income dollar for dollar",
+              "It is suspended and carries forward — rental activity losses are per-se passive under §469(c)(2), and at $250k MAGI the $25k active participation allowance is fully phased out",
+              "It can offset up to $25,000 of active income regardless of MAGI",
+              "It is lost permanently and cannot be used",
+            ],
+            correct: 1,
+            topicTags: ["passive_loss", "suspended_losses"],
+            difficulty: 2,
+            explanation: "Under §469(c)(2), rental activities are treated as passive activities regardless of whether the taxpayer materially participates. The $25k special allowance under §469(i) for active participation phases out between $100k–$150k MAGI (MFJ). At $250k MAGI, the allowance is zero. The loss is suspended under §469(a) and carries forward indefinitely until (a) future passive income offsets it, or (b) the entire interest in the activity is disposed of in a fully taxable transaction (§469(g)). This is the DEFAULT — the STR strategy and REPS are the two main exceptions that change this outcome.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_str_reg_cite",
+            question: "The STR strategy is built on a regulatory exclusion that says: if average customer use is _____ or less, the activity is NOT a 'rental activity' for §469 passive activity purposes. Which is correct?",
+            options: [
+              "30 days, under Reg. §1.469-1T(e)(3)(i)",
+              "7 days, under Reg. §1.469-1T(e)(3)(ii)(A)",
+              "14 days, under §280A",
+              "15 days, under Reg. §1.469-2T",
+            ],
+            correct: 1,
+            topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
+            difficulty: 3,
+            explanation: "Reg. §1.469-1T(e)(3)(ii)(A) excludes activities with average customer use of 7 days or less from the 'rental activity' definition. There's also a 30-day exception under (e)(3)(ii)(B) that requires significant personal services — that's a different exception. The 14-day rule from §280A is the personal-use rule for vacation homes (different concept). Always cite the right reg in TSRs — Aiola's clients are sophisticated and the firm's credibility hinges on being precise.",
+          },
+        ],
+      },
+      {
+        id: "d17", title: "Day 17 — The Three-Client Diagnosis",
+        description: "Apply the §469 framework to three real client fact patterns. This scenario branching exercise is the centerpiece of the week — it tests STR strategy, REPS qualification, and the aggregation election all in one exercise.",
+        topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "reps_750hr", "reps_50pct_test", "passive_loss", "reps_aggregation_election"],
+        learningObjectives: [
+          "Diagnose the correct §469 path (STR, REPS, neither) for different client profiles",
+          "Identify when aggregation election is needed vs when STR exception applies per-activity",
+        ],
+        tasks: [
+          { id: "d17t1", text: "Watch: Aiola's STR Loophole Walkthrough (TODO_NICK: record video)" },
+          { id: "d17t2", text: "Read 3 sample TSRs where Aiola recommended STR strategy (TODO_NICK: link to past TSRs)" },
+        ],
+        resources: [
+          { label: "Aiola STR Strategy Walkthrough Video", url: null /* TODO_NICK */ },
+          { label: "Sample STR TSRs", url: null /* TODO_NICK */ },
+        ],
+        assessment: [
+          {
+            type: "SCENARIO_BRANCHING", id: "w4_scenario_three_clients",
+            title: "The Three-Client Diagnosis",
+            topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "reps_750hr", "reps_50pct_test", "passive_loss"],
+            context: "Three new prospects are on this week's discovery calls. Each owns rental real estate and each wants to know if they can offset W-2 income with rental losses. Walk through each one and identify the right §469 path: STR strategy, REPS qualification, neither, or 'needs more facts.' All three are MFJ.\n\nClient A — DAVID & PRIYA: David is a W-2 anesthesiologist ($420k W-2). Priya doesn't work outside the home. They own one Airbnb in Asheville with average guest stay of 4 nights. Priya manages it directly: bookings, guest comms, hires the cleaner, coordinates repairs — about 180 hours/year. No other rental properties.\n\nClient B — MARCUS: W-2 software engineer ($260k). Owns three long-term rentals (12-month leases) plus one STR (avg 5-night stay). Total rental activity time: roughly 200 hours/year. No real estate W-2 job, no real estate license.\n\nClient C — JENNIFER: Licensed real estate broker with her own brokerage (S-Corp, $180k W-2 from her S-Corp). Spends ~1,400 hours/year on the brokerage. Also owns five long-term rentals; spends ~200 hours/year managing them. No aggregation election filed.",
+            decisions: [
+              {
+                id: "dec1", prompt: "CLIENT A — DAVID & PRIYA: Avg stay 4 nights, Priya 180 hours/year on the property. Which §469 path applies?",
+                options: [
+                  { text: "STR strategy: avg ≤ 7 days excludes from rental activity classification under Reg. §1.469-1T(e)(3)(ii)(A); Priya's 180 hours likely meets material participation Test 3 (100+ hours AND more than anyone else) — losses are nonpassive against W-2 income", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
+                  { text: "REPS qualification: Priya isn't working W-2, so all her time counts toward REPS", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_a_reps_wrong" },
+                  { text: "Standard active participation $25k allowance", weight: 1, correctness: "risky", nextId: null, terminalId: "t_a_25k_wrong" },
+                  { text: "Losses are passive and suspended; nothing they can do", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_a_suspended_wrong" },
+                ],
+              },
+              {
+                id: "dec2", prompt: "CLIENT B — MARCUS: Three LTRs + one STR, 200 total hours, W-2 software engineer. Which §469 path applies?",
+                options: [
+                  { text: "STR strategy on the one STR property only (the 3 LTRs remain passive). Marcus's hours on the STR specifically are what matter — verify hours allocated to that property and whether material participation is met for that property alone", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
+                  { text: "REPS qualification: 200 hours of rental activity counts", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_b_reps_wrong" },
+                  { text: "STR strategy on all four properties combined", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_b_aggregation_wrong" },
+                  { text: "Standard active participation: $25k allowance phased out at $260k AGI anyway, so no benefit", weight: 2, correctness: "acceptable", nextId: null, terminalId: "t_b_partial_credit" },
+                ],
+              },
+              {
+                id: "dec3", prompt: "CLIENT C — JENNIFER: Real estate broker, $180k W-2 from her S-Corp, 1,400 brokerage hours, 200 rental hours, 5 LTRs, no aggregation election. Does she qualify for REPS this year?",
+                options: [
+                  { text: "Yes, both REPS tests met: 1,400 brokerage hours easily exceeds 750, and brokerage (1,400) > non-real-estate W-2 (zero) so >50% test passes. BUT critical caveat: REPS qualifies HER; material participation in each rental still required, OR she files the §469(c)(7)(A) aggregation election under Reg. §1.469-9(g) so 200 hours suffices across all 5 properties. Without aggregation, 200 hrs / 5 = ~40 hrs per property — likely fails MP for each.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
+                  { text: "Yes, automatically — she's a real estate broker with 1,400 hours, that's all that matters", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_auto_wrong" },
+                  { text: "No — her W-2 brokerage hours don't count toward REPS", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_w2_wrong" },
+                  { text: "Yes for REPS, but the 200 rental hours alone make her materially participate in the rentals without aggregation", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_c_mp_wrong" },
+                ],
+              },
+            ],
+            terminals: [
+              { id: "t_great", label: "Master-Level §469 Diagnosis", outcome: "great", coachingNote: "This is the level Nick wants you operating at within 60 days. Three teaching points: (1) STR strategy hinges on TWO things — avg stay ≤ 7 days AND material participation; both required. (2) The STR exception under Reg. §1.469-1T(e)(3)(ii)(A) is per-activity, not portfolio-wide. (3) REPS qualifies the TAXPAYER, but each rental still requires material participation (or the aggregation election). The aggregation election under Reg. §1.469-9(g) is the unlock for clients like Jennifer with multiple smaller rentals — without it, hours scattered across properties may not hit MP on any single one. Note: aggregation, once made, is binding until revoked with IRS consent — don't recommend it lightly." },
+              { id: "t_a_reps_wrong", label: "REPS-Misapplied", outcome: "harmful", coachingNote: "REPS isn't the right tool for Priya — and even if it were, she'd need >750 hours in real property trades, not just 'no W-2 job.' The STR strategy is far simpler and cleaner here: avg stay ≤ 7 days excludes the activity from passive classification, material participation makes the loss nonpassive. No need to invoke REPS. Don't reach for the more complex tool when the simpler one works." },
+              { id: "t_a_25k_wrong", label: "$25k Allowance Wrong Tool", outcome: "risky", coachingNote: "$25k active participation allowance phases out fully at $150k MAGI MFJ. David & Priya's $420k W-2 income alone blows past that — the allowance is zero. Plus, the allowance is for properties classified as 'rental activity' under §469. A property with avg stay ≤ 7 days is NOT a rental activity for §469 purposes — it falls under the activity-exclusion under Reg. §1.469-1T(e)(3)(ii)(A). The right tool is the STR strategy, not the §469(i) allowance." },
+              { id: "t_a_suspended_wrong", label: "Premature Surrender", outcome: "harmful", coachingNote: "Defaulting to 'losses are suspended' on a 4-night-average-stay rental is leaving the entire STR strategy on the table — typically $30k–$80k+ of W-2 offset for clients in this profile. This is malpractice-by-omission territory. Always check the avg stay test before assuming passive treatment." },
+              { id: "t_b_reps_wrong", label: "Confusing Hours With REPS", outcome: "harmful", coachingNote: "REPS requires >750 hours in real property trades or businesses AND >50% of total personal services in those trades. Marcus has a full-time W-2 software job (~2,000 hours) and only 200 rental hours. He fails both tests by miles. Don't conflate 'time spent on rentals' with REPS qualification." },
+              { id: "t_b_aggregation_wrong", label: "Aggregation Misuse", outcome: "harmful", coachingNote: "The aggregation election under §469(c)(7)(A) is for REAL ESTATE PROFESSIONALS to aggregate rentals for material participation purposes — not for combining LTRs and STRs to qualify for the STR exception. The STR exception applies on a per-activity basis. Marcus's three LTRs stay passive regardless. Only the one STR can potentially qualify for nonpassive treatment, and only if Marcus materially participates in that specific property." },
+              { id: "t_b_partial_credit", label: "Partial Credit", outcome: "acceptable", coachingNote: "You're right that the $25k allowance is phased out at $260k AGI — fully eliminated above $150k MFJ. But you missed the bigger play: the one STR property might qualify for nonpassive treatment via the avg-stay-≤-7-days exception. Check Marcus's hours on that specific property and whether MP is met. Even one property's worth of nonpassive losses can move the needle." },
+              { id: "t_c_auto_wrong", label: "Skipped Material Participation", outcome: "harmful", coachingNote: "REPS qualifies the TAXPAYER, but each rental property still needs material participation to be nonpassive. Without the aggregation election under Reg. §1.469-9(g), Jennifer would need to materially participate in EACH of her 5 rentals separately. 200 hours / 5 properties = 40 hours/property — well below the 100-hour and 500-hour MP thresholds. The aggregation election is the unlock here. Without it, she's a real estate professional whose rental losses are still passive." },
+              { id: "t_c_w2_wrong", label: "W-2 Disqualifier Misapplied", outcome: "harmful", coachingNote: "The §469(c)(7)(D)(ii) W-2 disqualifier applies when a taxpayer is a W-2 employee in a real property trade or business AND owns less than 5% of the employer. Jennifer owns her own S-Corp brokerage — she's the owner, so the W-2 disqualifier doesn't apply. Her brokerage hours absolutely count toward REPS. The disqualifier is for situations like a rank-and-file W-2 employee at a big developer or property management company." },
+              { id: "t_c_mp_wrong", label: "MP Math Wrong", outcome: "harmful", coachingNote: "200 rental hours spread across 5 properties = ~40 hours per property. None of the 7 material participation tests are met at 40 hours per activity. Test 1 requires 500 hours; Test 3 requires 100 hours AND more than anyone else; Test 4 requires significant participation activities (100+ hrs each and 500 total in aggregate of significant participation activities). Without aggregation, Jennifer's rentals stay passive even though she's a qualifying real estate professional. The aggregation election fixes this — combining hours, 200 hours easily exceeds 500-hour Test 1 in the aggregated activity. THIS is the unlock." },
+            ],
+          },
+        ],
+      },
+      {
+        id: "d18", title: "Day 18 — Material Participation Tests & STR Tax Savings",
+        description: "Memorize the 7 material participation tests and compute the headline tax savings number for an STR strategy client.",
+        topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation", "str_loophole", "passive_loss"],
+        learningObjectives: [
+          "Recite the 7 material participation tests under Reg. §1.469-5T(a) and identify which apply to a given fact pattern",
+          "Compute approximate federal tax savings from the STR strategy including cost segregation",
+        ],
+        tasks: [
+          { id: "d18t1", text: "Read Reg. §1.469-5T(a) — the 7 material participation tests" },
+          { id: "d18t2", text: "Practice: for each of the 3 clients from yesterday, identify which MP test(s) apply" },
+        ],
+        resources: [
+          { label: "Reg. §1.469-5T (material participation)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-5T" },
+        ],
+        assessment: [
+          {
+            type: "DRAG_EXERCISE", id: "w4_order_mp_tests",
+            title: "The 7 Material Participation Tests",
+            topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation"],
+            prompt: "Drag the 7 material participation tests under Reg. §1.469-5T(a) into the order they appear in the regulation. (You'll cite these by number in TSRs and client memos.)",
+            mode: "order",
+            items: [
+              { id: "mp1", label: "More than 500 hours in the activity during the year" },
+              { id: "mp2", label: "Substantially all participation in the activity (i.e., taxpayer is the only one who participates meaningfully)" },
+              { id: "mp3", label: "More than 100 hours AND not less than any other individual's participation" },
+              { id: "mp4", label: "Significant participation activities (SPA): 100+ hours in this activity, and 500+ hours total across all SPAs" },
+              { id: "mp5", label: "Material participation in 5 of the prior 10 tax years" },
+              { id: "mp6", label: "Personal service activity: material participation in any 3 prior years (for personal service activities only)" },
+              { id: "mp7", label: "Facts and circumstances: regular, continuous, and substantial participation (≥100 hours required)" },
+            ],
+            correctSequence: ["mp1", "mp2", "mp3", "mp4", "mp5", "mp6", "mp7"],
+            explanation: "Reg. §1.469-5T(a) lists these in this order. In practice for real estate clients, Tests 1, 3, and 7 do most of the work. Test 1 (500+ hours) is the cleanest — pass it and you're done. Test 3 (100+ AND more than anyone else) is the typical STR strategy test for couples where one spouse manages the property. Test 7 (facts and circumstances ≥ 100 hours) is the fallback when records are imperfect — but the IRS scrutinizes it heavily. Test 4 (significant participation activities) rarely applies to real estate. Tests 5/6 require historical participation patterns. Always document hours contemporaneously — courts have rejected 'reconstructed' time logs.",
+          },
+          {
+            type: "COMPUTATION", id: "w4_comp_str_savings",
+            title: "STR Strategy — Estimated Tax Savings",
+            topicTags: ["str_loophole", "passive_loss"],
+            prompt: "Client profile: MFJ, $400,000 combined W-2 income, no other entities. Acquired one STR for $700,000 (allocated $150k to land, $550k to building). Avg guest stay 4 nights. Cost segregation study yields $180,000 of bonus depreciation in year 1. Operating loss before depreciation: $5,000. Spouse who is not employed manages the STR — 220 hours documented. Federal marginal rate: 32%. Compute the approximate FEDERAL income tax savings in year 1 from the STR strategy. (Ignore state, NIIT, and AMT for this problem.)",
+            expectedAnswer: 59200,
+            tolerance: 200,
+            unit: "dollars",
+            formLine: "Form 1040 + Schedule E + Form 4562",
+            workedSolution: [
+              "Step 1: Verify STR exception applies. Avg guest stay 4 nights ≤ 7 → activity is excluded from 'rental activity' classification under Reg. §1.469-1T(e)(3)(ii)(A).",
+              "Step 2: Verify material participation. Spouse: 220 documented hours. Likely meets Test 3 (100+ hours AND more than any other individual — assuming nobody else has >220 hrs on this property). MP = yes.",
+              "Step 3: Compute year-1 loss. Operating loss $5,000 + depreciation $180,000 = $185,000 net loss on Schedule E.",
+              "Step 4: Loss is nonpassive (because: STR exception + MP). It offsets W-2 income.",
+              "Step 5: Tax savings ≈ $185,000 × 32% = $59,200.",
+              "Important caveats not in this calc: (a) NIIT impact — STR rentals classified as nonpassive trade-or-business may avoid NIIT (3.8%) on positive income years. (b) Eventual depreciation recapture (§1245/§1250) on sale. (c) State tax savings on top. (d) §199A QBI may apply if the activity is a §162 trade or business — but loss years don't generate QBI deduction. (e) Strategy requires CONTEMPORANEOUS hour logs — reconstructed records lose in audit. (f) The MP test is per-year — Year 2's status depends on Year 2's hours.",
+              "This is the conversation you walk a client through before recommending. The headline number is $59k — the asterisks are what protect the client from over-relying on the strategy.",
+            ],
+            commonWrongAnswers: [
+              { value: 60800, indicates: "Used 32.85% (avg of 32 and 33.85) — stick to the stated 32% marginal." },
+              { value: 6800, indicates: "Forgot to add depreciation to operating loss." },
+              { value: 0, indicates: "Assumed losses are passive — but this client meets BOTH the STR exception and MP." },
+              { value: 8000, indicates: "Applied $25k cap — that's the active participation allowance, not relevant here. STR exception bypasses §469 passive treatment entirely." },
+            ],
+          },
+        ],
+      },
+      {
+        id: "d19", title: "Day 19 — REPS Qualification & the W-2 Disqualifier",
+        description: "Master the Real Estate Professional Status test: the two-part qualification, the W-2 employee disqualifier, and the per-property material participation requirement.",
+        topicTags: ["reps_750hr", "reps_50pct_test", "reps_aggregation_election", "w2_real_estate_employee", "material_participation_tests", "mp_aggregation"],
+        learningObjectives: [
+          "Apply the REPS test under §469(c)(7): >50% of personal services AND >750 hours — both required",
+          "Identify the W-2 real-estate-employee disqualifier under §469(c)(7)(D)(ii)",
+          "Explain why REPS alone is insufficient without per-property MP or the aggregation election",
+        ],
+        tasks: [
+          { id: "d19t1", text: "Watch: Aiola's REPS Qualification Walkthrough (TODO_NICK: record video)" },
+          { id: "d19t2", text: "Read 3 sample TSRs where Aiola recommended REPS qualification (TODO_NICK: link to past TSRs)" },
+          { id: "d19t3", text: "Read Reg. §1.469-9(g) — the aggregation election for real estate professionals" },
+        ],
+        resources: [
+          { label: "Reg. §1.469-9 (REPS rules + aggregation election)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-9" },
+          { label: "Aiola REPS Qualification Walkthrough Video", url: null /* TODO_NICK */ },
+          { label: "Sample REPS TSRs", url: null /* TODO_NICK */ },
+          { label: "IRS Audit Technique Guide — Real Estate Professional", url: null /* TODO_NICK: find direct link */ },
+        ],
+        assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_two_part",
+            question: "To qualify as a Real Estate Professional under §469(c)(7), a taxpayer must meet:",
+            options: [
+              "More than 750 hours in real property trades or businesses",
+              "More than 50% of personal services in real property trades or businesses",
+              "BOTH: more than 50% of personal services AND more than 750 hours in real property trades or businesses",
+              "Either one of: 750 hours OR 50% of services",
+            ],
+            correct: 2,
+            topicTags: ["reps_750hr", "reps_50pct_test"],
+            difficulty: 3,
+            explanation: "Both tests, both met. §469(c)(7)(B) requires (i) more than half of personal services in real property trades or businesses in which the taxpayer materially participates, AND (ii) more than 750 hours of services performed in those trades. The 50% test alone fails clients with significant non-real-estate work. The 750-hour test alone fails clients who have a full-time non-real-estate job and dabble in real estate. Both required. Spouses qualify independently — only one spouse needs REPS for a joint return. Common error: counting hours toward REPS that don't qualify (e.g., investor activities like reading market reports, looking at properties to buy — those don't count under §469(c)(7)(C)).",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_per_property",
+            question: "Once a taxpayer qualifies as a Real Estate Professional, are all their rental losses automatically nonpassive?",
+            options: [
+              "Yes — REPS automatically converts all rental losses to nonpassive",
+              "No — REPS qualifies the taxpayer, but material participation in each rental is still required (or the aggregation election under Reg. §1.469-9(g) must be made to combine activities)",
+              "Yes, but only for short-term rentals",
+              "Only if the rentals are titled in a single LLC",
+            ],
+            correct: 1,
+            topicTags: ["reps_750hr", "reps_aggregation_election", "material_participation_tests", "mp_aggregation"],
+            difficulty: 4,
+            explanation: "This is the most commonly missed nuance. §469(c)(7) qualifies the TAXPAYER as a real estate professional — meaning rental activities are no longer per-se passive. But each rental activity is still subject to the material participation test SEPARATELY unless the taxpayer makes the aggregation election under §469(c)(7)(A) (regulations at Reg. §1.469-9(g)). Without aggregation, hours scattered across multiple properties often fail MP on each one individually. The election treats all rentals as one activity for MP testing — usually the right move for REPS clients with multiple properties. Caveat: aggregation is binding once made; revocation requires IRS consent (Reg. §1.469-9(g)(3)).",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_w2_disqualifier",
+            question: "A client works full-time as a W-2 leasing manager at a large apartment REIT. They want to count their 2,200 work hours toward the REPS 750-hour test. Can they?",
+            options: [
+              "Yes — leasing is a real property trade or business",
+              "Yes, but only 50% of the hours count",
+              "No — under §469(c)(7)(D)(ii), W-2 employee hours don't count toward REPS unless the employee owns at least 5% of the employer",
+              "Yes, automatically — REIT employees always qualify",
+            ],
+            correct: 2,
+            topicTags: ["reps_750hr", "w2_real_estate_employee"],
+            difficulty: 3,
+            explanation: "§469(c)(7)(D)(ii) says personal services performed as a W-2 employee don't count as services in a real property trade or business UNLESS the employee owns at least 5% of the employer. A leasing manager at a large REIT is a W-2 employee with no meaningful equity — those hours do NOT count toward REPS. This is a common qualification trap. Counter-example: an owner-operator of a real estate brokerage who takes a W-2 from their own S-Corp owns 100% — those W-2 hours absolutely count. The key question is always: does the taxpayer own ≥5% of the employer?",
+          },
+        ],
+      },
+      {
+        id: "d20", title: "Day 20 — Synthesis: Schedule Choice, Aggregation, & Red-Team Review",
+        description: "Tie it all together: the distinction between the §469 classification test and the Schedule C/E substantial services test, the aggregation election mechanics, and a comprehensive review before Week 5.",
+        topicTags: ["str_loophole", "schedule_e_vs_c", "substantial_services", "rental_classification", "reps_aggregation_election", "mp_aggregation"],
+        learningObjectives: [
+          "Distinguish 'substantial services' (Schedule C test) from 'hotel-like services' — different tests at different thresholds",
+          "Explain the §469(c)(7)(A) aggregation election: when, how, and the binding effect",
+        ],
+        tasks: [
+          { id: "d20t1", text: "Complete this week's final assessment blocks" },
+          { id: "d20t2", text: "Schedule a 60-min review with Nick to red-team your understanding before Week 5 (TODO_NICK)" },
+          { id: "d20t3", text: "Document your Week 4 questions and any remaining gaps in a ClickUp task" },
+        ],
+        resources: [
+          { label: "IRC §469 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
+          { label: "Reg. §1.469-9 (REPS rules + aggregation election)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-9" },
+        ],
+        assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_substantial_vs_hotel",
+            question: "A client has an Airbnb with avg guest stay of 5 nights. They provide WiFi, basic cleaning between guests, and a welcome basket. They materially participate. How is the activity treated?",
+            options: [
+              "Schedule C, with SE tax — because 'substantial services' makes it an active business",
+              "Schedule E, nonpassive — because avg stay ≤ 7 days excludes from rental activity classification, MP makes loss nonpassive; substantial services for SCHEDULE PURPOSES (Reg. §1.1402(a)-4) requires a higher threshold (daily housekeeping, meals, concierge) that this client does NOT meet",
+              "Schedule E, passive — short-term rentals are still rentals",
+              "Form 4835 — farm rental income",
+            ],
+            correct: 1,
+            topicTags: ["str_loophole", "schedule_e_vs_c", "substantial_services", "rental_classification"],
+            difficulty: 5,
+            explanation: "TWO DIFFERENT TESTS at TWO DIFFERENT THRESHOLDS — this is the most common conceptual error. (1) The §469 'rental activity' exclusion (Reg. §1.469-1T(e)(3)(ii)(A)) uses a 7-day average customer use threshold to determine passive classification. (2) The Schedule C / SE tax test (Reg. §1.1402(a)-4 + Pub 527) uses a 'substantial services' standard — services 'similar to those rendered by a hotel' (daily maid service, meals, concierge). Most STRs meet the 7-day test (so they escape passive treatment) but DO NOT meet the substantial services test (so they stay on Schedule E, no SE tax). WiFi + turnover cleaning + welcome basket is NOT substantial services. The activity is correctly: Schedule E + nonpassive (because of MP) + no SE tax. Memorize this distinction — many CPAs (and online articles) conflate these.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_aggregation",
+            question: "A real estate professional client wants to make the §469(c)(7)(A) aggregation election. Which statement is most accurate?",
+            options: [
+              "It's an annual election — file each year you want it to apply",
+              "It's filed by attaching a statement to a timely-filed return; once made, it's binding for all future years until revoked with IRS consent (per Reg. §1.469-9(g)(3))",
+              "It's automatic for any taxpayer who qualifies as REPS",
+              "It can only be made in the first year of ownership",
+            ],
+            correct: 1,
+            topicTags: ["reps_aggregation_election", "mp_aggregation"],
+            difficulty: 4,
+            explanation: "The aggregation election under §469(c)(7)(A) is made by attaching a statement to the timely-filed (including extensions) original return for the year of the election. It's NOT automatic. Once made, it's binding for that year and ALL FUTURE YEARS until revoked — and revocation requires IRS consent except in narrow cases (material change in facts, per Reg. §1.469-9(g)(3)). This is why Aiola's process is: don't recommend aggregation lightly. Run the math both ways before electing. For some clients, aggregating helps THIS year but hurts in a future year (e.g., a future property sold at a loss where you'd want it treated as a separate activity for §469(g) suspended-loss release). The decision is irreversible without IRS pain.",
+          },
+        ],
+      },
+    ],
   },
   {
     id: "week5_8", label: "Weeks 5–8", subtitle: "Applied Advisory", phase: "Days 31–60",
@@ -1181,7 +1338,7 @@ const PHASES = [
           { id: "w5t4", text: "Complete the AI-powered Mock ISM simulation (Client Strategy Meeting tool)" },
           { id: "w5t5", text: "Review your mock ISM scorecard with your manager" },
         ],
-        resources: [{ label: "ISM Meeting Framework", url: "#" }, { label: "Mock ISM Tool (Link)", url: "#" }, { label: "Scoring Rubric", url: "#" }],
+        resources: [{ label: "ISM Meeting Framework", url: null }, { label: "Mock ISM Tool (Link)", url: null }, { label: "Scoring Rubric", url: null }],
         videos: [{ label: "Sample ISM Recording — How a Great Meeting Looks", embedId: "dQw4w9WgXcQ" }],
         quiz: { question: "What is the FIRST thing a strong advisor does at the beginning of an ISM?", options: ["Jump straight into the tax return review", "Build rapport with small talk and set expectations for the meeting structure", "Ask the client to list all their tax questions", "Present the fee schedule"], correct: 1 },
       },
@@ -1195,7 +1352,7 @@ const PHASES = [
           { id: "w6t4", text: "Present your draft TSR to your manager (mock delivery)" },
           { id: "w6t5", text: "Incorporate feedback and finalize your practice TSR" },
         ],
-        resources: [{ label: "Sample TSR #1", url: "#" }, { label: "Sample TSR #2", url: "#" }, { label: "TSR Template", url: "#" }],
+        resources: [{ label: "Sample TSR #1", url: null }, { label: "Sample TSR #2", url: null }, { label: "TSR Template", url: null }],
         quiz: { question: "What is the primary purpose of the Tax Strategy Roadmap (TSR)?", options: ["To file the client's tax return", "To give the client a clear, actionable plan with prioritized strategies and a timeline", "To upsell the client on additional services", "To document the firm's internal notes"], correct: 1 },
       },
       {
@@ -1208,7 +1365,7 @@ const PHASES = [
           { id: "w7t4", text: "Draft 3 proactive client outreach emails (year-end planning, estimated payments, entity deadline)" },
           { id: "w7t5", text: "Review the client escalation matrix: when to involve Nick" },
         ],
-        resources: [{ label: "Checkup Meeting Template", url: "#" }, { label: "Time Log Template", url: "#" }, { label: "Email Outreach Templates", url: "#" }],
+        resources: [{ label: "Checkup Meeting Template", url: null }, { label: "Time Log Template", url: null }, { label: "Email Outreach Templates", url: null }],
         quiz: { question: "How often should advisory clients ideally have a checkup call?", options: ["Only at year-end", "Quarterly, with flexibility based on complexity", "Monthly without exception", "Only when the client requests one"], correct: 1 },
       },
       {
@@ -1221,7 +1378,7 @@ const PHASES = [
           { id: "w8t4", text: "Set goals for Days 61–90 based on review feedback" },
           { id: "w8t5", text: "Begin shadowing live advisory meetings (observe + take notes)" },
         ],
-        resources: [{ label: "60-Day Self-Assessment", url: "#" }, { label: "Performance Review Template", url: "#" }],
+        resources: [{ label: "60-Day Self-Assessment", url: null }, { label: "Performance Review Template", url: null }],
         quiz: { question: "By Day 60, which of the following should you have completed?", options: ["Led 5+ real client ISMs independently", "A mock ISM, a practice TSR, mock checkup call, and begun shadowing live meetings", "Closed your first advisory client sale", "Built your own tax strategy playbook"], correct: 1 },
       },
     ],
@@ -1239,7 +1396,7 @@ const PHASES = [
           { id: "w9t4", text: "Get TSR reviewed and approved before delivery" },
           { id: "w9t5", text: "Begin managing 2–3 advisory client relationships in ClickUp" },
         ],
-        resources: [{ label: "Live Meeting Prep Checklist", url: "#" }, { label: "TSR Quality Checklist", url: "#" }],
+        resources: [{ label: "Live Meeting Prep Checklist", url: null }, { label: "TSR Quality Checklist", url: null }],
         quiz: { question: "During your first supervised live ISM, what is your primary role?", options: ["Observe silently and take notes", "Lead the meeting while the senior advisor provides backup and may interject", "Handle only the administrative parts", "Present the fee schedule and close the sale"], correct: 1 },
       },
       {
@@ -1252,7 +1409,7 @@ const PHASES = [
           { id: "w10t4", text: "Conduct a checkup call with an existing advisory client" },
           { id: "w10t5", text: "Track your KPIs: meetings held, TSRs delivered, client satisfaction" },
         ],
-        resources: [{ label: "KPI Tracking Dashboard", url: "#" }, { label: "Client Satisfaction Survey", url: "#" }],
+        resources: [{ label: "KPI Tracking Dashboard", url: null }, { label: "Client Satisfaction Survey", url: null }],
         quiz: { question: "When managing your own client portfolio, how should you prioritize your weekly tasks?", options: ["Respond to emails first, then schedule meetings", "Upcoming deadlines first, then proactive outreach, then administrative tasks", "Work on whatever feels most urgent in the moment", "Focus exclusively on new client acquisition"], correct: 1 },
       },
       {
@@ -1266,7 +1423,7 @@ const PHASES = [
           { id: "w12t5", text: "Transition to fully independent advisory role" },
           { id: "w12t6", text: "Complete the final certification quiz" },
         ],
-        resources: [{ label: "90-Day Self-Assessment", url: "#" }, { label: "6-Month Goal Template", url: "#" }, { label: "Advisory Certification Checklist", url: "#" }],
+        resources: [{ label: "90-Day Self-Assessment", url: null }, { label: "6-Month Goal Template", url: null }, { label: "Advisory Certification Checklist", url: null }],
         quiz: { question: "At the end of 90 days, a fully onboarded advisor should be able to:", options: ["Handle only tax prep returns independently", "Lead ISMs, build and deliver TSRs, manage client relationships, and track KPIs — all independently", "Shadow senior advisors on all meetings", "Focus exclusively on sales calls"], correct: 1 },
       },
     ],
@@ -3885,10 +4042,13 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                     const lbl = (r.label||"").toLowerCase();
                     const typeIcon = r.type === "pdf" || lbl.includes("pdf") || lbl.includes("handbook") || lbl.includes("checklist") || lbl.includes("guide") || lbl.includes("template") || lbl.includes("overview") ? "\uD83D\uDCC4" : r.type === "video" || lbl.includes("video") ? "\uD83D\uDCF9" : "\uD83D\uDD17";
                     const typeLabel = typeIcon === "\uD83D\uDCC4" ? "PDF Document" : typeIcon === "\uD83D\uDCF9" ? "Video" : "Link";
-                    return <span key={i} title={`${r.label} (${typeLabel})`} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"10px 14px",minHeight:44,borderRadius:22,fontSize:13,fontWeight:500,background:B.blueL,color:B.blue,border:`1px solid ${B.blueM}`,cursor:"pointer",boxSizing:"border-box",transition:"background .15s"}}
-                      onMouseEnter={e=>{e.currentTarget.style.background="#dbeafe"}} onMouseLeave={e=>{e.currentTarget.style.background=B.blueL}}>
-                      <span style={{fontSize:15}}>{typeIcon}</span>{r.label}
+                    const hasUrl = r.url != null;
+                    const pill = <span key={i} title={`${r.label} (${typeLabel})${hasUrl ? "" : " — pending"}`} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"10px 14px",minHeight:44,borderRadius:22,fontSize:13,fontWeight:500,background:hasUrl ? B.blueL : "#f1f5f9",color:hasUrl ? B.blue : B.t3,border:`1px solid ${hasUrl ? B.blueM : B.bdr}`,cursor:hasUrl ? "pointer" : "default",boxSizing:"border-box",transition:"background .15s",opacity:hasUrl ? 1 : 0.7}}
+                      onMouseEnter={e=>{if(hasUrl)e.currentTarget.style.background="#dbeafe"}} onMouseLeave={e=>{if(hasUrl)e.currentTarget.style.background=hasUrl?B.blueL:"#f1f5f9"}}>
+                      <span style={{fontSize:15}}>{typeIcon}</span>{r.label}{!hasUrl && <span style={{fontSize:9,fontWeight:700,color:B.t3,background:"#e2e8f0",padding:"1px 6px",borderRadius:4,marginLeft:4}}>pending</span>}
                     </span>;
+                    if (hasUrl) return <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>{pill}</a>;
+                    return pill;
                   })}
                 </div>
               </div>
