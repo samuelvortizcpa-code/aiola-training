@@ -448,20 +448,264 @@ const PHASES = [
     ],
   },
   {
-    id: "week2", label: "Week 2", subtitle: "Tax Foundations", phase: "Days 1–30",
+    id: "week2", label: "Week 2", subtitle: "Real Estate Tax Foundations", phase: "Days 1–30",
     items: [{
-      id: "w2", title: "Week 2 — Individual Tax Return Fundamentals",
-      description: "Build fluency with 1040s, schedules, and common client scenarios.",
-      tasks: [
-        { id: "w2t1", text: "Review Form 1040 structure: income, adjustments, deductions, credits, tax computation" },
-        { id: "w2t2", text: "Complete practice return #1: W-2 employee with standard deduction" },
-        { id: "w2t3", text: "Study Schedule C: sole proprietorship income, expenses, and SE tax" },
-        { id: "w2t4", text: "Study Schedule E: rental real estate income and loss" },
-        { id: "w2t5", text: "Review Aiola's tax return review checklist" },
-        { id: "w2t6", text: "Shadow a senior advisor's return review session (observe only)" },
+      id: "w2", title: "Week 2 — Schedule E & Rental Real Estate Fundamentals",
+      description: "Build fluency reading and reviewing rental real estate on Form 1040. By Friday, you should be able to read a Schedule E line by line, spot the most common errors, and explain the basic rules on rental classification, deductions, and passive losses. This is foundational — Weeks 3–4 build on this with entity overlay and the §469 deep dive.",
+      topicTags: ["schedule_e", "rental_classification", "passive_loss", "special_25k_allowance", "depreciation", "form_1040", "schedule_e_vs_c", "substantial_services"],
+      learningObjectives: [
+        "Read a Schedule E and identify income, expenses, depreciation, and net rental result",
+        "Explain when a rental is reported on Schedule E vs Schedule C (substantial services test)",
+        "Apply the $25,000 special allowance for active participation, including the phase-out math",
+        "Identify the most common Schedule E errors: missing depreciation, mis-categorized expenses, vacation home use violations",
+        "Recognize when rental losses are suspended under the passive activity rules (preview of Week 4)",
       ],
-      resources: [{ label: "1040 Study Guide", url: "#" }, { label: "Practice Return #1 (PDF)", url: "#" }, { label: "Tax Return Review Checklist", url: "#" }],
-      quiz: { question: "On a Form 1040, where does rental real estate income or loss appear?", options: ["Schedule C, Line 31", "Schedule E, Part I", "Schedule D, Part II", "Form 8949"], correct: 1 },
+      tasks: [
+        { id: "w2t1", text: "Read IRS Pub 527 (Residential Rental Property), focusing on chapters 1–3 (rental income, expenses, depreciation)" },
+        { id: "w2t2", text: "Read Schedule E instructions for Form 1040 — Part I covers rental real estate" },
+        { id: "w2t3", text: "Review the Rivera 2024 Federal Return end-to-end (in resources). Pay specific attention to the Schedule E." },
+        { id: "w2t4", text: "Watch: Schedule E line-by-line walkthrough by Nick (TODO_NICK: record 30-min video)" },
+        { id: "w2t5", text: "Read Aiola's Rental Income Review Checklist (TODO_NICK: link to firm SOP)" },
+        { id: "w2t6", text: "Shadow a senior advisor reviewing a rental return for 30 minutes (TODO_NICK: schedule with Sam)" },
+        { id: "w2t7", text: "Read IRC §469 overview at a high level (passive activity rules) — don't dive deep, that's Week 4" },
+        { id: "w2t8", text: "Document your Week 2 questions in a single ClickUp task before Friday wrap-up" },
+      ],
+      resources: [
+        { label: "IRS Pub 527 (Residential Rental Property)", url: "https://www.irs.gov/pub/irs-pdf/p527.pdf" },
+        { label: "Schedule E Instructions (2024)", url: "https://www.irs.gov/pub/irs-pdf/i1040se.pdf" },
+        { label: "Form 1040 Schedule E (blank)", url: "https://www.irs.gov/pub/irs-pdf/f1040se.pdf" },
+        { label: "IRC §469 Overview (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
+        { label: "IRC §280A (Vacation Home Rules)", url: "https://www.law.cornell.edu/uscode/text/26/280A" },
+        { label: "Rivera 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
+        { label: "Aiola Rental Review Checklist", url: "#" /* TODO_NICK */ },
+        { label: "Schedule E Walkthrough Video", url: "#" /* TODO_NICK */ },
+      ],
+      assessment: [
+        // ── Block 1: Document Markup — Rivera Schedule E Review ──
+        {
+          type: "DOCUMENT_MARKUP", id: "w2_doc_rivera_schedule_e",
+          title: "Review Rivera's Schedule E",
+          topicTags: ["schedule_e", "rental_classification", "depreciation", "passive_loss"],
+          context: "This is the Alex & Aerin Rivera 2024 federal return (anonymized mock client). Aerin is a W-2 software engineer; Alex runs a consulting business. They have one rental property in Florida. Open the return, find the Schedule E, and flag every line you'd want to follow up on before considering this return final. Click on the area, choose a category, and write a 1-2 sentence note on what concerns you.",
+          documentUrl: "/docs/Rivera_2024_Federal_Return.pdf",
+          documentType: "pdf",
+          // TODO_SAM: After running this prompt, open the actual PDF, screenshot the Schedule E page,
+          // and translate the regions below into actual % coordinates. Conceptual answer key follows.
+          regions: [
+            {
+              id: "r_property_type",
+              label: "Property type classification (Schedule E Line 1b)",
+              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM: real coords from PDF
+              severity: "critical", category: "risk",
+              explanation: "Property type drives passive activity treatment. If marked '1 - Single Family' but client mentioned short-term renting (avg stay ≤ 7 days), this opens the STR loophole and the property may NOT be a 'rental activity' under Reg. §1.469-1T(e)(3)(ii). Verify avg stay before accepting the classification.",
+            },
+            {
+              id: "r_fair_rental_days",
+              label: "Fair rental days vs personal use days (Schedule E Line 2)",
+              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+              severity: "critical", category: "risk",
+              explanation: "Personal use > 14 days OR > 10% of fair rental days triggers vacation home rules under §280A — deductions limited to rental income. If personal use is non-zero, verify the math. If client used the property at all (including for 'maintenance' beyond a reasonable amount), this is in scope.",
+            },
+            {
+              id: "r_depreciation_zero",
+              label: "Depreciation expense (Schedule E Line 18)",
+              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+              severity: "critical", category: "missing",
+              explanation: "Most rentals should be claiming depreciation. Residential rental real estate = 27.5 years straight-line MACRS. If line 18 is zero or suspiciously low, either depreciation is missing (malpractice-adjacent — client overpaying tax) or the property hasn't been placed in service yet. Verify the basis worksheet exists and Form 4562 is filed.",
+            },
+            {
+              id: "r_repairs_vs_improvements",
+              label: "Repairs (Line 14) vs Capital Improvements",
+              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+              severity: "important", category: "risk",
+              explanation: "If 'Repairs' is unusually large (e.g., > 20% of rental income, or > $10k), inspect — could be capitalized improvements miscategorized as repairs. Tangible Property Regulations (Reg. §1.263(a)-3) draw the line: betterment, restoration, or adaptation = capitalize. Routine maintenance = expense. Misclassifying improvements as repairs is a common audit issue.",
+            },
+            {
+              id: "r_net_loss_suspended",
+              label: "Net rental result (Schedule E Line 26) interaction with AGI",
+              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+              severity: "critical", category: "risk",
+              explanation: "If the rental shows a net loss AND combined AGI is high, verify the loss is properly suspended. The $25k special allowance for active participation phases out 50% per dollar of MAGI over $100k MFJ, fully phased out at $150k. Above $150k, losses are suspended entirely (carry forward) UNLESS the taxpayer qualifies as a real estate professional under §469(c)(7). Form 8582 should reflect this.",
+            },
+            {
+              id: "r_mortgage_interest",
+              label: "Mortgage interest (Schedule E Line 12)",
+              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+              severity: "important", category: "missing",
+              explanation: "Should tie exactly to Form 1098 from the lender. Common error: mixing personal-use months with rental months on a property that converted use during the year. If mortgage interest splits between Schedule A (personal) and Schedule E (rental), verify the allocation method matches the use period.",
+            },
+            {
+              id: "r_insurance",
+              label: "Insurance (Line 9)",
+              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+              severity: "nice", category: "opportunity",
+              explanation: "Verify it's landlord/dwelling policy not personal homeowner's insurance. Also check if PMI is included — generally deductible against rental income.",
+            },
+            {
+              id: "r_property_tax",
+              label: "Taxes (Line 16)",
+              coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
+              severity: "nice", category: "opportunity",
+              explanation: "Property tax on the rental is fully deductible against rental income, NOT subject to the $10k SALT cap (which applies only to Schedule A personal SALT). Easy money left on the table if the trainee thinks SALT cap applies here.",
+            },
+          ],
+          answerKeyExplanation: "A thorough Schedule E review for a real estate advisory client examines: classification (property type, schedule choice), use (personal vs rental days), depreciation (claimed correctly?), expense categorization (repair vs improvement), and loss treatment (active participation vs REPS vs suspended). Missing any of these is how clients overpay or underclaim. The big four flags in priority order: (1) depreciation correctness, (2) §280A personal use trip, (3) loss suspension under §469, (4) repair/improvement classification.",
+        },
+
+        // ── Block 2a: Computation — Net Rental Result ──
+        {
+          type: "COMPUTATION", id: "w2_comp_net_rental",
+          title: "Net Rental Result",
+          topicTags: ["schedule_e", "form_1040"],
+          prompt: "A rental property generated $42,000 of rental income for the year. Operating expenses (excluding depreciation and interest): $11,500. Depreciation expense: $9,800. Mortgage interest: $14,200. What is the net rental result reported on Schedule E Line 26?",
+          expectedAnswer: 6500,
+          tolerance: 25,
+          unit: "dollars",
+          formLine: "Schedule E, Line 26",
+          workedSolution: [
+            "Step 1: Total rental income = $42,000",
+            "Step 2: Total expenses = Operating $11,500 + Depreciation $9,800 + Mortgage Interest $14,200 = $35,500",
+            "Step 3: Net rental result = $42,000 − $35,500 = $6,500 (net rental income)",
+            "Reported on Schedule E Line 26 (and flows to Form 1040 Schedule 1 Line 5).",
+          ],
+          commonWrongAnswers: [
+            { value: 16300, indicates: "Forgot to subtract depreciation. Depreciation IS a deduction on Schedule E even though it's a non-cash expense." },
+            { value: 30500, indicates: "Forgot mortgage interest — verify Line 12 isn't being missed." },
+            { value: -6500, indicates: "Sign error — rental had a net positive result, not a loss." },
+          ],
+        },
+
+        // ── Block 2b: Computation — $25k Allowance Partial Phase-Out ──
+        {
+          type: "COMPUTATION", id: "w2_comp_25k_allowance_partial",
+          title: "$25k Special Allowance — Partial Phase-Out",
+          topicTags: ["special_25k_allowance", "passive_loss", "schedule_e"],
+          prompt: "A married-filing-jointly taxpayer has a rental net loss of $18,000. They actively participate (made management decisions, approved tenants). Their MAGI before the rental loss is $135,000. How much rental loss can they deduct against their other (active) income this year? (Provide a dollar amount.)",
+          expectedAnswer: 7500,
+          tolerance: 0,
+          unit: "dollars",
+          formLine: "Form 8582 Worksheet",
+          workedSolution: [
+            "Step 1: Confirm active participation requirement met (it is).",
+            "Step 2: Base allowance is $25,000 for MFJ with active participation.",
+            "Step 3: Phase-out begins at $100,000 MAGI. Reduces by $0.50 per $1.00 over the threshold.",
+            "Step 4: MAGI excess = $135,000 − $100,000 = $35,000",
+            "Step 5: Allowance reduction = $35,000 × 0.50 = $17,500",
+            "Step 6: Available allowance = $25,000 − $17,500 = $7,500",
+            "Step 7: Loss is $18,000; allowance limits the deduction to $7,500. The remaining $10,500 is suspended under §469 and carries forward.",
+            "Note: Phase-out is fully complete at $150k MAGI for MFJ.",
+          ],
+          commonWrongAnswers: [
+            { value: 18000, indicates: "Ignored the phase-out — full loss claimed." },
+            { value: 25000, indicates: "Applied base allowance without phase-out adjustment." },
+            { value: 0, indicates: "Assumed full phase-out, but $135k is below the $150k complete phase-out threshold." },
+          ],
+        },
+
+        // ── Block 2c: Computation — $25k Allowance Full Phase-Out ──
+        {
+          type: "COMPUTATION", id: "w2_comp_25k_allowance_full",
+          title: "$25k Special Allowance — Full Phase-Out",
+          topicTags: ["special_25k_allowance", "passive_loss", "suspended_losses"],
+          prompt: "Same client as before, same $18,000 rental loss, same active participation. But now their MAGI is $165,000 (MFJ). How much rental loss can they deduct against active income this year?",
+          expectedAnswer: 0,
+          tolerance: 0,
+          unit: "dollars",
+          formLine: "Form 8582 Worksheet",
+          workedSolution: [
+            "Step 1: Check phase-out: at $150,000 MAGI MFJ, the $25k allowance is fully eliminated.",
+            "Step 2: $165,000 > $150,000 → allowance = $0.",
+            "Step 3: Entire $18,000 loss is suspended under §469 and carries forward indefinitely.",
+            "Step 4: Suspended loss is released when (a) future passive income offsets it, or (b) the property is sold in a fully taxable disposition (§469(g)).",
+            "Note: This client is a candidate to discuss real estate professional status (§469(c)(7)) if their facts support it — Week 4 topic.",
+          ],
+          commonWrongAnswers: [
+            { value: 7500, indicates: "Used same allowance as the $135k MAGI case — but at $165k the allowance is fully phased out." },
+            { value: 18000, indicates: "Ignored phase-out entirely." },
+            { value: 25000, indicates: "Applied full allowance — phase-out begins at $100k and ends at $150k MFJ." },
+          ],
+        },
+
+        // ── Block 3a: MCQ — Schedule E Location ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w2_mcq_schedule_e_location",
+          question: "On Form 1040, where does rental real estate income or loss appear?",
+          options: [
+            "Schedule C, Line 31",
+            "Schedule E, Part I",
+            "Schedule D, Part II",
+            "Form 8949",
+          ],
+          correct: 1,
+          topicTags: ["schedule_e", "form_1040"],
+          difficulty: 1,
+          explanation: "Schedule E Part I is for rental real estate and royalties. Schedule C is for active trade or business (e.g., hotels, B&Bs with substantial services). Schedule D / Form 8949 are for capital gain/loss on asset sales. Most residential rentals belong on Schedule E.",
+        },
+
+        // ── Block 3b: MCQ — Substantial Services ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w2_mcq_substantial_services",
+          question: "A client rents out their cabin via Airbnb. Average guest stay is 5 days. They provide WiFi and basic cleaning between guests, but no daily housekeeping, no meals, no concierge service. What schedule does this rental belong on?",
+          options: [
+            "Schedule C — short stays mean it's an active business",
+            "Schedule E — substantial services threshold isn't met",
+            "Schedule F — vacation rental",
+            "Both Schedule C and E, split based on days",
+          ],
+          correct: 1,
+          topicTags: ["schedule_e_vs_c", "substantial_services", "rental_classification"],
+          difficulty: 3,
+          explanation: "Schedule C requires 'substantial services' (Reg. §1.469-1T(e)(3)(ii)) — daily housekeeping, meals, concierge, or other services 'substantially the same as those typically provided in a hotel.' WiFi and turnover cleaning are NOT substantial services. The activity stays on Schedule E. Note: short stays (avg ≤ 7 days) DO matter for §469 passive classification (the STR loophole — Week 4), but they don't change the schedule choice.",
+        },
+
+        // ── Block 3c: MCQ — $25k Phase-Out Threshold ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w2_mcq_25k_phaseout",
+          question: "The $25,000 special allowance for active participation in rental real estate phases out as MAGI increases. At what MAGI is the allowance FULLY phased out for a married-filing-jointly couple?",
+          options: [
+            "$100,000",
+            "$150,000",
+            "$200,000",
+            "There is no phase-out",
+          ],
+          correct: 1,
+          topicTags: ["special_25k_allowance", "passive_loss"],
+          difficulty: 2,
+          explanation: "Phase-out begins at $100,000 MAGI (MFJ), reducing the $25k allowance by $0.50 per $1.00 of excess MAGI. At $150,000 MAGI, the allowance is fully eliminated. (For married-filing-separately who lived apart all year: thresholds are $50k and $75k. MFS who lived together: $0 allowance.)",
+        },
+
+        // ── Block 3d: MCQ — Depreciation Method ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w2_mcq_depreciation_method",
+          question: "Residential rental real estate placed in service after 1986 is depreciated over what period using what method?",
+          options: [
+            "15 years, MACRS 200% declining balance",
+            "27.5 years, straight-line MACRS",
+            "39 years, straight-line MACRS",
+            "25 years, 150% declining balance",
+          ],
+          correct: 1,
+          topicTags: ["depreciation", "schedule_e"],
+          difficulty: 2,
+          explanation: "Residential rental real estate = 27.5 years straight-line under MACRS. Non-residential (commercial) = 39 years straight-line. 15-year is for qualified improvement property and certain land improvements. Land itself is never depreciated. The cost basis allocation between land (non-depreciable) and building (depreciable) matters — Aiola typically uses the property tax assessor's ratio as a defensible starting point.",
+        },
+
+        // ── Block 3e: MCQ — Average Stay Foreshadow ──
+        {
+          type: "CONFIDENCE_MCQ", id: "w2_mcq_avg_stay_foreshadow",
+          question: "Why does Aiola's onboarding questionnaire specifically ask about the AVERAGE GUEST STAY duration on rental properties?",
+          options: [
+            "To compute occupancy rate for the client's records",
+            "Because average stay ≤ 7 days excludes the activity from the §469 'rental activity' definition, opening the STR loophole",
+            "To estimate cleaning expense deductions",
+            "Because the IRS requires it on Schedule E Line 2",
+          ],
+          correct: 1,
+          topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
+          difficulty: 4,
+          explanation: "This is the bridge to Week 4. Under Reg. §1.469-1T(e)(3)(ii)(A), if average customer use is 7 days or less, the activity is NOT a 'rental activity' for §469 purposes. That means losses are NOT automatically passive — if the taxpayer materially participates, losses can offset W-2 income WITHOUT real estate professional status. This is the foundation of the so-called 'STR loophole.' The schedule (E vs C) is determined separately by substantial services. We're foreshadowing this so you understand WHY Aiola asks the question — it's a $25k+ tax savings indicator.",
+        },
+      ],
     }],
   },
   {
@@ -3148,6 +3392,19 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
         {!perfPage&&cIt&&(
           <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
             <p style={{fontSize:13,color:B.t2,lineHeight:1.6,marginTop:0,marginBottom:20}}>{cIt.description}</p>
+            {cIt.learningObjectives?.length > 0 && (
+              <div style={{background:B.blueL,border:`1px solid ${B.blue}22`,borderRadius:10,padding:"14px 18px",marginBottom:20}}>
+                <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1v14M1 8h14" stroke={B.blue} strokeWidth="1.5" strokeLinecap="round"/></svg>
+                  <span style={{fontSize:11,fontWeight:700,color:B.blue,textTransform:"uppercase",letterSpacing:.8}}>Learning Objectives</span>
+                </div>
+                <ul style={{margin:0,paddingLeft:18,listStyleType:"disc"}}>
+                  {cIt.learningObjectives.map((obj,i)=>(
+                    <li key={i} style={{fontSize:12,color:B.t1,lineHeight:1.6,marginBottom:4}}>{obj}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
               <div style={{flex:1,height:7,borderRadius:4,background:B.blueL,overflow:"hidden"}}><div style={{height:"100%",borderRadius:4,transition:"width .4s",width:`${itemProg(cIt,completedTasks)}%`,background:itemProg(cIt,completedTasks)===100?B.ok:`linear-gradient(90deg,${B.blue},${B.blueD})`}}/></div>
               <span style={{fontSize:12,fontWeight:600,color:itemProg(cIt,completedTasks)===100?B.ok:B.blue,whiteSpace:"nowrap"}}>{cIt.tasks.filter(t=>completedTasks[t.id]).length} / {cIt.tasks.length}</span>
