@@ -1,4 +1,10 @@
 import { useState, useEffect, useCallback, useRef, useMemo, createContext, useContext } from "react";
+import AssessmentModule from "./components/assessment/AssessmentModule.jsx";
+import TopicMastery from "./components/assessment/TopicMastery.jsx";
+import WeeklyReview from "./components/assessment/WeeklyReview.jsx";
+import ConfidentMisses from "./components/assessment/ConfidentMisses.jsx";
+import CohortHeatmap from "./components/assessment/CohortHeatmap.jsx";
+import { migrateLegacyQuiz } from "./lib/migrateLegacyQuiz.js";
 
 // ─── Responsive CSS ─────────────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
@@ -99,9 +105,89 @@ const PHASES = [
           { id: "d1q2", type: "multiple_choice", question: "Which of the following is NOT part of Day 1 setup?", options: ["Configure multi-factor authentication", "Join required Slack/Teams channels", "Complete a practice tax return", "Review the Employee Handbook"], correct: 2 },
           { id: "d1q3", type: "free_text", question: "In your own words, why is multi-factor authentication important for a CPA firm?", modelAnswer: "MFA adds an extra layer of security beyond passwords, which is critical for CPA firms because we handle sensitive client financial data. A compromised account could expose SSNs, tax returns, and bank information." },
         ]},
+        topicTags: ["security", "onboarding"],
+        // TEST ASSESSMENT — remove after verification (Prompt 1 test data)
+        assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "d1_test_mcq",
+            question: "What should you do FIRST after receiving your laptop?",
+            options: ["Start reviewing client files", "Change all default passwords and enable MFA", "Set up your email signature", "Join Slack channels"],
+            correct: 1, topicTags: ["security", "onboarding"], difficulty: 2,
+            explanation: "Security comes first — changing default passwords and enabling MFA protects sensitive client data from day one."
+          },
+          {
+            type: "SCENARIO_BRANCHING", id: "d1_test_scenario",
+            title: "First Client Data Request", topicTags: ["security"],
+            context: "It's your first week. A colleague emails asking you to send them a client's tax return PDF for a meeting in 10 minutes. You haven't been formally introduced to this colleague.",
+            decisions: [
+              { id: "dec1", prompt: "How do you respond to this urgent request?", options: [
+                { text: "Send the PDF immediately — they said it's urgent", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_bad" },
+                { text: "Verify the colleague's identity with your manager before sending", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
+                { text: "Reply asking which client, then send it", weight: 2, correctness: "risky", nextId: null, terminalId: "t_risky" },
+              ]},
+              { id: "dec2", prompt: "Your manager confirms the colleague. How do you send the file?", options: [
+                { text: "Use the firm's secure file sharing system", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
+                { text: "Attach it to a regular email", weight: 1, correctness: "acceptable", nextId: null, terminalId: "t_ok" },
+              ]},
+            ],
+            terminals: [
+              { id: "t_great", label: "Secure & Verified", outcome: "great", coachingNote: "Perfect — you verified identity AND used secure channels. This protects both the firm and the client." },
+              { id: "t_ok", label: "Verified but Insecure", outcome: "acceptable", coachingNote: "Good verification, but email attachments aren't encrypted. Always use the secure portal for client data." },
+              { id: "t_risky", label: "Unverified Send", outcome: "risky", coachingNote: "Asking for the client name doesn't verify the requester's identity. Always confirm with your manager first." },
+              { id: "t_bad", label: "Immediate Send", outcome: "harmful", coachingNote: "Never send client data without verifying the requester. This could be a social engineering attack." },
+            ]
+          },
+          {
+            type: "DRAG_EXERCISE", id: "d1_test_drag",
+            title: "Security Setup Order", topicTags: ["security", "onboarding"],
+            prompt: "Put these Day 1 security tasks in the correct order:",
+            mode: "order",
+            items: [
+              { id: "s1", label: "Change all default passwords" },
+              { id: "s2", label: "Enable multi-factor authentication" },
+              { id: "s3", label: "Join secure Slack channels" },
+              { id: "s4", label: "Review the Employee Handbook" },
+            ],
+            correctSequence: ["s1", "s2", "s3", "s4"],
+            explanation: "Passwords first, then MFA, then communications, then handbook review."
+          },
+          {
+            type: "COMPUTATION", id: "d1_test_comp",
+            title: "Password Security Math", topicTags: ["security"],
+            prompt: "If a CPA firm has 25 employees and each needs 4 unique passwords changed on Day 1, how many total password changes need to happen?",
+            expectedAnswer: 100, tolerance: 0, unit: "number",
+            workedSolution: ["25 employees x 4 passwords each", "25 x 4 = 100 password changes"],
+            commonWrongAnswers: [{ value: 29, indicates: "Added instead of multiplied" }]
+          },
+          {
+            type: "AI_ROLEPLAY", id: "d1_test_roleplay",
+            title: "IT Help Desk Call", topicTags: ["onboarding"],
+            personaName: "Sarah from IT",
+            personaSystemPrompt: "You are Sarah, the IT help desk lead at Aiola CPA.",
+            openingMessage: "Hi! Welcome to Aiola. I'm Sarah from IT. What can I help you set up today?",
+            maxTurns: 5,
+            rubric: [
+              { criterion: "Professionalism", scale1: "Rude or dismissive", scale3: "Polite but generic", scale5: "Warm, professional, asks good questions", weight: 1 }
+            ],
+            placeholder: true
+          },
+          {
+            type: "DOCUMENT_MARKUP", id: "d1_test_doc",
+            title: "Spot the Security Issues", topicTags: ["security"],
+            context: "Review this sample employee setup checklist and flag any security concerns you notice.",
+            documentUrl: "/icons.svg",
+            documentType: "image",
+            regions: [
+              { id: "r1", label: "Missing encryption mention", coords: { x: 10, y: 10, w: 30, h: 20 }, severity: "critical", category: "missing", explanation: "The checklist should require disk encryption setup." },
+              { id: "r2", label: "No VPN setup step", coords: { x: 50, y: 40, w: 30, h: 20 }, severity: "important", category: "missing", explanation: "VPN should be configured before accessing any client systems." },
+            ],
+            answerKeyExplanation: "A thorough security checklist should include disk encryption and VPN setup as mandatory steps."
+          },
+        ],
       },
       {
         id: "d2", title: "Day 2 — ClickUp Mastery",
+        topicTags: ["clickup_workflow", "security"],
         description: "Learn our project management system inside and out.",
         tasks: [
           { id: "d2t1", text: "Complete ClickUp University onboarding course (Sections 1–4)" },
@@ -2276,12 +2362,13 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
       <div className="r-content" style={{padding:"28px 32px",maxWidth:1400,margin:"0 auto"}}>
         {/* Admin Tabs */}
         <div className="r-tab-row" style={{display:"flex",gap:24,marginBottom:24,borderBottom:`1px solid ${B.bdr}`}}>
-          {[{key:"training",label:"Training Portal"},{key:"client",label:"Client Portal"}].map(tab=>(
+          {[{key:"training",label:"Training Portal"},{key:"cohort",label:"Cohort Topics"},{key:"client",label:"Client Portal"}].map(tab=>(
             <button key={tab.key} onClick={()=>setAdminTab(tab.key)} style={{padding:"10px 4px",border:"none",borderBottom:adminTab===tab.key?`2px solid ${B.blue}`:"2px solid transparent",background:"none",cursor:"pointer",fontSize:14,fontWeight:600,color:adminTab===tab.key?B.blue:B.t3,fontFamily:"inherit",transition:"color .2s"}}>
               {tab.label}
             </button>
           ))}
         </div>
+        {adminTab==="cohort"&&<CohortHeatmap trainees={trainees} />}
         {adminTab==="client"&&<AdminClientList />}
         {adminTab==="training"&&<>
         {/* Pain-Point Stats */}
@@ -2411,7 +2498,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
           )}
           <div className="r-table-wrap">
           <div className="r-table-grid" style={{display:"grid",gridTemplateColumns:"2fr 0.8fr 1fr 1fr 1fr 0.7fr 210px",padding:"12px 24px",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3}}>
-            <span>Name</span><span>Phase</span><span>Start Date</span><span>Timeline</span><span>Progress</span><span>Quizzes</span><span></span>
+            <span>Name</span><span>Phase</span><span>Start Date</span><span>Timeline</span><span>Progress</span><span>Assessments</span><span></span>
           </div>
           {filteredTrainees.map(t=>{
             const prog=calcProg(allData[t.id]?.tasks,allData[t.id]?.quizzes);
@@ -2438,7 +2525,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
                   <div style={{flex:1,height:6,borderRadius:3,background:B.blueL,overflow:"hidden",maxWidth:70}}><div style={{height:"100%",borderRadius:3,width:`${prog.pct}%`,background:prog.pct===100?B.ok:B.blue,transition:"width .4s"}}/></div>
                   <span style={{fontSize:12,fontWeight:600,color:prog.pct===100?B.ok:B.t1}}>{prog.pct}%</span>
                 </div>
-                <span style={{fontSize:12,color:B.t2}}>{prog.passedQuizzes}/{totalQuizzes}</span>
+                <span style={{fontSize:12,color:B.t2}} title="Passed / Total">{prog.passedQuizzes}/{totalQuizzes}</span>
                 <div style={{display:"flex",gap:6}}>
                   <button onClick={()=>onViewTrainee(t)} style={{padding:"5px 10px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>View</button>
                   <button onClick={()=>onViewKpi(t)} style={{padding:"5px 10px",border:`1px solid ${B.purple}`,borderRadius:6,background:"#fff",color:B.purple,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>KPI</button>
@@ -2632,6 +2719,12 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 </button>
               </div>
             )}
+            {/* Weekly Review */}
+            {!isAdminView && <WeeklyReview userId={user.id} />}
+            {/* Topic Mastery */}
+            <TopicMastery userId={user.id} />
+            {/* Confident Misses — admin only */}
+            {isAdminView && <ConfidentMisses userId={user.id} />}
             {/* Card 1: KPI Scores */}
             <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
               <div style={{padding:"14px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:16}}>📈</span><span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>KPI Scores</span></div>
@@ -2920,268 +3013,20 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 </div>
               </div>
             )}
-            {/* Quiz */}
-            {cIt.quiz&&(()=>{
-              const nQuiz = normalizeQuiz(cIt.quiz);
-              const qs = nQuiz.questions;
-              const savedResult = quizResults?.[cIt.id];
-              const completed = savedResult === true || (savedResult && typeof savedResult === "object");
-              const passed = isQuizPassed(quizResults, cIt.id);
-              const savedQuestions = (typeof savedResult === "object" && savedResult?.questions) || null;
-              const curQ = qs[qIdx];
-              const isSub = !!qSubs[curQ?.id];
-              const mcQuestions = qs.filter(q=>q.type==="multiple_choice");
-              const mcCorrectCount = mcQuestions.filter(q=>qAns[q.id]===q.correct).length;
-              const allMcCorrect = mcQuestions.length>0 ? mcCorrectCount===mcQuestions.length : true;
-
-              // Finish quiz: always mark complete (no retry)
-              const finishQuiz = () => {
-                const qResults = {};
-                for(const q of qs){
-                  if(q.type==="multiple_choice") qResults[q.id]={type:"multiple_choice",answer:qAns[q.id],correct:qAns[q.id]===q.correct,attempts:1};
-                  else qResults[q.id]={type:"free_text",answer:qAns[q.id]||"",status:"pending_review"};
-                }
-                onPassQuiz(cIt.id, {passed:allMcCorrect, questions:qResults});
-                setQDone(true);
-              };
-
-              // Read-only results renderer (used by admin view and completed state)
-              const renderResults = (qsData, resultsMap) => (
-                <div style={{padding:18}}>
-                  <div style={{display:"flex",flexDirection:"column",gap:10}}>
-                    {qsData.map((q,i)=>{
-                      const r = resultsMap?.[q.id];
-                      const isMc = q.type==="multiple_choice";
-                      const isFt = q.type==="free_text";
-                      const traineeAnswer = r ? r.answer : null;
-                      const isCorrect = isMc && r?.correct;
-                      return(
-                        <div key={q.id} style={{padding:"12px 14px",borderRadius:8,border:`1px solid ${B.bdr}`,background:"#fff"}}>
-                          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-                            <span style={{fontSize:10,fontWeight:700,color:B.t3}}>Q{i+1}</span>
-                            {isMc && isCorrect && <span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Correct</span>}
-                            {isMc && !isCorrect && <span style={{fontSize:10,fontWeight:600,color:B.err,background:"#fee2e2",padding:"2px 8px",borderRadius:10}}>✗ Incorrect</span>}
-                            {isFt && <span style={{fontSize:10,fontWeight:600,color:B.blue,background:B.blueL,padding:"2px 8px",borderRadius:10}}>Answer Submitted</span>}
-                          </div>
-                          <div style={{fontSize:12,fontWeight:600,color:B.navy,marginBottom:8,lineHeight:1.5}}>{q.question}</div>
-                          {isMc && (
-                            <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                              {q.options.map((opt,idx)=>{
-                                const isTraineeChoice = traineeAnswer === idx;
-                                const isCorrectOpt = idx === q.correct;
-                                let bg = "#fff", bd = B.bdr, cl = B.t2;
-                                if (isCorrectOpt) { bg = B.okBg; bd = B.ok; cl = B.ok; }
-                                if (isTraineeChoice && !isCorrectOpt) { bg = "#fef2f2"; bd = B.err; cl = B.err; }
-                                if (isTraineeChoice && isCorrectOpt) { bg = B.okBg; bd = B.ok; cl = B.ok; }
-                                return (
-                                  <div key={idx} style={{padding:"8px 12px",border:`1.5px solid ${bd}`,borderRadius:6,background:bg,fontSize:11,color:cl,display:"flex",alignItems:"center",gap:8}}>
-                                    {isTraineeChoice && <span style={{fontSize:9,fontWeight:700,color:isCorrectOpt?B.ok:B.err,background:isCorrectOpt?B.okL:"#fee2e2",padding:"1px 6px",borderRadius:4,flexShrink:0}}>Your answer</span>}
-                                    {isCorrectOpt && !isTraineeChoice && <span style={{fontSize:9,fontWeight:700,color:B.ok,background:B.okL,padding:"1px 6px",borderRadius:4,flexShrink:0}}>Correct</span>}
-                                    <span>{opt}</span>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
-                          {isFt && (
-                            <>
-                              <div style={{padding:"8px 12px",border:`1.5px solid ${B.blue}`,borderRadius:6,background:B.blueL,fontSize:11,color:B.t1,marginBottom:6,lineHeight:1.5}}>
-                                <span style={{fontSize:9,fontWeight:700,color:B.blue,display:"block",marginBottom:2}}>Trainee's Answer:</span>
-                                {r?.answer || <span style={{color:B.t3,fontStyle:"italic"}}>No answer provided</span>}
-                              </div>
-                              {q.modelAnswer && (
-                                <div style={{padding:"8px 12px",border:`1.5px solid ${B.ok}`,borderRadius:6,background:B.okBg,fontSize:11,color:B.t1,lineHeight:1.5}}>
-                                  <span style={{fontSize:9,fontWeight:700,color:B.ok,display:"block",marginBottom:2}}>Model Answer:</span>
-                                  {q.modelAnswer}
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-
-              // ADMIN VIEW: read-only results panel
-              if (isAdminView) {
-                return (
-                  <div style={{background:B.card,border:`1px solid ${completed?B.ok:B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
-                    <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",background:completed?B.okBg:"transparent"}}>
-                      <div style={{display:"flex",alignItems:"center",gap:6}}>{completed?<Trophy/>:<QuizIc/>}<span style={{fontSize:12,fontWeight:700,color:completed?B.ok:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Quiz Results</span></div>
-                      <span style={{fontSize:10,fontWeight:600,color:B.t3,background:"#f1f5f9",padding:"2px 8px",borderRadius:10}}>Read Only</span>
-                    </div>
-                    {!completed ? (
-                      <div style={{padding:"24px 18px",textAlign:"center"}}>
-                        <div style={{color:B.t3,marginBottom:6}}><QuizIc/></div>
-                        <div style={{fontSize:13,color:B.t3}}>Not yet attempted</div>
-                      </div>
-                    ) : (
-                      renderResults(qs, savedQuestions)
-                    )}
-                  </div>
-                );
-              }
-
-              // TRAINEE VIEW: completed quiz — show permanent results
-              if (completed) {
-                return (
-                  <div style={{background:B.card,border:`1px solid ${passed?B.ok:B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
-                    <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",background:passed?B.okBg:"transparent"}}>
-                      <div style={{display:"flex",alignItems:"center",gap:6}}>{passed?<Trophy/>:<QuizIc/>}<span style={{fontSize:12,fontWeight:700,color:passed?B.ok:B.navy,textTransform:"uppercase",letterSpacing:.8}}>{passed?"Quiz Passed":"Quiz Complete"}</span></div>
-                      <span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Submitted</span>
-                    </div>
-                    {savedQuestions ? renderResults(qs, savedQuestions) : (
-                      <div style={{padding:"16px 18px",color:B.t2,fontSize:12}}>Quiz completed. ({qs.length} question{qs.length!==1?"s":""})</div>
-                    )}
-                  </div>
-                );
-              }
-
-              return(
-              <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
-                <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                  <div style={{display:"flex",alignItems:"center",gap:6}}><QuizIc/><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Knowledge Check</span></div>
-                  {qM===cIt.id&&!qDone&&<span style={{fontSize:10,color:B.t3}}>Question {qIdx+1} of {qs.length}</span>}
-                </div>
-                {qDone?(
-                  /* Summary screen after finishing — permanent results */
-                  <div style={{padding:18}}>
-                    <div style={{textAlign:"center",padding:"10px 0 16px"}}>
-                      <div style={{fontSize:18,fontWeight:700,color:allMcCorrect?B.ok:B.navy,marginBottom:4}}>
-                        {allMcCorrect?"All correct!":"Quiz Complete"}
-                      </div>
-                      <div style={{fontSize:13,color:B.t2}}>
-                        You got {mcCorrectCount} out of {mcQuestions.length} multiple choice correct
-                        {qs.length>mcQuestions.length&&<span> · {qs.length-mcQuestions.length} free-text submitted for review</span>}
-                      </div>
-                    </div>
-                    {/* Per-question detailed results */}
-                    <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:16}}>
-                      {qs.map((q,i)=>{
-                        const isMc = q.type==="multiple_choice";
-                        const isFt = q.type==="free_text";
-                        const isCorrect = isMc&&qAns[q.id]===q.correct;
-                        return(
-                          <div key={q.id} style={{padding:"12px 14px",borderRadius:8,border:`1px solid ${B.bdr}`,background:"#fff"}}>
-                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
-                              <span style={{fontSize:10,fontWeight:700,color:B.t3}}>Q{i+1}</span>
-                              {isMc && isCorrect && <span style={{fontSize:10,fontWeight:600,color:B.ok,background:B.okL,padding:"2px 8px",borderRadius:10}}>✓ Correct</span>}
-                              {isMc && !isCorrect && <span style={{fontSize:10,fontWeight:600,color:B.err,background:"#fee2e2",padding:"2px 8px",borderRadius:10}}>✗ Incorrect</span>}
-                              {isFt && <span style={{fontSize:10,fontWeight:600,color:B.blue,background:B.blueL,padding:"2px 8px",borderRadius:10}}>Answer Submitted</span>}
-                            </div>
-                            <div style={{fontSize:12,fontWeight:600,color:B.navy,marginBottom:8,lineHeight:1.5}}>{q.question}</div>
-                            {isMc && (
-                              <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                                {q.options.map((opt,idx)=>{
-                                  const isTraineeChoice = qAns[q.id] === idx;
-                                  const isCorrectOpt = idx === q.correct;
-                                  let bg = "#fff", bd = B.bdr, cl = B.t2;
-                                  if (isCorrectOpt) { bg = B.okBg; bd = B.ok; cl = B.ok; }
-                                  if (isTraineeChoice && !isCorrectOpt) { bg = "#fef2f2"; bd = B.err; cl = B.err; }
-                                  if (isTraineeChoice && isCorrectOpt) { bg = B.okBg; bd = B.ok; cl = B.ok; }
-                                  return (
-                                    <div key={idx} style={{padding:"8px 12px",border:`1.5px solid ${bd}`,borderRadius:6,background:bg,fontSize:11,color:cl,display:"flex",alignItems:"center",gap:8}}>
-                                      {isTraineeChoice && <span style={{fontSize:9,fontWeight:700,color:isCorrectOpt?B.ok:B.err,background:isCorrectOpt?B.okL:"#fee2e2",padding:"1px 6px",borderRadius:4,flexShrink:0}}>Your answer</span>}
-                                      {isCorrectOpt && !isTraineeChoice && <span style={{fontSize:9,fontWeight:700,color:B.ok,background:B.okL,padding:"1px 6px",borderRadius:4,flexShrink:0}}>Correct</span>}
-                                      <span>{opt}</span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
-                            {isFt && (
-                              <>
-                                <div style={{padding:"8px 12px",border:`1.5px solid ${B.blue}`,borderRadius:6,background:B.blueL,fontSize:11,color:B.t1,marginBottom:6,lineHeight:1.5}}>
-                                  <span style={{fontSize:9,fontWeight:700,color:B.blue,display:"block",marginBottom:2}}>Your Answer:</span>
-                                  {qAns[q.id] || <span style={{color:B.t3,fontStyle:"italic"}}>No answer</span>}
-                                </div>
-                                {q.modelAnswer && (
-                                  <div style={{padding:"8px 12px",border:`1.5px solid ${B.ok}`,borderRadius:6,background:B.okBg,fontSize:11,color:B.t1,lineHeight:1.5}}>
-                                    <span style={{fontSize:9,fontWeight:700,color:B.ok,display:"block",marginBottom:2}}>Model Answer:</span>
-                                    {q.modelAnswer}
-                                  </div>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <button onClick={resetQuiz} style={{padding:"8px 16px",border:`1px solid ${B.bdr}`,borderRadius:7,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Close</button>
-                  </div>
-                ):qM===cIt.id&&curQ?(
-                  /* Active question */
-                  <div style={{padding:18}}>
-                    {/* Progress dots */}
-                    <div style={{display:"flex",gap:4,marginBottom:14}}>
-                      {qs.map((_,i)=>(
-                        <div key={i} style={{flex:1,height:3,borderRadius:2,background:i<qIdx?B.ok:i===qIdx?B.blue:B.bdr,transition:"background .3s"}}/>
-                      ))}
-                    </div>
-                    <div style={{fontSize:10,fontWeight:600,color:B.t3,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>
-                      {curQ.type==="multiple_choice"?"Multiple Choice":"Free Response"}
-                    </div>
-                    <p style={{fontSize:13,fontWeight:600,color:B.navy,lineHeight:1.5,marginTop:0,marginBottom:14}}>{curQ.question}</p>
-
-                    {curQ.type==="multiple_choice"&&(
-                      <>
-                        {curQ.options.map((opt,idx)=>{
-                          const isSel=qAns[curQ.id]===idx,isCor=idx===curQ.correct;
-                          let bg="#fff",bd=B.bdr,cl=B.t1;
-                          if(isSub){if(isCor){bg=B.okBg;bd=B.ok;cl=B.ok}else if(isSel&&!isCor){bg="#fef2f2";bd=B.err;cl=B.err}}
-                          else if(isSel){bg=B.blueL;bd=B.blue;cl=B.blue}
-                          return <div key={idx} onClick={()=>{if(!isSub)setQAns(p=>({...p,[curQ.id]:idx}))}} style={{padding:"10px 14px",border:`2px solid ${bd}`,borderRadius:7,marginBottom:6,cursor:isSub?"default":"pointer",background:bg,color:cl,fontSize:12,fontWeight:isSel?600:400,transition:"all .2s",display:"flex",alignItems:"center",gap:10}}>
-                            <span style={{width:20,height:20,borderRadius:10,flexShrink:0,border:`2px solid ${isSel?bd:B.bdr}`,background:isSel?(isSub?(isCor?B.ok:B.err):B.blue):"#fff",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s"}}>{isSel&&<div style={{width:6,height:6,borderRadius:3,background:"#fff"}}/>}</span>{opt}
-                          </div>;
-                        })}
-                      </>
-                    )}
-
-                    {curQ.type==="free_text"&&(
-                      <>
-                        <textarea value={qAns[curQ.id]||""} onChange={e=>{if(!isSub)setQAns(p=>({...p,[curQ.id]:e.target.value}))}} placeholder="Type your answer here..." rows={4}
-                          style={{width:"100%",padding:"10px 14px",border:`1px solid ${isSub?B.ok:B.bdr}`,borderRadius:7,fontSize:12,fontFamily:"'DM Sans',sans-serif",color:B.t1,resize:"vertical",outline:"none",boxSizing:"border-box",background:isSub?"#fafbfc":"#fff",transition:"border-color .2s"}}
-                          onFocus={e=>{if(!isSub)e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=isSub?B.ok:B.bdr}} readOnly={isSub}/>
-                        {isSub&&curQ.modelAnswer&&(
-                          <div style={{marginTop:10,padding:"12px 14px",border:`1px solid ${B.blueM}`,borderRadius:7,background:B.blueL}}>
-                            <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:B.blue,marginBottom:4}}>Model Answer</div>
-                            <div style={{fontSize:12,color:B.t1,lineHeight:1.6}}>{curQ.modelAnswer}</div>
-                          </div>
-                        )}
-                        {isSub&&<div style={{marginTop:8,fontSize:11,color:B.blue,fontWeight:500,display:"flex",alignItems:"center",gap:4}}>
-                          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke={B.blue} strokeWidth="1.3"/><path d="M8 5v3M8 10v.5" stroke={B.blue} strokeWidth="1.5" strokeLinecap="round"/></svg>
-                          Your response has been submitted for manager review.
-                        </div>}
-                      </>
-                    )}
-
-                    <div style={{display:"flex",gap:6,marginTop:14,alignItems:"center"}}>
-                      {!isSub?(
-                        <button disabled={qAns[curQ.id]==null||(curQ.type==="free_text"&&!(qAns[curQ.id]||"").trim())} onClick={()=>setQSubs(p=>({...p,[curQ.id]:true}))}
-                          style={{padding:"8px 20px",border:"none",borderRadius:7,background:(qAns[curQ.id]!=null&&(curQ.type!=="free_text"||(qAns[curQ.id]||"").trim()))?B.blue:B.bdr,color:"#fff",fontSize:12,fontWeight:600,cursor:(qAns[curQ.id]!=null&&(curQ.type!=="free_text"||(qAns[curQ.id]||"").trim()))?"pointer":"default",fontFamily:"inherit"}}>Submit</button>
-                      ):(
-                        <>
-                          {qIdx<qs.length-1?(
-                            <button onClick={()=>setQIdx(i=>i+1)} style={{padding:"8px 20px",border:"none",borderRadius:7,background:B.blue,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Next Question →</button>
-                          ):(
-                            <button onClick={finishQuiz} style={{padding:"8px 20px",border:"none",borderRadius:7,background:B.ok,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Finish Quiz</button>
-                          )}
-                        </>
-                      )}
-                      <button onClick={resetQuiz} style={{padding:"8px 16px",border:`1px solid ${B.bdr}`,borderRadius:7,background:"#fff",color:B.t3,fontSize:12,cursor:"pointer",fontFamily:"inherit",marginLeft:"auto"}}>Close</button>
-                    </div>
-                  </div>
-                ):(
-                  <div style={{padding:"16px 18px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-                    <p style={{margin:0,fontSize:12,color:B.t2}}>Test your knowledge before moving on. ({qs.length} question{qs.length!==1?"s":""})</p>
-                    <button onClick={()=>{setQIdx(0);setQAns({});setQSubs({});setQDone(false);setQM(cIt.id)}} style={{padding:"7px 16px",border:"none",borderRadius:7,background:B.blue,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>Start Quiz</button>
-                  </div>
-                )}
-              </div>
-              );
-            })()}
+            {/* Assessment / Quiz */}
+            {(cIt.assessment?.length > 0 || cIt.quiz) && (
+              <AssessmentModule
+                blocks={cIt.assessment?.length > 0 ? cIt.assessment : migrateLegacyQuiz(cIt)}
+                sectionId={cIt.id}
+                userId={user.id}
+                isAdminView={isAdminView}
+                sectionTopicTags={cIt.topicTags || (cIt.assessment || []).flatMap(b => b.topicTags || [])}
+                onModuleComplete={(result) => {
+                  // Bridge to existing quiz result system for section completion gating
+                  onPassQuiz(cIt.id, { passed: result.passed, questions: {}, moduleScore: result.moduleScore, needsAdminReview: result.needsAdminReview });
+                }}
+              />
+            )}
             {/* Nav */}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",paddingTop:6,paddingBottom:32}}>
               {(()=>{
