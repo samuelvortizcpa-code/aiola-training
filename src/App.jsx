@@ -453,6 +453,20 @@ const PHASES = [
       {
         id: "d16", title: "Day 6 — §469 Framework Foundation",
         description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end. Both technical, both grounded in primary authority, both designed so a peer (or a client, with tone-adjustment) could follow them.\n\nToday is the bedrock. §469 governs every other strategy this week — the STR loophole and REPS qualification are both exceptions or paths within the §469 framework, and you can't defend either if you don't deeply understand the rules they bend. Today you study the passive activity rules: what makes an activity passive, the rental presumption, the disposition release, and the per-se categorization that makes real estate special. By end of day, you should be able to walk a peer through the §469 framework cold, using only primary authority you've identified yourself.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
+        weeklyRubric: {
+          title: "Week 2 Scorecard",
+          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
+            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
+            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
+            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
+            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-week2.html",
+          fullDocLabel: "View Full Scorecard"
+        },
         topicTags: ["str_loophole", "avg_stay_test", "rental_classification", "passive_loss", "suspended_losses"],
         learningObjectives: [
           "Explain the §469 framework: passive vs nonpassive activity, and why losses default to suspended",
@@ -571,6 +585,20 @@ const PHASES = [
       {
         id: "d17", title: "Day 7 — The Three-Client Diagnosis",
         description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday you apply the framework you built on Day 6. Three hypothetical clients walk in this week — each owns real estate, each has a different fact pattern, each needs the §469 framework applied to determine: rental or trade-or-business? Material participation or not? Per-se passive or non-passive? The diagnosis itself is structured as a scenario in today's assessment — your job today is to be able to walk that diagnosis, with citations, before you sit down to take it. Foreshadows Wednesday: half of your STR presentation is showing how you'd diagnose a client's facts.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
+        weeklyRubric: {
+          title: "Week 2 Scorecard",
+          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
+            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
+            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
+            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
+            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-week2.html",
+          fullDocLabel: "View Full Scorecard"
+        },
         topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "reps_750hr", "reps_50pct_test", "passive_loss", "reps_aggregation_election"],
         learningObjectives: [
           "Diagnose the correct §469 path (STR, REPS, neither) for different client profiles",
@@ -651,6 +679,20 @@ const PHASES = [
       {
         id: "d18", title: "Day 8 — Material Participation Tests & STR Tax Savings",
         description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is half of your Wednesday deliverable. The STR strategy hinges on material participation — without it, the 7-day exception buys nothing. Today you go deep on the seven material participation tests in Reg §1.469-5T(a), identify the three that matter most in STR fact patterns, and quantify the actual tax savings the strategy delivers. By end of day, you should be able to (1) name and describe all 7 tests from memory, (2) identify which apply to a given fact pattern, and (3) compute the after-tax dollar impact of moving an STR loss from passive to non-passive. The Wednesday presentation requires all three.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
+        weeklyRubric: {
+          title: "Week 2 Scorecard",
+          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
+            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
+            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
+            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
+            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-week2.html",
+          fullDocLabel: "View Full Scorecard"
+        },
         topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation", "str_loophole", "passive_loss"],
         learningObjectives: [
           "Recite the 7 material participation tests under Reg. §1.469-5T(a) and identify which apply to a given fact pattern",
@@ -771,6 +813,20 @@ const PHASES = [
       {
         id: "d19", title: "Day 9 — REPS Qualification & Aggregation Election",
         description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is the foundation for Friday\'s deliverable. Real Estate Professional Status is the most powerful (and most challenged) status in real estate tax — it converts ALL of a taxpayer\'s rental losses from passive to non-passive, but the bar is high and the IRS audits aggressively. Today you study the §469(c)(7) two-part test, the W-2 disqualifier, the aggregation election, and the spousal hour rules. By Friday end-of-day you should be able to qualify (or disqualify) any taxpayer for REPS, walk through the aggregation decision, and defend the position with case law.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You\'re expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
+        weeklyRubric: {
+          title: "Week 2 Scorecard",
+          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
+            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
+            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
+            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
+            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-week2.html",
+          fullDocLabel: "View Full Scorecard"
+        },
         topicTags: ["reps_750hr", "reps_50pct_test", "reps_aggregation_election", "w2_real_estate_employee", "material_participation_tests", "mp_aggregation"],
         learningObjectives: [
           "Apply the REPS test under §469(c)(7): >50% of personal services AND >750 hours — both required",
@@ -918,6 +974,20 @@ const PHASES = [
       {
         id: "d10", title: "Day 10 — Passive Activity Rules + Rivera Review",
         description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is the safety net AND the synthesis. Most real estate clients DON\'T qualify for the STR loophole or REPS — they\'re regular landlords with W-2 income and a few rentals. For them, the §469(i) $25,000 active-participation allowance is the only path to current-year deductibility, and the phaseout is unforgiving. Today you study active participation (different from material participation, commonly conflated), the $25K allowance, MAGI phaseout mechanics, and Schedule E reporting. End of day: you have both Wednesday and Friday presentations finalized and pressure-tested against the assessment scorecard.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You\'re expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
+        weeklyRubric: {
+          title: "Week 2 Scorecard",
+          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
+            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
+            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
+            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
+            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-week2.html",
+          fullDocLabel: "View Full Scorecard"
+        },
         topicTags: ["passive_loss", "special_25k_allowance", "schedule_e", "suspended_losses", "material_participation_tests"],
         learningObjectives: [
           "Apply the $25,000 special allowance for active participation, including the $100k-$150k MAGI phase-out",
@@ -5187,6 +5257,24 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                     <li key={i} style={{fontSize:12,color:B.t1,lineHeight:1.6,marginBottom:4}}>{obj}</li>
                   ))}
                 </ul>
+              </div>
+            )}
+            {cIt.weeklyRubric && (
+              <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
+                <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:16}}>{"\uD83D\uDCCB"}</span>
+                  <span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:0.8}}>{cIt.weeklyRubric.title}</span>
+                </div>
+                <div style={{padding:"16px 20px"}}>
+                  <p style={{margin:"0 0 16px",fontSize:13,fontStyle:"italic",color:B.t2,lineHeight:1.5}}>{cIt.weeklyRubric.intro}</p>
+                  <ol style={{margin:"0 0 16px",paddingLeft:22,fontSize:13,color:B.t1,lineHeight:1.6}}>
+                    {cIt.weeklyRubric.categories.map(cat=>(
+                      <li key={cat.num} style={{marginBottom:8}}><strong>{cat.name}</strong> — {cat.desc}</li>
+                    ))}
+                  </ol>
+                  <div style={{fontSize:12,color:B.t2,fontStyle:"italic",paddingTop:12,borderTop:`1px solid ${B.bdr}`,marginBottom:12}}>{cIt.weeklyRubric.banding}</div>
+                  <a href={cIt.weeklyRubric.fullDocLink} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",padding:"8px 16px",background:B.blue,color:"#fff",textDecoration:"none",borderRadius:7,fontSize:12,fontWeight:600}}>{cIt.weeklyRubric.fullDocLabel} →</a>
+                </div>
               </div>
             )}
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
