@@ -5282,6 +5282,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             {/* Assessment / Quiz */}
             {(cIt.assessment?.length > 0 || cIt.quiz) && (
               <AssessmentModule
+                key={cIt.id}
                 blocks={cIt.assessment?.length > 0 ? cIt.assessment : migrateLegacyQuiz(cIt)}
                 sectionId={cIt.id}
                 userId={user.id}
