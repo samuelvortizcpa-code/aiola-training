@@ -6,6 +6,8 @@ import AiRoleplay from "./AiRoleplay.jsx";
 import DragExercise from "./DragExercise.jsx";
 import Computation from "./Computation.jsx";
 import ConfidenceMcq from "./ConfidenceMcq.jsx";
+import ShortAnswer from "./ShortAnswer.jsx";
+import CaseLawResearch from "./CaseLawResearch.jsx";
 import {
   addToPool, markMastered, recordTopicHit,
   getMissedItemsForSection,
@@ -20,6 +22,8 @@ const COMPONENT_MAP = {
   DRAG_EXERCISE: DragExercise,
   COMPUTATION: Computation,
   CONFIDENCE_MCQ: ConfidenceMcq,
+  SHORT_ANSWER: ShortAnswer,
+  CASE_LAW: CaseLawResearch,
 };
 
 export default function AssessmentModule({ blocks, sectionId, userId, onModuleComplete, isAdminView, sectionTopicTags }) {
