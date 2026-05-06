@@ -165,7 +165,7 @@ const PHASES = [
         tasks: [
           { id: "d2t1", text: "Complete ClickUp University: \"Getting Started\" + \"Working with Tasks\" courses" },
           { id: "d2t2", text: "Set up your personal ClickUp Home view with My Work, Today, and Overdue widgets" },
-          { id: "d2t3", text: "Review the Aiola workspace structure: Spaces → Folders → Lists hierarchy (TODO_NICK: ask Sam to walk through)" },
+          { id: "d2t3", text: "Review the Aiola workspace structure: Spaces → Folders → Lists hierarchy (TODO_NICK: ask your Manager to walk through)" },
           { id: "d2t4", text: "Read Aiola's task naming convention SOP (TODO_NICK: link to SOP)" },
           { id: "d2t5", text: "Practice creating, assigning, commenting on, and closing 3 sample tasks in your personal Space" },
           { id: "d2t6", text: "Review the team's currently active client engagement board (TODO_NICK: link to board)" },
@@ -209,7 +209,7 @@ const PHASES = [
           },
           {
             type: "CONFIDENCE_MCQ", id: "d2_mcq_status",
-            question: "You've finished your portion of a client deliverable but it needs Nick's review before going out. What status do you move the task to?",
+            question: "You've finished your portion of a client deliverable but it needs your Manager's review before going out. What status do you move the task to?",
             options: [
               "Done — your portion is finished",
               "In Review — signaling it's awaiting manager review (TODO_NICK: confirm exact status name)",
@@ -219,7 +219,7 @@ const PHASES = [
             correct: 1,
             topicTags: ["clickup_workflow", "front_protocol"],
             difficulty: 3,
-            explanation: "Status accuracy is how the team operates without standups. 'In Review' tells Nick (and the team) that work is awaiting manager review — distinct from 'Pending Client' (waiting on client) and 'Done' (fully closed). Mis-statusing a task is the #1 way work gets lost.",
+            explanation: "Status accuracy is how the team operates without standups. 'In Review' tells your Manager (and the team) that work is awaiting manager review — distinct from 'Pending Client' (waiting on client) and 'Done' (fully closed). Mis-statusing a task is the #1 way work gets lost.",
           },
         ],
       },
@@ -234,8 +234,8 @@ const PHASES = [
           { id: "d3t2", text: "Read Aiola's Front protocol SOP (TODO_NICK: link to SOP) — covers tags, assignments, escalation" },
           { id: "d3t3", text: "Review the firm's response time SLAs by message type (TODO_NICK: link to SLA matrix)" },
           { id: "d3t4", text: "Practice composing a client reply using firm-approved templates (TODO_NICK: link to templates)" },
-          { id: "d3t5", text: "Learn the escalation rules: when to @-mention Nick, when to assign to a senior advisor" },
-          { id: "d3t6", text: "Shadow a senior advisor's Front session for 30 minutes (TODO_NICK: schedule with Sam)" },
+          { id: "d3t5", text: "Learn the escalation rules: when to @-mention your Manager, when to assign to a senior advisor" },
+          { id: "d3t6", text: "Shadow a senior advisor's Front session for 30 minutes (TODO_NICK: schedule with your Manager)" },
         ],
         resources: [
           { label: "Front Help Center", url: "https://help.front.com/" },
@@ -263,19 +263,19 @@ const PHASES = [
             type: "SCENARIO_BRANCHING", id: "d3_scenario_urgent",
             title: "First Real Client Message",
             topicTags: ["front_protocol", "client_escalation", "advisory_vs_prep"],
-            context: "It's Tuesday 4:47 PM. A new advisory client (closed last week — Aerin Rivera) sends an urgent Front message: 'IRS notice arrived today. They're saying I owe $48,000 from 2023, due in 10 days. Nick told me to message here if anything came up. What do I do?' You've never spoken to this client before.",
+            context: "It's Tuesday 4:47 PM. A new advisory client (closed last week — Aerin Rivera) sends an urgent Front message: 'IRS notice arrived today. They're saying I owe $48,000 from 2023, due in 10 days. your Manager told me to message here if anything came up. What do I do?' You've never spoken to this client before.",
             decisions: [
               {
                 id: "dec1", prompt: "What's your FIRST move?",
                 options: [
                   { text: "Reply on Front immediately with reassurance and ask them to upload the IRS notice", weight: 2, correctness: "acceptable", nextId: "dec2", terminalId: null },
-                  { text: "Reply acknowledging receipt, ask them to upload the notice via Front, and schedule a 30-min call within 24 hours; @-mention Nick on the conversation", weight: 3, correctness: "great", nextId: "dec2_great", terminalId: null },
-                  { text: "Forward to Nick and wait for him to respond — you don't know this client yet", weight: 1, correctness: "risky", nextId: null, terminalId: "t_deflect" },
+                  { text: "Reply acknowledging receipt, ask them to upload the notice via Front, and schedule a 30-min call within 24 hours; @-mention your Manager on the conversation", weight: 3, correctness: "great", nextId: "dec2_great", terminalId: null },
+                  { text: "Forward to your Manager and wait for them to respond — you don't know this client yet", weight: 1, correctness: "risky", nextId: null, terminalId: "t_deflect" },
                   { text: "Reply that they should file an extension immediately", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_wrong_advice" },
                 ],
               },
               {
-                id: "dec2_great", prompt: "Nick is in client meetings until tomorrow. The client uploads the notice — it's a CP2000 (proposed assessment, not a final bill). What do you do next?",
+                id: "dec2_great", prompt: "your Manager is in client meetings until tomorrow. The client uploads the notice — it's a CP2000 (proposed assessment, not a final bill). What do you do next?",
                 options: [
                   { text: "Reply immediately telling the client they don't owe anything because CP2000 is just proposed", weight: 1, correctness: "risky", nextId: null, terminalId: "t_overconfident" },
                   { text: "Acknowledge receipt, note that CP2000 is a proposed assessment with response options (agree/disagree/partial), and confirm the call time so you can review together with proper context", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
@@ -286,16 +286,16 @@ const PHASES = [
                 id: "dec2", prompt: "Same path — what's your follow-up after the initial reply?",
                 options: [
                   { text: "Wait for the client to send more info", weight: 1, correctness: "risky", nextId: null, terminalId: "t_passive" },
-                  { text: "@-mention Nick on the conversation and schedule the follow-up call for tomorrow", weight: 3, correctness: "great", nextId: null, terminalId: "t_recovery" },
+                  { text: "@-mention your Manager on the conversation and schedule the follow-up call for tomorrow", weight: 3, correctness: "great", nextId: null, terminalId: "t_recovery" },
                 ],
               },
             ],
             terminals: [
-              { id: "t_great", label: "Pro Response", outcome: "great", coachingNote: "Textbook. You acknowledged urgency, gathered the document, looped in Nick, and didn't give substantive tax advice you couldn't fully verify. CP2000 is a proposed assessment with response options under IRC §6213 — never definitive. Reviewing in context first is the right call." },
-              { id: "t_recovery", label: "Solid Recovery", outcome: "acceptable", coachingNote: "Decent. You got the right outcome eventually. Best practice is @-mention Nick and schedule the call in the same first reply, not as a separate follow-up." },
+              { id: "t_great", label: "Pro Response", outcome: "great", coachingNote: "Textbook. You acknowledged urgency, gathered the document, looped in your Manager, and didn't give substantive tax advice you couldn't fully verify. CP2000 is a proposed assessment with response options under IRC §6213 — never definitive. Reviewing in context first is the right call." },
+              { id: "t_recovery", label: "Solid Recovery", outcome: "acceptable", coachingNote: "Decent. You got the right outcome eventually. Best practice is @-mention your Manager and schedule the call in the same first reply, not as a separate follow-up." },
               { id: "t_overconfident", label: "Premature Reassurance", outcome: "risky", coachingNote: "CP2000 is a PROPOSED assessment. Sometimes the IRS is right (missed 1099, unreported income). Telling a client they don't owe before reviewing the underlying issue can create false security and missed deadlines. Always review before reassuring." },
               { id: "t_passive", label: "Passive Waiting", outcome: "risky", coachingNote: "10-day deadlines mean someone has to drive the timeline. Passive waiting on a CP2000 is how clients miss the response window and the proposed assessment becomes final." },
-              { id: "t_deflect", label: "Pure Deflection", outcome: "risky", coachingNote: "Forwarding without engagement leaves the client feeling unsupported. The right move is engage warmly, gather facts, AND loop in Nick — not 'or'." },
+              { id: "t_deflect", label: "Pure Deflection", outcome: "risky", coachingNote: "Forwarding without engagement leaves the client feeling unsupported. The right move is engage warmly, gather facts, AND loop in your Manager — not 'or'." },
               { id: "t_wrong_advice", label: "Wrong Advice", outcome: "harmful", coachingNote: "Filing an extension doesn't apply to a CP2000 (it's a notice, not a return). Telling a client to ignore an IRS notice is malpractice-territory. When you don't know — escalate, don't improvise." },
             ],
           },
@@ -311,7 +311,7 @@ const PHASES = [
             correct: 1,
             topicTags: ["front_protocol"],
             difficulty: 2,
-            explanation: "Front is the single source of truth for client email. Replying from personal Outlook breaks team visibility — if Nick picks up the relationship next month, he won't see your prior conversation. Always route through Front.",
+            explanation: "Front is the single source of truth for client email. Replying from personal Outlook breaks team visibility — if your Manager picks up the relationship next month, he won't see your prior conversation. Always route through Front.",
           },
         ],
       },
@@ -324,7 +324,7 @@ const PHASES = [
         tasks: [
           { id: "d4t1", text: "Read the Aiola Culture Manual (TODO_NICK: link), focus on advisory mission & client philosophy" },
           { id: "d4t2", text: "Read \"Advisory vs. Tax Prep\" overview — Aiola's positioning (TODO_NICK: link)" },
-          { id: "d4t3", text: "Watch: 30-min recorded overview from Nick on what makes an Aiola advisory engagement (TODO_NICK: record)" },
+          { id: "d4t3", text: "Watch: 30-min recorded overview from your Manager on what makes an Aiola advisory engagement (TODO_NICK: record)" },
           { id: "d4t4", text: "Review the standard Aiola engagement flow: Discovery Call → Onboarding Questionnaire → ISM → TSR → Implementation → Quarterly Checkups" },
           { id: "d4t5", text: "Read the Tjahjadi Onboarding Questionnaire (in project knowledge: Michael_Tjahjadi__Aerin_Ha__Advisory_Onboarding_Questionnaire) as a real example" },
           { id: "d4t6", text: "Submit 3 questions about Aiola's advisory model to your manager via ClickUp" },
@@ -394,7 +394,7 @@ const PHASES = [
           { id: "d5t2", text: "Document any outstanding questions in a single ClickUp task assigned to your manager" },
           { id: "d5t3", text: "Review next week's training schedule (Week 2 — §469, the STR Exception, and REPS Qualification)" },
           { id: "d5t4", text: "Submit your Week 1 self-reflection: what landed, what's still fuzzy, what surprised you" },
-          { id: "d5t5", text: "30-min Friday wrap-up call with Sam (TODO_NICK: confirm cadence)" },
+          { id: "d5t5", text: "30-min Friday wrap-up call with your Manager (TODO_NICK: confirm cadence)" },
         ],
         resources: [
           { label: "Week 1 Self-Reflection Form", url: null /* TODO_NICK */ },
@@ -427,7 +427,7 @@ const PHASES = [
             correct: 1,
             topicTags: ["front_protocol", "client_escalation"],
             difficulty: 3,
-            explanation: "Two issues here: (1) personal text breaks team visibility — Nick can't see what was discussed, (2) it sets a precedent for off-hours, off-channel communication that erodes the team's operating rhythm. Polite redirect to Front is the move. Responsiveness is good; channel discipline is also good.",
+            explanation: "Two issues here: (1) personal text breaks team visibility — your Manager can't see what was discussed, (2) it sets a precedent for off-hours, off-channel communication that erodes the team's operating rhythm. Polite redirect to Front is the move. Responsiveness is good; channel discipline is also good.",
           },
           {
             type: "CONFIDENCE_MCQ", id: "d5_mcq_tools_summary",
@@ -467,7 +467,7 @@ const PHASES = [
           { id: "d16t3", text: "Read the IRS Audit Technique Guide on Passive Activity Losses (~30 min skim)" },
           { id: "d16t4", text: "Read about §469(g) suspended loss release — strategic implications for sale vs 1031" },
           { id: "d16t5", text: "Practice: For 5 sample STR fact patterns, compute the average stay and determine if it qualifies" },
-          { id: "d16t6", text: "Note questions for Friday red-team review with Nick" },
+          { id: "d16t6", text: "Note questions for Friday red-team review with your Manager" },
         ],
         resources: [
           { label: "IRC §469 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
@@ -587,7 +587,7 @@ const PHASES = [
         tasks: [
           { id: "d17t1", text: "Complete the Three-Client Diagnosis scenario — engage with EACH terminal outcome carefully (45+ min)" },
           { id: "d17t2", text: "After completing the scenario, write a 1-page summary: which path applied to each client, why" },
-          { id: "d17t3", text: "Submit your diagnosis memo to Nick via ClickUp for review" },
+          { id: "d17t3", text: "Submit your diagnosis memo to your Manager via ClickUp for review" },
           { id: "d17t4", text: "Document any §469 framework questions for end-of-week wrap-up review" },
         ],
         resources: [
@@ -633,7 +633,7 @@ const PHASES = [
               },
             ],
             terminals: [
-              { id: "t_great", label: "Master-Level §469 Diagnosis", outcome: "great", coachingNote: "This is the level Nick wants you operating at within 60 days. Three teaching points: (1) STR strategy hinges on TWO things — avg stay ≤ 7 days AND material participation; both required. (2) The STR exception under Reg. §1.469-1T(e)(3)(ii)(A) is per-activity, not portfolio-wide. (3) REPS qualifies the TAXPAYER, but each rental still requires material participation (or the aggregation election). The aggregation election under Reg. §1.469-9(g) is the unlock for clients like Jennifer with multiple smaller rentals — without it, hours scattered across properties may not hit MP on any single one. Note: aggregation, once made, is binding until revoked with IRS consent — don't recommend it lightly." },
+              { id: "t_great", label: "Master-Level §469 Diagnosis", outcome: "great", coachingNote: "This is the level your Manager wants you operating at within 60 days. Three teaching points: (1) STR strategy hinges on TWO things — avg stay ≤ 7 days AND material participation; both required. (2) The STR exception under Reg. §1.469-1T(e)(3)(ii)(A) is per-activity, not portfolio-wide. (3) REPS qualifies the TAXPAYER, but each rental still requires material participation (or the aggregation election). The aggregation election under Reg. §1.469-9(g) is the unlock for clients like Jennifer with multiple smaller rentals — without it, hours scattered across properties may not hit MP on any single one. Note: aggregation, once made, is binding until revoked with IRS consent — don't recommend it lightly." },
               { id: "t_a_reps_wrong", label: "REPS-Misapplied", outcome: "harmful", coachingNote: "REPS isn't the right tool for Priya — and even if it were, she'd need >750 hours in real property trades, not just 'no W-2 job.' The STR strategy is far simpler and cleaner here: avg stay ≤ 7 days excludes the activity from passive classification, material participation makes the loss nonpassive. No need to invoke REPS. Don't reach for the more complex tool when the simpler one works." },
               { id: "t_a_25k_wrong", label: "$25k Allowance Wrong Tool", outcome: "risky", coachingNote: "$25k active participation allowance phases out fully at $150k MAGI MFJ. David & Priya's $420k W-2 income alone blows past that — the allowance is zero. Plus, the allowance is for properties classified as 'rental activity' under §469. A property with avg stay ≤ 7 days is NOT a rental activity for §469 purposes — it falls under the activity-exclusion under Reg. §1.469-1T(e)(3)(ii)(A). The right tool is the STR strategy, not the §469(i) allowance." },
               { id: "t_a_suspended_wrong", label: "Premature Surrender", outcome: "harmful", coachingNote: "Defaulting to 'losses are suspended' on a 4-night-average-stay rental is leaving the entire STR strategy on the table — typically $30k–$80k+ of W-2 offset for clients in this profile. This is malpractice-by-omission territory. Always check the avg stay test before assuming passive treatment." },
@@ -957,7 +957,7 @@ const PHASES = [
           { id: "d10t2", text: "Read Form 8582 Instructions — focus on Worksheet 1 and Worksheet 5 (allowance calc)" },
           { id: "d10t3", text: "Complete the Rivera Schedule E review (the document markup assessment)" },
           { id: "d10t4", text: "Document any outstanding questions from this week in a single ClickUp task" },
-          { id: "d10t5", text: "30-min Friday wrap-up call with Sam" },
+          { id: "d10t5", text: "30-min Friday wrap-up call with your Manager" },
         ],
         resources: [
           { label: "IRC §469 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
@@ -1154,7 +1154,7 @@ const PHASES = [
           { id: "d6t3", text: "Read IRS Pub 925, Chapter 1 (Passive Activity intro) — preview only" },
           { id: "d6t4", text: "Open the Rivera 2024 Federal Return PDF and locate the Schedule E. Note which Part(s) are populated" },
           { id: "d6t5", text: "Practice: For 5 sample receipts (advance rent, security deposit, late fee, lease cancellation payment, services-in-lieu-of-rent), determine includibility" },
-          { id: "d6t6", text: "Watch: Schedule E line-by-line walkthrough by Nick (TODO_NICK: record video)" },
+          { id: "d6t6", text: "Watch: Schedule E line-by-line walkthrough by your Manager (TODO_NICK: record video)" },
           { id: "d6t7", text: "Document any questions for Friday wrap-up" },
         ],
         resources: [
@@ -2177,7 +2177,7 @@ const PHASES = [
           { id: "d15t2", text: "Submit a written analysis of whether Alex should elect S-Corp for 2025 to your manager via ClickUp" },
           { id: "d15t3", text: "Read the IRS Fact Sheet: Wage Compensation for S-Corp Officers" },
           { id: "d15t4", text: "Read Rev. Proc. 2019-38 for the rental real estate QBI safe harbor" },
-          { id: "d15t5", text: "30-min Friday wrap-up call with Sam to discuss the week" },
+          { id: "d15t5", text: "30-min Friday wrap-up call with your Manager to discuss the week" },
         ],
         resources: [
           { label: "IRC §1402(a)(1) (Rents excluded from SE)", url: "https://www.law.cornell.edu/uscode/text/26/1402" },
@@ -2373,7 +2373,7 @@ const PHASES = [
           { id: "d20t4", text: "Practice: Compute Q1 estimate for 5 sample client profiles (different AGI, different prior year facts)" },
           { id: "d20t5", text: "Read about state quarterly variations — specifically Florida (no income tax — N/A) and California (different schedule)" },
           { id: "d20t6", text: "Complete the Day 21 capstone: tie quarterly planning to STR strategy from Week 2 (Days 6-9)" },
-          { id: "d20t7", text: "Schedule a 60-min red-team review with Nick to kick off Weeks 5-8 (TODO_NICK)" },
+          { id: "d20t7", text: "Schedule a 60-min red-team review with your Manager to kick off Weeks 5-8 (TODO_NICK)" },
         ],
         resources: [
           { label: "IRC §6654 (Estimated tax payments)", url: "https://www.law.cornell.edu/uscode/text/26/6654" },
@@ -2570,7 +2570,7 @@ const PHASES = [
           { id: "w7t2", text: "Learn the time log review process for material participation tracking" },
           { id: "w7t3", text: "Practice a mock checkup call scenario with a peer" },
           { id: "w7t4", text: "Draft 3 proactive client outreach emails (year-end planning, estimated payments, entity deadline)" },
-          { id: "w7t5", text: "Review the client escalation matrix: when to involve Nick" },
+          { id: "w7t5", text: "Review the client escalation matrix: when to involve your Manager" },
         ],
         resources: [{ label: "Checkup Meeting Template", url: null }, { label: "Time Log Template", url: null }, { label: "Email Outreach Templates", url: null }],
         quiz: { question: "How often should advisory clients ideally have a checkup call?", options: ["Only at year-end", "Quarterly, with flexibility based on complexity", "Monthly without exception", "Only when the client requests one"], correct: 1 },
@@ -2581,7 +2581,7 @@ const PHASES = [
         tasks: [
           { id: "w8t1", text: "Complete the 60-Day self-assessment questionnaire" },
           { id: "w8t2", text: "Prepare a summary of key learnings and areas for growth" },
-          { id: "w8t3", text: "Schedule and complete your 60-Day review with Nick" },
+          { id: "w8t3", text: "Schedule and complete your 60-Day review with your Manager" },
           { id: "w8t4", text: "Set goals for Days 61–90 based on review feedback" },
           { id: "w8t5", text: "Begin shadowing live advisory meetings (observe + take notes)" },
         ],
@@ -2625,7 +2625,7 @@ const PHASES = [
         tasks: [
           { id: "w12t1", text: "Complete the 90-Day comprehensive self-assessment" },
           { id: "w12t2", text: "Prepare your 90-Day portfolio: all TSRs, meeting recordings, client feedback" },
-          { id: "w12t3", text: "Present your 90-Day review to Nick and the advisory team" },
+          { id: "w12t3", text: "Present your 90-Day review to your Manager and the advisory team" },
           { id: "w12t4", text: "Set 6-month performance goals collaboratively" },
           { id: "w12t5", text: "Transition to fully independent advisory role" },
           { id: "w12t6", text: "Complete the final certification quiz" },
