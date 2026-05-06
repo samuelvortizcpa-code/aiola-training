@@ -452,7 +452,7 @@ const PHASES = [
     items: [
       {
         id: "d16", title: "Day 6 — §469 Framework Foundation",
-        description: "Today is reading the regulations themselves. §469 is dense; rather than learn it secondhand, you read the actual code and Treasury Regs. By end of day you should explain the passive vs nonpassive framework in your own words, identify the 6 exceptions to rental activity classification, and know what triggers loss release on disposition.",
+        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end. Both technical, both grounded in primary authority, both designed so a peer (or a client, with tone-adjustment) could follow them.\n\nToday is the bedrock. §469 governs every other strategy this week — the STR loophole and REPS qualification are both exceptions or paths within the §469 framework, and you can't defend either if you don't deeply understand the rules they bend. Today you study the passive activity rules: what makes an activity passive, the rental presumption, the disposition release, and the per-se categorization that makes real estate special. By end of day, you should be able to walk a peer through the §469 framework cold, using only primary authority you've identified yourself.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
         topicTags: ["str_loophole", "avg_stay_test", "rental_classification", "passive_loss", "suspended_losses"],
         learningObjectives: [
           "Explain the §469 framework: passive vs nonpassive activity, and why losses default to suspended",
@@ -462,21 +462,14 @@ const PHASES = [
           "Compute the average customer use calculation for the STR test",
         ],
         tasks: [
-          { id: "d16t1", text: "Read IRC §469 in full — focus on §469(c)(2) (rental activity defined), §469(c)(7) (REPS), §469(g) (suspended loss release on disposition)" },
-          { id: "d16t2", text: "Read Reg. §1.469-1T(e)(3)(ii) — all 6 exceptions to 'rental activity' classification (most importantly the STR exclusion at (A))" },
-          { id: "d16t3", text: "Read the IRS Audit Technique Guide on Passive Activity Losses (~30 min skim)" },
-          { id: "d16t4", text: "Read about §469(g) suspended loss release — strategic implications for sale vs 1031" },
-          { id: "d16t5", text: "Practice: For 5 sample STR fact patterns, compute the average stay and determine if it qualifies" },
-          { id: "d16t6", text: "Note questions for Friday red-team review with your Manager" },
+          { id: "d16t1", text: "Be able to articulate what makes an activity passive under §469 and why Congress drew the line where it did. Cite the relevant Code sections from your own research." },
+          { id: "d16t2", text: "Identify the six exceptions to rental classification. Be able to explain when each applies and what its effect is." },
+          { id: "d16t3", text: "Understand the §469(g) suspended loss release on disposition — when it triggers, what it releases, and the strategic implications for a sale-vs-§1031 decision." },
+          { id: "d16t4", text: "Be able to defend, in your Wednesday presentation, why the 7-day average stay exception removes an activity from rental classification but does NOT automatically make it non-passive. This is the most commonly misstated piece of the framework." },
+          { id: "d16t5", text: "Identify two recent (post-2015) Tax Court cases where §469 classification was the central issue. Brief one." },
+          { id: "d16t6", text: "Schedule any §469 questions for your Manager — bring them to the red-team review session." },
         ],
-        resources: [
-          { label: "IRC §469 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
-          { label: "Reg. §1.469-1T (rental activity definition)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-1T" },
-          { label: "IRS ATG — Passive Activity Losses", url: "https://www.irs.gov/businesses/small-businesses-self-employed/passive-activity-loss-atg" },
-          { label: "Form 8582 Instructions", url: "https://www.irs.gov/pub/irs-pdf/i8582.pdf" },
-          { label: "IRS Pub 925 (Passive Activity Rules)", url: "https://www.irs.gov/pub/irs-pdf/p925.pdf" },
-          { label: "IRS ATG — Real Estate Professional", url: null /* TODO_NICK: find direct link */ },
-        ],
+        resources: [],
         assessment: [
           {
             type: "CONFIDENCE_MCQ", id: "d16_mcq_469_framework",
@@ -577,7 +570,7 @@ const PHASES = [
       },
       {
         id: "d17", title: "Day 7 — The Three-Client Diagnosis",
-        description: "Apply the §469 framework to three real client fact patterns. This scenario branching exercise is the centerpiece of the week — it tests STR strategy, REPS qualification, and the aggregation election all in one exercise. Don't rush it.",
+        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday you apply the framework you built on Day 6. Three hypothetical clients walk in this week — each owns real estate, each has a different fact pattern, each needs the §469 framework applied to determine: rental or trade-or-business? Material participation or not? Per-se passive or non-passive? The diagnosis itself is structured as a scenario in today's assessment — your job today is to be able to walk that diagnosis, with citations, before you sit down to take it. Foreshadows Wednesday: half of your STR presentation is showing how you'd diagnose a client's facts.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
         topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "reps_750hr", "reps_50pct_test", "passive_loss", "reps_aggregation_election"],
         learningObjectives: [
           "Diagnose the correct §469 path (STR, REPS, neither) for different client profiles",
@@ -585,18 +578,12 @@ const PHASES = [
           "Recognize that the STR exception is per-activity, not portfolio-wide",
         ],
         tasks: [
-          { id: "d17t1", text: "Complete the Three-Client Diagnosis scenario — engage with EACH terminal outcome carefully (45+ min)" },
-          { id: "d17t2", text: "After completing the scenario, write a 1-page summary: which path applied to each client, why" },
-          { id: "d17t3", text: "Submit your diagnosis memo to your Manager via ClickUp for review" },
-          { id: "d17t4", text: "Document any §469 framework questions for end-of-week wrap-up review" },
+          { id: "d17t1", text: "Be able to apply the §469 decision tree to any taxpayer fact pattern: classify as rental or trade/business → test for material participation → land on passive or non-passive." },
+          { id: "d17t2", text: "Understand the difference between the per-se rental rule and the trade-or-business default. Be able to explain when a property activity is one vs. the other and what triggers the switch." },
+          { id: "d17t3", text: "For each of the three diagnosis clients (covered in today's assessment), draft a 3-sentence framework summary you'd deliver to that client. Bring these to your Wednesday presentation as application examples." },
+          { id: "d17t4", text: "Identify any framework questions raised by the three diagnoses — these become talking points for your Manager." },
         ],
-        resources: [
-          { label: "Reg. §1.469-1T(e)(3)(ii) — STR exclusion", url: "https://www.law.cornell.edu/cfr/text/26/1.469-1T" },
-          { label: "Reg. §1.469-9 (REPS rules + aggregation election)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-9" },
-          { label: "Aiola STR Strategy Walkthrough Video", url: null /* TODO_NICK */ },
-          { label: "Sample STR TSRs", url: null /* TODO_NICK */ },
-          { label: "Sample REPS TSRs", url: null /* TODO_NICK */ },
-        ],
+        resources: [],
         assessment: [
           {
             type: "SCENARIO_BRANCHING", id: "w4_scenario_three_clients",
@@ -663,7 +650,7 @@ const PHASES = [
       },
       {
         id: "d18", title: "Day 8 — Material Participation Tests & STR Tax Savings",
-        description: "Memorize the 7 material participation tests and compute the headline tax savings number for an STR strategy client. Today's reading drills the regulatory order so you can cite by number in TSRs and client memos.",
+        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is half of your Wednesday deliverable. The STR strategy hinges on material participation — without it, the 7-day exception buys nothing. Today you go deep on the seven material participation tests in Reg §1.469-5T(a), identify the three that matter most in STR fact patterns, and quantify the actual tax savings the strategy delivers. By end of day, you should be able to (1) name and describe all 7 tests from memory, (2) identify which apply to a given fact pattern, and (3) compute the after-tax dollar impact of moving an STR loss from passive to non-passive. The Wednesday presentation requires all three.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
         topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation", "str_loophole", "passive_loss"],
         learningObjectives: [
           "Recite the 7 material participation tests under Reg. §1.469-5T(a) and identify which apply to a given fact pattern",
@@ -672,19 +659,13 @@ const PHASES = [
           "Distinguish Test 1 (500+ hr), Test 3 (100+ AND more than anyone), and Test 7 (facts and circumstances)",
         ],
         tasks: [
-          { id: "d18t1", text: "Read Reg. §1.469-5T(a) — the 7 material participation tests in regulatory order" },
-          { id: "d18t2", text: "Read 2 court cases where MP was challenged (e.g., Goshorn v. Commissioner T.C. Memo 1993-578)" },
-          { id: "d18t3", text: "Practice: For 5 sample fact patterns, identify which MP test (if any) is met" },
-          { id: "d18t4", text: "Set up a time-log template for an Aiola STR client (worksheet practice)" },
-          { id: "d18t5", text: "Read about how spouse hours combine under Reg. §1.469-5T(f)(3)" },
+          { id: "d18t1", text: "Be able to name, describe, and apply all 7 material participation tests under Reg §1.469-5T(a). Identify the 3 most commonly applied in STR fact patterns and explain why." },
+          { id: "d18t2", text: "Research and brief one Tax Court case where a taxpayer\'s material participation claim failed on documentation grounds. Goshorn v. Commissioner is one example — find it yourself, and find a second case with a different failure mode." },
+          { id: "d18t3", text: "Be able to compute the federal + state after-tax savings from converting an STR loss from passive to non-passive. The Wednesday presentation requires you to walk this calculation cold for a hypothetical client." },
+          { id: "d18t4", text: "Understand the contemporaneous-record requirement and what counts (and doesn\'t) as adequate documentation. Be ready to advise a client on what to track." },
+          { id: "d18t5", text: "Identify the audit-trigger profile of an STR strategy — what about the return draws IRS scrutiny, what defends against it." },
         ],
-        resources: [
-          { label: "Reg. §1.469-5T (Material participation)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-5T" },
-          { label: "IRC §469(h) (Material participation defined)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
-          { label: "IRS ATG — Passive Activity Losses (MP chapter)", url: "https://www.irs.gov/businesses/small-businesses-self-employed/passive-activity-loss-atg" },
-          { label: "MP Case Law Summaries", url: null /* TODO_NICK: pick 2-3 cases */ },
-          { label: "Aiola Time Log Template", url: null /* TODO_NICK */ },
-        ],
+        resources: [],
         assessment: [
           {
             type: "DRAG_EXERCISE", id: "w4_order_mp_tests",
@@ -789,7 +770,7 @@ const PHASES = [
       },
       {
         id: "d19", title: "Day 9 — REPS Qualification & Aggregation Election",
-        description: "Real Estate Professional Status under §469(c)(7) — the second of Aiola's two largest tax strategies. Today: the two-part qualification test, the W-2 employee disqualifier, and the binding aggregation election. Day 9 also covers HOW to qualify a client (the actual qualification document), not just whether they qualify.",
+        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is the foundation for Friday\'s deliverable. Real Estate Professional Status is the most powerful (and most challenged) status in real estate tax — it converts ALL of a taxpayer\'s rental losses from passive to non-passive, but the bar is high and the IRS audits aggressively. Today you study the §469(c)(7) two-part test, the W-2 disqualifier, the aggregation election, and the spousal hour rules. By Friday end-of-day you should be able to qualify (or disqualify) any taxpayer for REPS, walk through the aggregation decision, and defend the position with case law.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You\'re expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
         topicTags: ["reps_750hr", "reps_50pct_test", "reps_aggregation_election", "w2_real_estate_employee", "material_participation_tests", "mp_aggregation"],
         learningObjectives: [
           "Apply the REPS test under §469(c)(7): >50% of personal services AND >750 hours — both required",
@@ -799,22 +780,14 @@ const PHASES = [
           "Walk through the aggregation election decision: current-year benefit vs future-year binding risk",
         ],
         tasks: [
-          { id: "d19t1", text: "Read IRC §469(c)(7) and Reg. §1.469-9 in full" },
-          { id: "d19t2", text: "Read 3 sample TSRs where Aiola recommended REPS qualification (TODO_NICK: link)" },
-          { id: "d19t3", text: "Watch: Aiola's REPS Qualification Walkthrough (TODO_NICK: record)" },
-          { id: "d19t4", text: "Read about §1411 NIIT impact for REPS-qualified rental income" },
-          { id: "d19t5", text: "Practice: Compute the 50% test for 4 sample client profiles" },
-          { id: "d19t6", text: "Draft a sample REPS qualification memo (template TODO_NICK)" },
+          { id: "d19t1", text: "Be able to apply the §469(c)(7) two-part REPS test (750-hour + 50%) to any taxpayer fact pattern, including W-2 employees and >5%-owner exceptions." },
+          { id: "d19t2", text: "Understand the §469(c)(7)(A) aggregation election: how it\'s made, when it\'s beneficial, what \'binding\' means, and the disposition-loss-trapping risk. Be ready to advise a client on the tradeoff." },
+          { id: "d19t3", text: "Understand spousal hour rules and how they interact with the REPS 50% test. Be able to identify common errors." },
+          { id: "d19t4", text: "Research and brief two Tax Court cases on REPS — one where the taxpayer prevailed, one where they lost. Focus on the documentation difference between them. (Trzeciak v. Commissioner is one option; identify a second on your own.)" },
+          { id: "d19t5", text: "Be able to defend, in your Friday presentation, the W-2 disqualifier and its limits — particularly the >5%-ownership exception under §469(c)(7)(D)(ii)." },
+          { id: "d19t6", text: "Bring any REPS-specific edge-case questions to your Manager before Friday." },
         ],
-        resources: [
-          { label: "IRC §469(c)(7) (REPS)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
-          { label: "Reg. §1.469-9 (REPS rules + aggregation)", url: "https://www.law.cornell.edu/cfr/text/26/1.469-9" },
-          { label: "IRC §1411 (NIIT on rental income)", url: "https://www.law.cornell.edu/uscode/text/26/1411" },
-          { label: "IRS ATG — Real Estate Professional", url: null /* TODO_NICK: find direct link */ },
-          { label: "Aiola REPS Qualification Walkthrough Video", url: null /* TODO_NICK */ },
-          { label: "Aiola REPS Qualification Memo Template", url: null /* TODO_NICK */ },
-          { label: "Sample REPS TSRs", url: null /* TODO_NICK */ },
-        ],
+        resources: [],
         assessment: [
           {
             type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_two_part",
@@ -944,7 +917,7 @@ const PHASES = [
       },
       {
         id: "d10", title: "Day 10 — Passive Activity Rules + Rivera Review",
-        description: "Apply this week's §469 framework to the Rivera return. Layer in §469 passive activity rules and the $25,000 special allowance. By end of day you should be able to read a Schedule E, identify all the issues we've covered (categorization, depreciation, cost seg opportunity), and explain why losses might be suspended.",
+        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is the safety net AND the synthesis. Most real estate clients DON\'T qualify for the STR loophole or REPS — they\'re regular landlords with W-2 income and a few rentals. For them, the §469(i) $25,000 active-participation allowance is the only path to current-year deductibility, and the phaseout is unforgiving. Today you study active participation (different from material participation, commonly conflated), the $25K allowance, MAGI phaseout mechanics, and Schedule E reporting. End of day: you have both Wednesday and Friday presentations finalized and pressure-tested against the assessment scorecard.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You\'re expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
         topicTags: ["passive_loss", "special_25k_allowance", "schedule_e", "suspended_losses", "material_participation_tests"],
         learningObjectives: [
           "Apply the $25,000 special allowance for active participation, including the $100k-$150k MAGI phase-out",
@@ -953,19 +926,13 @@ const PHASES = [
           "Complete a full Schedule E return review identifying categorization, depreciation, and loss-treatment issues",
         ],
         tasks: [
-          { id: "d10t1", text: "Read IRC §469(i) (the $25k special allowance rules)" },
-          { id: "d10t2", text: "Read Form 8582 Instructions — focus on Worksheet 1 and Worksheet 5 (allowance calc)" },
-          { id: "d10t3", text: "Complete the Rivera Schedule E review (the document markup assessment)" },
-          { id: "d10t4", text: "Document any outstanding questions from this week in a single ClickUp task" },
-          { id: "d10t5", text: "30-min Friday wrap-up call with your Manager" },
+          { id: "d10t1", text: "Be able to articulate the difference between \'active participation\' (§469(i)) and \'material participation\' (§469(h)). They are different tests with different thresholds and different consequences — conflating them is a common audit-defense failure." },
+          { id: "d10t2", text: "Understand the §469(i) $25,000 special allowance: who qualifies, the MAGI phaseout, and how suspended losses interact with it across multiple tax years." },
+          { id: "d10t3", text: "Be able to read a rental Schedule E and identify the §469 reporting positions taken on it." },
+          { id: "d10t4", text: "Finalize Wednesday and Friday presentations. Pressure-test each against the scorecard categories your Manager shared on Monday. Identify and close any gaps before delivery." },
+          { id: "d10t5", text: "Schedule the end-of-week wrap call with your Manager." },
         ],
-        resources: [
-          { label: "IRC §469 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/469" },
-          { label: "Form 8582 Instructions", url: "https://www.irs.gov/pub/irs-pdf/i8582.pdf" },
-          { label: "IRS ATG — Passive Activity Losses", url: "https://www.irs.gov/businesses/small-businesses-self-employed/passive-activity-loss-atg" },
-          { label: "Rivera 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
-          { label: "Aiola Rental Income Review Checklist", url: null /* TODO_NICK */ },
-        ],
+        resources: [],
         assessment: [
           // ── EXISTING: Rivera Document Markup ──
           {
