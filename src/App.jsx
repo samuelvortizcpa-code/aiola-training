@@ -3860,7 +3860,10 @@ const getOverdueTasks = (trainee, taskData) => {
   return overdue;
 };
 
-// Get overdue quizzes for a trainee
+// Get overdue quizzes/assessments for a trainee
+// TODO(future): also iterate item.assessment[] for items using the post-Sprint-1 assessment
+// shape. Current logic only catches legacy item.quiz items. As more weeks rebuild to the
+// assessment format, this card progressively under-counts.
 const getOverdueQuizzes = (trainee, quizData) => {
   const days = daysSince(trainee.startDate);
   const overdue = [];
@@ -3878,7 +3881,7 @@ const getOverdueQuizzes = (trainee, quizData) => {
 // PDF REPORT GENERATION
 // ═════════════════════════════════════════════════════════════════════════════
 
-function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dateFrom, dateTo, isTraineeReport } = {}) {
+function generateMilestoneReport(trainee, traineeData, kpiData, notesData, scorecards, { dateFrom, dateTo, isTraineeReport } = {}) {
   try {
   // Date range filtering
   const rangeFrom = dateFrom ? new Date(dateFrom + "T00:00:00") : null;
@@ -4000,11 +4003,45 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
     progressHtml += htmlTable(["Section", "Tasks", "Quiz", "Notes"], rows);
   });
 
+  // ── Build scorecards section ──
+  const allScorecards = (scorecards || []).filter(sc => inRange(sc.date)).sort((a,b) => new Date(a.date) - new Date(b.date));
+  let scorecardHtml = '';
+  if (allScorecards.length > 0) {
+    const phaseGroups = { day30: [], day60: [], day90: [] };
+    allScorecards.forEach(sc => { (phaseGroups[sc.phase] || phaseGroups.day30).push(sc); });
+    const phaseLbls = { day30: "Days 1–30", day60: "Days 31–60", day90: "Days 61–90" };
+    for (const [phaseKey, entries] of Object.entries(phaseGroups)) {
+      if (entries.length === 0) continue;
+      scorecardHtml += `<h3>${esc(phaseLbls[phaseKey] || phaseKey)}</h3>`;
+      entries.forEach(sc => {
+        let delivTitle = sc.deliverableId;
+        for (const phase of PHASES) { for (const item of phase.items) { if (item.id === sc.weekItemId && item.deliverables) { const d = item.deliverables.find(dl => dl.id === sc.deliverableId); if (d) delivTitle = d.title; } } }
+        const bandStyle = sc.band === "Mastery" ? "color:#22c55e" : sc.band === "Proficient" ? "color:#3B8DD0" : sc.band === "Developing" ? "color:#f59e0b" : "color:#DC2626";
+        scorecardHtml += `<div style="margin-bottom:12px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:6px;">`;
+        scorecardHtml += `<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>${esc(delivTitle)}</strong><span style="${bandStyle};font-weight:bold">${esc(sc.band)} (${sc.total}/20)</span></div>`;
+        scorecardHtml += `<div style="font-size:9pt;color:#5a6577;margin-bottom:6px">${esc(new Date(sc.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}))} · ${esc(sc.submittedBy)}</div>`;
+        const rubricCats = [];
+        for (const phase of PHASES) { for (const item of phase.items) { if (item.id === sc.weekItemId && item.weeklyRubric) { item.weeklyRubric.categories.forEach(c => rubricCats.push(c)); } } }
+        if (rubricCats.length > 0) {
+          scorecardHtml += htmlTable(["Category", "Score", "Notes"], rubricCats.map(cat => {
+            const cs = sc.scores?.[cat.num];
+            return [cat.name, cs ? `${cs.score}/4` : "—", cs?.notes || ""];
+          }));
+        }
+        if (sc.overallNotes) scorecardHtml += `<p class="desc" style="margin-top:4px"><em>Overall:</em> ${esc(sc.overallNotes)}</p>`;
+        scorecardHtml += `</div>`;
+      });
+    }
+  } else {
+    scorecardHtml = '<p class="empty">No presentation scorecards in this period.</p>';
+  }
+
   // ── Build notes & badges section ──
   let notesHtml = `<h3>Badges &amp; Recognitions</h3>`;
+  const phasePill = (p) => p === "day30" ? "Days 1–30" : p === "day60" ? "Days 31–60" : p === "day90" ? "Days 61–90" : "";
   if (badges.length > 0) {
-    notesHtml += htmlTable(["Badge", "Awarded By", "Date"],
-      badges.map(b => [b.label, b.awardedBy, b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : ""]));
+    notesHtml += htmlTable(["Badge", "Awarded By", "Date", "Phase"],
+      badges.map(b => [b.label, b.awardedBy, b.date ? new Date(b.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "", phasePill(b.phase)]));
   } else {
     notesHtml += '<p class="empty">No badges awarded yet.</p>';
   }
@@ -4012,11 +4049,12 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   notesHtml += `<h3>${isTraineeReport ? "Feedback" : "Manager Notes"}</h3>`;
   if (notes.length > 0) {
     const sortedNotes = [...notes].sort((a, b) => new Date(a.date) - new Date(b.date));
-    const noteHeaders = isTraineeReport ? ["Date", "Author", "Feedback", "Type"] : ["Date", "Author", "Note", "Visibility"];
+    const noteHeaders = isTraineeReport ? ["Date", "Author", "Feedback", "Type", "Phase"] : ["Date", "Author", "Note", "Visibility", "Phase"];
     notesHtml += htmlTable(noteHeaders, sortedNotes.map(n => [
       n.date ? new Date(n.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "",
       n.author, n.text,
       isTraineeReport ? (n.tag === "positive" ? "Positive" : n.tag === "improve" ? "Improve" : "General") : (n.visibility === "shared" ? "Shared" : "Internal"),
+      phasePill(n.phase),
     ]));
   } else {
     notesHtml += `<p class="empty">${isTraineeReport ? "No feedback shared yet." : "No manager notes recorded yet."}</p>`;
@@ -4171,7 +4209,14 @@ function generateMilestoneReport(trainee, traineeData, kpiData, notesData, { dat
   <div class="footer"><span>Aiola CPA, PLLC &mdash; Confidential</span><span>${esc(trainee.name)}</span></div>
 </div>
 
-<!-- PAGE 5: Notes & Badges -->
+<!-- PAGE 5: Presentation Scorecards -->
+<div class="page section">
+  <div class="section-title">📊 Presentation Scorecards</div>
+  ${scorecardHtml}
+  <div class="footer"><span>Aiola CPA, PLLC &mdash; Confidential</span><span>${esc(trainee.name)}</span></div>
+</div>
+
+<!-- PAGE 6: Notes & Badges -->
 <div class="page section">
   <div class="section-title">${isTraineeReport ? "Feedback &amp; Badges" : "Manager Observations"}</div>
   ${notesHtml}
@@ -4373,11 +4418,11 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewPerformance, onGen
           <div onClick={()=>setDrillDown({type:"quizzes",data:allOverdueQuizzes})} style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${allOverdueQuizzes.length>0?"#fed7aa":B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",cursor:"pointer",transition:"all .15s",borderLeft:`4px solid ${allOverdueQuizzes.length>0?B.warn:B.ok}`}}
             onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 12px rgba(0,0,0,.08)"} onMouseLeave={e=>e.currentTarget.style.boxShadow="0 1px 3px rgba(0,0,0,.04)"}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
-              <span style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>Quizzes Overdue</span>
+              <span style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>Assessments Overdue</span>
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke={allOverdueQuizzes.length>0?B.warn:B.ok} strokeWidth="1.5"/><text x="10" y="14" textAnchor="middle" fontSize="12" fontWeight="700" fill={allOverdueQuizzes.length>0?B.warn:B.ok}>?</text></svg>
             </div>
             <div style={{fontSize:28,fontWeight:700,color:allOverdueQuizzes.length>0?B.warn:B.ok}}>{allOverdueQuizzes.length}</div>
-            <div style={{fontSize:10,color:B.t3,marginTop:4}}>{allOverdueQuizzes.length>0?"Click to view details":"All quizzes passed on time"}</div>
+            <div style={{fontSize:10,color:B.t3,marginTop:4}}>{allOverdueQuizzes.length>0?"Click to view details":"All assessments passed on time"}</div>
           </div>
           <div onClick={()=>setDrillDown({type:"kpi",data:kpiScores})} style={{background:"#fff",borderRadius:12,padding:20,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",cursor:"pointer",transition:"all .15s",borderLeft:`4px solid ${avgKpi>=80?B.ok:avgKpi>=60?B.warn:B.err}`}}
             onMouseEnter={e=>e.currentTarget.style.boxShadow="0 4px 12px rgba(0,0,0,.08)"} onMouseLeave={e=>e.currentTarget.style.boxShadow="0 1px 3px rgba(0,0,0,.04)"}>
@@ -4410,7 +4455,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewPerformance, onGen
             <div style={{background:"#fff",borderRadius:16,padding:"28px 32px",maxWidth:640,width:"90%",maxHeight:"80vh",overflowY:"auto",boxShadow:"0 25px 50px rgba(0,0,0,.2)"}} onClick={e=>e.stopPropagation()}>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
                 <h3 style={{margin:0,fontSize:18,fontWeight:700,color:B.navy}}>
-                  {drillDown.type==="deadlines"?"Missed Deadlines":drillDown.type==="quizzes"?"Overdue Quizzes":"KPI Breakdown"}
+                  {drillDown.type==="deadlines"?"Missed Deadlines":drillDown.type==="quizzes"?"Overdue Assessments":"KPI Breakdown"}
                 </h3>
                 <button onClick={()=>setDrillDown(null)} style={{border:"none",background:"none",cursor:"pointer",fontSize:20,color:B.t3,padding:4,lineHeight:1}}>×</button>
               </div>
@@ -4428,7 +4473,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewPerformance, onGen
                   ))}</div>
               )}
               {drillDown.type==="quizzes"&&(drillDown.data.length===0
-                ? <p style={{fontSize:13,color:B.ok,textAlign:"center",padding:20}}>All quizzes passed on time!</p>
+                ? <p style={{fontSize:13,color:B.ok,textAlign:"center",padding:20}}>All assessments passed on time!</p>
                 : <div style={{display:"flex",flexDirection:"column",gap:8}}>{drillDown.data.map((d,i)=>(
                     <div key={i} style={{padding:"12px 16px",border:`1px solid #fed7aa`,borderRadius:8,background:"#fffbeb"}}>
                       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
@@ -4983,7 +5028,10 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                         <div style={{fontSize:12,color:B.t3,fontStyle:"italic"}}>Nothing here yet.</div>
                       ) : positiveNotes.map(note => (
                         <div key={note.id} style={{padding:"8px 0",borderBottom:`1px solid #f1f5f9`}}>
-                          <div style={{fontSize:10,color:B.t3,marginBottom:2}}>{note.author} · {new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                          <div style={{display:"flex",alignItems:"center",gap:6,fontSize:10,color:B.t3,marginBottom:2}}>
+                            <span>{note.author} · {new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>
+                            {note.phase && <span style={{fontSize:8,fontWeight:600,padding:"1px 6px",borderRadius:4,background:B.blueL,color:B.blue}}>{note.phase==="day30"?"Days 1–30":note.phase==="day60"?"Days 31–60":"Days 61–90"}</span>}
+                          </div>
                           <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{note.text}</div>
                         </div>
                       ))}
@@ -4994,7 +5042,10 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                         <div style={{fontSize:12,color:B.t3,fontStyle:"italic"}}>Nothing here yet.</div>
                       ) : improveNotes.map(note => (
                         <div key={note.id} style={{padding:"8px 0",borderBottom:`1px solid #f1f5f9`}}>
-                          <div style={{fontSize:10,color:B.t3,marginBottom:2}}>{note.author} · {new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</div>
+                          <div style={{display:"flex",alignItems:"center",gap:6,fontSize:10,color:B.t3,marginBottom:2}}>
+                            <span>{note.author} · {new Date(note.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>
+                            {note.phase && <span style={{fontSize:8,fontWeight:600,padding:"1px 6px",borderRadius:4,background:B.blueL,color:B.blue}}>{note.phase==="day30"?"Days 1–30":note.phase==="day60"?"Days 31–60":"Days 61–90"}</span>}
+                          </div>
                           <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{note.text}</div>
                         </div>
                       ))}
@@ -5765,7 +5816,7 @@ export default function App() {
     const t = reportModal.trainee;
     const uid = t.id;
     const nd = notesData[uid] || { notes: [], badges: [] };
-    generateMilestoneReport(t, allUserData[uid], kpiData[uid] || {}, nd, { dateFrom, dateTo, isTraineeReport: reportModal.isTraineeReport });
+    generateMilestoneReport(t, allUserData[uid], kpiData[uid] || {}, nd, scorecardData[uid] || [], { dateFrom, dateTo, isTraineeReport: reportModal.isTraineeReport });
     setReportModal(null);
   };
 
