@@ -451,8 +451,18 @@ const PHASES = [
     id: "week2", label: "Week 2", subtitle: "§469, the STR Exception, and REPS Qualification", phase: "Days 1–30",
     items: [
       {
-        id: "d16", title: "Day 6 — §469 Framework Foundation",
-        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end. Both technical, both grounded in primary authority, both designed so a peer (or a client, with tone-adjustment) could follow them.\n\nToday is the bedrock. §469 governs every other strategy this week — the STR loophole and REPS qualification are both exceptions or paths within the §469 framework, and you can't defend either if you don't deeply understand the rules they bend. Today you study the passive activity rules: what makes an activity passive, the rental presumption, the disposition release, and the per-se categorization that makes real estate special. By end of day, you should be able to walk a peer through the §469 framework cold, using only primary authority you've identified yourself.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
+        id: "week2_main",
+        title: "Week 2 — §469, the STR Exception, and REPS Qualification",
+        weekStart: "May 11, 2026",
+        weekEnd: "May 15, 2026",
+        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification.\n\nBy end of week you have three deliverables: a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, a Friday presentation walking through REPS qualification end-to-end, and a 20-question end-of-week assessment that lets you self-check your understanding before delivering. Both presentations must be technical, grounded in primary authority, and designed so a peer (or a client, with tone-adjustment) could follow them.\n\nNo prescribed daily schedule \u2014 manage your own time. Target depth ~6 hours per day. Authoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You\u2019re expected to identify and cite the specific sections yourself \u2014 primary authority only; secondary commentary as context. Tax law changes \u2014 verify currency of any source you cite, and bring questions to your Manager.",
+        topicTags: [
+          "str_loophole", "avg_stay_test", "rental_classification", "passive_loss",
+          "suspended_losses", "material_participation_tests", "reps_750hr",
+          "reps_50pct_test", "reps_aggregation_election", "mp_500hr",
+          "mp_100hr_more_than_anyone", "mp_aggregation", "w2_real_estate_employee",
+          "special_25k_allowance", "schedule_e"
+        ],
         weeklyRubric: {
           title: "Week 2 Scorecard",
           intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
@@ -467,24 +477,57 @@ const PHASES = [
           fullDocLink: "/scorecard-week2.html",
           fullDocLabel: "View Full Scorecard"
         },
-        topicTags: ["str_loophole", "avg_stay_test", "rental_classification", "passive_loss", "suspended_losses"],
         learningObjectives: [
           "Explain the §469 framework: passive vs nonpassive activity, and why losses default to suspended",
-          "Apply the STR test: average customer use ≤ 7 days excludes from 'rental activity' definition under Reg. §1.469-1T(e)(3)(ii)(A)",
-          "Identify all 6 exceptions to rental activity classification under Reg. §1.469-1T(e)(3)(ii)",
-          "Explain §469(g) suspended loss release on full disposition and its interaction with 1031",
-          "Compute the average customer use calculation for the STR test",
+          "Apply the STR test: average customer use \u2264 7 days excludes from \u2018rental activity\u2019 definition under Reg §1.469-1T(e)(3)(ii)(A)",
+          "Identify all 6 exceptions to rental activity classification under Reg §1.469-1T(e)(3)(ii)",
+          "Explain §469(g) suspended loss release on full disposition and its interaction with §1031",
+          "Diagnose the correct §469 path (STR, REPS, neither) for different client profiles",
+          "Identify when aggregation election is needed vs when STR exception applies per-activity",
+          "Recognize that the STR exception is per-activity, not portfolio-wide",
+          "Recite the 7 material participation tests under Reg §1.469-5T(a) and identify which apply to a given fact pattern",
+          "Compute the federal + state after-tax savings from converting an STR loss from passive to non-passive",
+          "Apply the §469(c)(7) two-part REPS test (750-hour + 50%) to any taxpayer fact pattern",
+          "Explain the §469(c)(7)(A) aggregation election: how it\u2019s made, when beneficial, what \u2018binding\u2019 means, disposition risk",
+          "Articulate the difference between active participation (§469(i)) and material participation (§469(h))"
         ],
-        tasks: [
-          { id: "d16t1", text: "Be able to articulate what makes an activity passive under §469 and why Congress drew the line where it did. Cite the relevant Code sections from your own research." },
-          { id: "d16t2", text: "Identify the six exceptions to rental classification. Be able to explain when each applies and what its effect is." },
-          { id: "d16t3", text: "Understand the §469(g) suspended loss release on disposition — when it triggers, what it releases, and the strategic implications for a sale-vs-§1031 decision." },
-          { id: "d16t4", text: "Be able to defend, in your Wednesday presentation, why the 7-day average stay exception removes an activity from rental classification but does NOT automatically make it non-passive. This is the most commonly misstated piece of the framework." },
-          { id: "d16t5", text: "Identify two recent (post-2015) Tax Court cases where §469 classification was the central issue. Brief one." },
-          { id: "d16t6", text: "Schedule any §469 questions for your Manager — bring them to the red-team review session." },
+        deliverables: [
+          {
+            id: "w2_deliv_str",
+            title: "STR Tax Strategy Presentation",
+            dueDate: "Wed May 13, 2026",
+            description: "Walk your Manager through the STR strategy framework end-to-end. Technical, grounded in primary authority, designed so a peer could follow it. Add as task to ClickUp."
+          },
+          {
+            id: "w2_deliv_reps",
+            title: "REPS Qualification Presentation",
+            dueDate: "Fri May 15, 2026",
+            description: "Walk your Manager through REPS qualification end-to-end. Technical, grounded in primary authority. Add as task to ClickUp."
+          },
+          {
+            id: "w2_deliv_assessment",
+            title: "Week 2 End-of-Week Assessment",
+            dueDate: "Fri May 15, 2026",
+            description: "20-question assessment covering §469, STR strategy, and REPS. Honor system: do your best to answer without research. Anyone can look up these answers \u2014 what we\u2019re tracking is your understanding right now, what\u2019s solid, and what needs more attention before your presentations. Be honest with yourself \u2014 your scores inform what you focus on next. Mid-week completion is fine."
+          }
         ],
+        tasks: [],
         resources: [],
         assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "d16_mcq_469_purpose",
+            question: "What was the original purpose of IRC §469 (Passive Activity Loss Rules) when enacted in 1986?",
+            options: [
+              "To prevent tax shelters that allowed wealthy individuals to use real estate losses to offset W-2 income",
+              "To encourage real estate investment by allowing all rental losses",
+              "To replace the §1031 like-kind exchange rules",
+              "To provide tax incentives for first-time homebuyers",
+            ],
+            correct: 0,
+            topicTags: ["passive_loss"],
+            difficulty: 2,
+            explanation: "§469 was enacted as part of the Tax Reform Act of 1986 specifically to eliminate the abusive 'tax shelter' market — wealthy individuals were investing in real estate and other partnerships solely to generate paper losses (depreciation, interest) that offset their W-2 / professional income. The new framework defined 'passive activity' broadly (including all rental real estate per se), and limited losses from passive activities to passive income. The exceptions we exploit today (STR loophole, REPS) were carve-outs Congress carved into §469 itself — they're not loopholes, they're statutory exceptions. Understanding the legislative history helps you explain to clients why we have to qualify them so carefully — the IRS scrutinizes these carve-outs because they undo the original 1986 framework.",
+          },
           {
             type: "CONFIDENCE_MCQ", id: "d16_mcq_469_framework",
             question: "Under IRC §469, a rental activity generates a $30,000 loss for a taxpayer with $250,000 of W-2 income (MFJ). Assuming no special elections or exceptions apply, what happens to the rental loss?",
@@ -512,20 +555,6 @@ const PHASES = [
             topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
             difficulty: 3,
             explanation: "Reg. §1.469-1T(e)(3)(ii)(A) excludes activities with average customer use of 7 days or less from the 'rental activity' definition. There's also a 30-day exception under (e)(3)(ii)(B) that requires significant personal services — that's a different exception. The 14-day rule from §280A is the personal-use rule for vacation homes (different concept). Always cite the right reg in TSRs — Aiola's clients are sophisticated and the firm's credibility hinges on being precise.",
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d16_mcq_469_purpose",
-            question: "What was the original purpose of IRC §469 (Passive Activity Loss Rules) when enacted in 1986?",
-            options: [
-              "To prevent tax shelters that allowed wealthy individuals to use real estate losses to offset W-2 income",
-              "To encourage real estate investment by allowing all rental losses",
-              "To replace the §1031 like-kind exchange rules",
-              "To provide tax incentives for first-time homebuyers",
-            ],
-            correct: 0,
-            topicTags: ["passive_loss"],
-            difficulty: 2,
-            explanation: "§469 was enacted as part of the Tax Reform Act of 1986 specifically to eliminate the abusive 'tax shelter' market — wealthy individuals were investing in real estate and other partnerships solely to generate paper losses (depreciation, interest) that offset their W-2 / professional income. The new framework defined 'passive activity' broadly (including all rental real estate per se), and limited losses from passive activities to passive income. The exceptions we exploit today (STR loophole, REPS) were carve-outs Congress carved into §469 itself — they're not loopholes, they're statutory exceptions. Understanding the legislative history helps you explain to clients why we have to qualify them so carefully — the IRS scrutinizes these carve-outs because they undo the original 1986 framework.",
           },
           {
             type: "CONFIDENCE_MCQ", id: "d16_mcq_469g_disposition",
@@ -580,39 +609,20 @@ const PHASES = [
               { value: 287, indicates: "Used total days as the answer; the test is the AVERAGE per stay." },
             ],
           },
-        ],
-      },
-      {
-        id: "d17", title: "Day 7 — The Three-Client Diagnosis",
-        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday you apply the framework you built on Day 6. Three hypothetical clients walk in this week — each owns real estate, each has a different fact pattern, each needs the §469 framework applied to determine: rental or trade-or-business? Material participation or not? Per-se passive or non-passive? The diagnosis itself is structured as a scenario in today's assessment — your job today is to be able to walk that diagnosis, with citations, before you sit down to take it. Foreshadows Wednesday: half of your STR presentation is showing how you'd diagnose a client's facts.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
-        weeklyRubric: {
-          title: "Week 2 Scorecard",
-          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
-          categories: [
-            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
-            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
-            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
-            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
-            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
-          ],
-          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
-          fullDocLink: "/scorecard-week2.html",
-          fullDocLabel: "View Full Scorecard"
-        },
-        topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests", "reps_750hr", "reps_50pct_test", "passive_loss", "reps_aggregation_election"],
-        learningObjectives: [
-          "Diagnose the correct §469 path (STR, REPS, neither) for different client profiles",
-          "Identify when aggregation election is needed vs when STR exception applies per-activity",
-          "Recognize that the STR exception is per-activity, not portfolio-wide",
-        ],
-        tasks: [
-          { id: "d17t1", text: "Be able to apply the §469 decision tree to any taxpayer fact pattern: classify as rental or trade/business → test for material participation → land on passive or non-passive." },
-          { id: "d17t2", text: "Understand the difference between the per-se rental rule and the trade-or-business default. Be able to explain when a property activity is one vs. the other and what triggers the switch." },
-          { id: "d17t3", text: "For each of the three diagnosis clients (covered in today's assessment), draft a 3-sentence framework summary you'd deliver to that client. Bring these to your Wednesday presentation as application examples." },
-          { id: "d17t4", text: "Identify any framework questions raised by the three diagnoses — these become talking points for your Manager." },
-        ],
-        resources: [],
-        assessment: [
+          {
+            type: "CONFIDENCE_MCQ", id: "d17_mcq_str_per_property",
+            question: "A client has 3 STR properties (avg stays of 4, 5, and 6 nights respectively). The trainee says: 'Great — STR exception applies to the whole portfolio.' Is this correct?",
+            options: [
+              "Yes — once a taxpayer has any STR, all rentals qualify for the exception",
+              "No — the STR exception under Reg. §1.469-1T(e)(3)(ii)(A) applies on a PER-ACTIVITY basis. Each property is tested separately for both the avg-stay test AND material participation. Three STRs means three separate tests.",
+              "Yes — but only if the client makes the §469(c)(7)(A) aggregation election",
+              "No — only one property can qualify per year",
+            ],
+            correct: 1,
+            topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests"],
+            difficulty: 4,
+            explanation: "The STR exception is a per-activity test, not a portfolio-wide blanket. Each property must independently meet the avg-stay-≤-7-days test AND have the taxpayer materially participate in THAT property to be nonpassive. With 3 STR properties, the client may meet MP on one (where they spend most of their time) but fail on the others. The §469(c)(7)(A) aggregation election is for REAL ESTATE PROFESSIONALS aggregating their RENTAL ACTIVITIES — it doesn't apply to STR-exception activities (which by definition aren't rental activities under §469). The three STRs aren't 'rental activities' so they can't be aggregated under §1.469-9(g).",
+          },
           {
             type: "SCENARIO_BRANCHING", id: "w4_scenario_three_clients",
             title: "The Three-Client Diagnosis",
@@ -661,55 +671,6 @@ const PHASES = [
             ],
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d17_mcq_str_per_property",
-            question: "A client has 3 STR properties (avg stays of 4, 5, and 6 nights respectively). The trainee says: 'Great — STR exception applies to the whole portfolio.' Is this correct?",
-            options: [
-              "Yes — once a taxpayer has any STR, all rentals qualify for the exception",
-              "No — the STR exception under Reg. §1.469-1T(e)(3)(ii)(A) applies on a PER-ACTIVITY basis. Each property is tested separately for both the avg-stay test AND material participation. Three STRs means three separate tests.",
-              "Yes — but only if the client makes the §469(c)(7)(A) aggregation election",
-              "No — only one property can qualify per year",
-            ],
-            correct: 1,
-            topicTags: ["str_loophole", "avg_stay_test", "material_participation_tests"],
-            difficulty: 4,
-            explanation: "The STR exception is a per-activity test, not a portfolio-wide blanket. Each property must independently meet the avg-stay-≤-7-days test AND have the taxpayer materially participate in THAT property to be nonpassive. With 3 STR properties, the client may meet MP on one (where they spend most of their time) but fail on the others. The §469(c)(7)(A) aggregation election is for REAL ESTATE PROFESSIONALS aggregating their RENTAL ACTIVITIES — it doesn't apply to STR-exception activities (which by definition aren't rental activities under §469). The three STRs aren't 'rental activities' so they can't be aggregated under §1.469-9(g).",
-          },
-        ],
-      },
-      {
-        id: "d18", title: "Day 8 — Material Participation Tests & STR Tax Savings",
-        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is half of your Wednesday deliverable. The STR strategy hinges on material participation — without it, the 7-day exception buys nothing. Today you go deep on the seven material participation tests in Reg §1.469-5T(a), identify the three that matter most in STR fact patterns, and quantify the actual tax savings the strategy delivers. By end of day, you should be able to (1) name and describe all 7 tests from memory, (2) identify which apply to a given fact pattern, and (3) compute the after-tax dollar impact of moving an STR loss from passive to non-passive. The Wednesday presentation requires all three.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You're expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
-        weeklyRubric: {
-          title: "Week 2 Scorecard",
-          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
-          categories: [
-            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
-            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
-            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
-            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
-            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
-          ],
-          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
-          fullDocLink: "/scorecard-week2.html",
-          fullDocLabel: "View Full Scorecard"
-        },
-        topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation", "str_loophole", "passive_loss"],
-        learningObjectives: [
-          "Recite the 7 material participation tests under Reg. §1.469-5T(a) and identify which apply to a given fact pattern",
-          "Compute approximate federal tax savings from the STR strategy including cost segregation",
-          "Walk a client through the MP qualification conversation — setting documentation expectations before acquisition closes",
-          "Distinguish Test 1 (500+ hr), Test 3 (100+ AND more than anyone), and Test 7 (facts and circumstances)",
-        ],
-        tasks: [
-          { id: "d18t1", text: "Be able to name, describe, and apply all 7 material participation tests under Reg §1.469-5T(a). Identify the 3 most commonly applied in STR fact patterns and explain why." },
-          { id: "d18t2", text: "Research and brief one Tax Court case where a taxpayer\'s material participation claim failed on documentation grounds. Goshorn v. Commissioner is one example — find it yourself, and find a second case with a different failure mode." },
-          { id: "d18t3", text: "Be able to compute the federal + state after-tax savings from converting an STR loss from passive to non-passive. The Wednesday presentation requires you to walk this calculation cold for a hypothetical client." },
-          { id: "d18t4", text: "Understand the contemporaneous-record requirement and what counts (and doesn\'t) as adequate documentation. Be ready to advise a client on what to track." },
-          { id: "d18t5", text: "Identify the audit-trigger profile of an STR strategy — what about the return draws IRS scrutiny, what defends against it." },
-        ],
-        resources: [],
-        assessment: [
-          {
             type: "DRAG_EXERCISE", id: "w4_order_mp_tests",
             title: "The 7 Material Participation Tests",
             topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone", "mp_aggregation"],
@@ -726,6 +687,34 @@ const PHASES = [
             ],
             correctSequence: ["mp1", "mp2", "mp3", "mp4", "mp5", "mp6", "mp7"],
             explanation: "Reg. §1.469-5T(a) lists these in this order. In practice for real estate clients, Tests 1, 3, and 7 do most of the work. Test 1 (500+ hours) is the cleanest — pass it and you're done. Test 3 (100+ AND more than anyone else) is the typical STR strategy test for couples where one spouse manages the property. Test 7 (facts and circumstances ≥ 100 hours) is the fallback when records are imperfect — but the IRS scrutinizes it heavily. Test 4 (significant participation activities) rarely applies to real estate. Tests 5/6 require historical participation patterns. Always document hours contemporaneously — courts have rejected 'reconstructed' time logs.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "d18_mcq_test1_vs_test3",
+            question: "A client and spouse jointly own an STR. Each spouse works on the property — wife does 250 hours, husband does 75 hours. The cleaning crew does 30 hours. Does either spouse meet material participation under Reg. §1.469-5T(a)?",
+            options: [
+              "Wife meets Test 3 (more than 100 AND more than anyone else); husband does not",
+              "Both spouses qualify because they're MFJ",
+              "Neither qualifies — neither hits 500 hours",
+              "Husband qualifies because he's the secondary spouse",
+            ],
+            correct: 0,
+            topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone"],
+            difficulty: 5,
+            explanation: "Per Reg. §1.469-5T(f)(3), spouses' participation is COMBINED for purposes of material participation tests EXCEPT in determining the 'individual's' specific hour test. Wife at 250 hours: meets Test 3 (>100 AND > everyone else's including husband's 75 and cleaner's 30) — qualifies on her own. Husband at 75 hours: doesn't independently meet any test. BUT for the rental activity itself, the COMBINED spouse hours (325 hours) determine whether the activity qualifies — and the activity qualifies because wife alone meets Test 3. Practical answer: yes, the loss is nonpassive because at least one spouse materially participates. Aiola memos should track each spouse's hours separately for documentation purposes.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_substantial_vs_hotel",
+            question: "A client has an Airbnb with avg guest stay of 5 nights. They provide WiFi, basic cleaning between guests, and a welcome basket. They materially participate. How is the activity treated?",
+            options: [
+              "Schedule C, with SE tax — because 'substantial services' makes it an active business",
+              "Schedule E, nonpassive — because avg stay ≤ 7 days excludes from rental activity classification, MP makes loss nonpassive; substantial services for SCHEDULE PURPOSES (Reg. §1.1402(a)-4) requires a higher threshold (daily housekeeping, meals, concierge) that this client does NOT meet",
+              "Schedule E, passive — short-term rentals are still rentals",
+              "Form 4835 — farm rental income",
+            ],
+            correct: 1,
+            topicTags: ["str_loophole", "schedule_e_vs_c", "substantial_services", "rental_classification"],
+            difficulty: 5,
+            explanation: "TWO DIFFERENT TESTS at TWO DIFFERENT THRESHOLDS — this is the most common conceptual error. (1) The §469 'rental activity' exclusion (Reg. §1.469-1T(e)(3)(ii)(A)) uses a 7-day average customer use threshold to determine passive classification. (2) The Schedule C / SE tax test (Reg. §1.1402(a)-4 + Pub 527) uses a 'substantial services' standard — services 'similar to those rendered by a hotel' (daily maid service, meals, concierge). Most STRs meet the 7-day test (so they escape passive treatment) but DO NOT meet the substantial services test (so they stay on Schedule E, no SE tax). WiFi + turnover cleaning + welcome basket is NOT substantial services. The activity is correctly: Schedule E + nonpassive (because of MP) + no SE tax. Memorize this distinction — many CPAs (and online articles) conflate these.",
           },
           {
             type: "COMPUTATION", id: "w4_comp_str_savings",
@@ -795,57 +784,6 @@ const PHASES = [
             ],
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d18_mcq_test1_vs_test3",
-            question: "A client and spouse jointly own an STR. Each spouse works on the property — wife does 250 hours, husband does 75 hours. The cleaning crew does 30 hours. Does either spouse meet material participation under Reg. §1.469-5T(a)?",
-            options: [
-              "Wife meets Test 3 (more than 100 AND more than anyone else); husband does not",
-              "Both spouses qualify because they're MFJ",
-              "Neither qualifies — neither hits 500 hours",
-              "Husband qualifies because he's the secondary spouse",
-            ],
-            correct: 0,
-            topicTags: ["material_participation_tests", "mp_500hr", "mp_100hr_more_than_anyone"],
-            difficulty: 5,
-            explanation: "Per Reg. §1.469-5T(f)(3), spouses' participation is COMBINED for purposes of material participation tests EXCEPT in determining the 'individual's' specific hour test. Wife at 250 hours: meets Test 3 (>100 AND > everyone else's including husband's 75 and cleaner's 30) — qualifies on her own. Husband at 75 hours: doesn't independently meet any test. BUT for the rental activity itself, the COMBINED spouse hours (325 hours) determine whether the activity qualifies — and the activity qualifies because wife alone meets Test 3. Practical answer: yes, the loss is nonpassive because at least one spouse materially participates. Aiola memos should track each spouse's hours separately for documentation purposes.",
-          },
-        ],
-      },
-      {
-        id: "d19", title: "Day 9 — REPS Qualification & Aggregation Election",
-        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is the foundation for Friday\'s deliverable. Real Estate Professional Status is the most powerful (and most challenged) status in real estate tax — it converts ALL of a taxpayer\'s rental losses from passive to non-passive, but the bar is high and the IRS audits aggressively. Today you study the §469(c)(7) two-part test, the W-2 disqualifier, the aggregation election, and the spousal hour rules. By Friday end-of-day you should be able to qualify (or disqualify) any taxpayer for REPS, walk through the aggregation decision, and defend the position with case law.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You\'re expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
-        weeklyRubric: {
-          title: "Week 2 Scorecard",
-          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
-          categories: [
-            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
-            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
-            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
-            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
-            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
-          ],
-          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
-          fullDocLink: "/scorecard-week2.html",
-          fullDocLabel: "View Full Scorecard"
-        },
-        topicTags: ["reps_750hr", "reps_50pct_test", "reps_aggregation_election", "w2_real_estate_employee", "material_participation_tests", "mp_aggregation"],
-        learningObjectives: [
-          "Apply the REPS test under §469(c)(7): >50% of personal services AND >750 hours — both required",
-          "Identify the W-2 real-estate-employee disqualifier under §469(c)(7)(D)(ii)",
-          "Explain why REPS alone is insufficient without per-property MP or the aggregation election",
-          "Compute the 50% test for client profiles with mixed real-estate and non-real-estate hours",
-          "Walk through the aggregation election decision: current-year benefit vs future-year binding risk",
-        ],
-        tasks: [
-          { id: "d19t1", text: "Be able to apply the §469(c)(7) two-part REPS test (750-hour + 50%) to any taxpayer fact pattern, including W-2 employees and >5%-owner exceptions." },
-          { id: "d19t2", text: "Understand the §469(c)(7)(A) aggregation election: how it\'s made, when it\'s beneficial, what \'binding\' means, and the disposition-loss-trapping risk. Be ready to advise a client on the tradeoff." },
-          { id: "d19t3", text: "Understand spousal hour rules and how they interact with the REPS 50% test. Be able to identify common errors." },
-          { id: "d19t4", text: "Research and brief two Tax Court cases on REPS — one where the taxpayer prevailed, one where they lost. Focus on the documentation difference between them. (Trzeciak v. Commissioner is one option; identify a second on your own.)" },
-          { id: "d19t5", text: "Be able to defend, in your Friday presentation, the W-2 disqualifier and its limits — particularly the >5%-ownership exception under §469(c)(7)(D)(ii)." },
-          { id: "d19t6", text: "Bring any REPS-specific edge-case questions to your Manager before Friday." },
-        ],
-        resources: [],
-        assessment: [
-          {
             type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_two_part",
             question: "To qualify as a Real Estate Professional under §469(c)(7), a taxpayer must meet:",
             options: [
@@ -860,20 +798,6 @@ const PHASES = [
             explanation: "Both tests, both met. §469(c)(7)(B) requires (i) more than half of personal services in real property trades or businesses in which the taxpayer materially participates, AND (ii) more than 750 hours of services performed in those trades. The 50% test alone fails clients with significant non-real-estate work. The 750-hour test alone fails clients who have a full-time non-real-estate job and dabble in real estate. Both required. Spouses qualify independently — only one spouse needs REPS for a joint return. Common error: counting hours toward REPS that don't qualify (e.g., investor activities like reading market reports, looking at properties to buy — those don't count under §469(c)(7)(C)).",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_per_property",
-            question: "Once a taxpayer qualifies as a Real Estate Professional, are all their rental losses automatically nonpassive?",
-            options: [
-              "Yes — REPS automatically converts all rental losses to nonpassive",
-              "No — REPS qualifies the taxpayer, but material participation in each rental is still required (or the aggregation election under Reg. §1.469-9(g) must be made to combine activities)",
-              "Yes, but only for short-term rentals",
-              "Only if the rentals are titled in a single LLC",
-            ],
-            correct: 1,
-            topicTags: ["reps_750hr", "reps_aggregation_election", "material_participation_tests", "mp_aggregation"],
-            difficulty: 4,
-            explanation: "This is the most commonly missed nuance. §469(c)(7) qualifies the TAXPAYER as a real estate professional — meaning rental activities are no longer per-se passive. But each rental activity is still subject to the material participation test SEPARATELY unless the taxpayer makes the aggregation election under §469(c)(7)(A) (regulations at Reg. §1.469-9(g)). Without aggregation, hours scattered across multiple properties often fail MP on each one individually. The election treats all rentals as one activity for MP testing — usually the right move for REPS clients with multiple properties. Caveat: aggregation is binding once made; revocation requires IRS consent (Reg. §1.469-9(g)(3)).",
-          },
-          {
             type: "CONFIDENCE_MCQ", id: "w4_mcq_w2_disqualifier",
             question: "A client works full-time as a W-2 leasing manager at a large apartment REIT. They want to count their 2,200 work hours toward the REPS 750-hour test. Can they?",
             options: [
@@ -886,6 +810,20 @@ const PHASES = [
             topicTags: ["reps_750hr", "w2_real_estate_employee"],
             difficulty: 3,
             explanation: "§469(c)(7)(D)(ii) says personal services performed as a W-2 employee don't count as services in a real property trade or business UNLESS the employee owns at least 5% of the employer. A leasing manager at a large REIT is a W-2 employee with no meaningful equity — those hours do NOT count toward REPS. This is a common qualification trap. Counter-example: an owner-operator of a real estate brokerage who takes a W-2 from their own S-Corp owns 100% — those W-2 hours absolutely count. The key question is always: does the taxpayer own ≥5% of the employer?",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_reps_per_property",
+            question: "Once a taxpayer qualifies as a Real Estate Professional, are all their rental losses automatically nonpassive?",
+            options: [
+              "Yes — REPS automatically converts all rental losses to nonpassive",
+              "No — REPS qualifies the taxpayer, but material participation in each rental is still required (or the aggregation election under Reg. §1.469-9(g) must be made to combine activities)",
+              "Yes, but only for short-term rentals",
+              "Only if the rentals are titled in a single LLC",
+            ],
+            correct: 1,
+            topicTags: ["reps_750hr", "reps_aggregation_election", "material_participation_tests", "mp_aggregation"],
+            difficulty: 4,
+            explanation: "This is the most commonly missed nuance. §469(c)(7) qualifies the TAXPAYER as a real estate professional — meaning rental activities are no longer per-se passive. But each rental activity is still subject to the material participation test SEPARATELY unless the taxpayer makes the aggregation election under §469(c)(7)(A) (regulations at Reg. §1.469-9(g)). Without aggregation, hours scattered across multiple properties often fail MP on each one individually. The election treats all rentals as one activity for MP testing — usually the right move for REPS clients with multiple properties. Caveat: aggregation is binding once made; revocation requires IRS consent (Reg. §1.469-9(g)(3)).",
           },
           {
             type: "COMPUTATION", id: "d19_comp_reps_50pct",
@@ -956,204 +894,19 @@ const PHASES = [
             ],
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d19_mcq_aggregation_filing",
-            question: "How is the §469(c)(7)(A) aggregation election made?",
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_aggregation",
+            question: "A real estate professional client wants to make the §469(c)(7)(A) aggregation election. Which statement is most accurate?",
             options: [
-              "Verbal election to the IRS",
-              "Filed on Form 8582",
-              "By attaching a statement to the timely-filed (including extensions) original return for the year of election, identifying the rental activities being aggregated and stating the election is being made under §469(c)(7)(A)",
-              "Automatic for any REPS-qualified taxpayer",
+              "It's an annual election — file each year you want it to apply",
+              "It's filed by attaching a statement to a timely-filed return; once made, it's binding for all future years until revoked with IRS consent (per Reg. §1.469-9(g)(3))",
+              "It's automatic for any taxpayer who qualifies as REPS",
+              "It can only be made in the first year of ownership",
             ],
-            correct: 2,
-            topicTags: ["reps_aggregation_election"],
+            correct: 1,
+            topicTags: ["reps_aggregation_election", "mp_aggregation"],
             difficulty: 4,
-            explanation: "Per Reg. §1.469-9(g)(3): the election is made by filing a statement with the taxpayer's original return for the taxable year. The statement must (a) identify the activities being aggregated, (b) declare the taxpayer is making the election under §469(c)(7)(A). Once made, binding for that year and all future years. Revocation requires IRS consent except in narrow cases of material change. Form 8582 reports passive activity computations but is not the election form itself.",
+            explanation: "The aggregation election under §469(c)(7)(A) is made by attaching a statement to the timely-filed (including extensions) original return for the year of the election. It's NOT automatic. Once made, it's binding for that year and ALL FUTURE YEARS until revoked — and revocation requires IRS consent except in narrow cases (material change in facts, per Reg. §1.469-9(g)(3)). This is why Aiola's process is: don't recommend aggregation lightly. Run the math both ways before electing. For some clients, aggregating helps THIS year but hurts in a future year (e.g., a future property sold at a loss where you'd want it treated as a separate activity for §469(g) suspended-loss release). The decision is irreversible without IRS pain.",
           },
-        ],
-      },
-      {
-        id: "d10", title: "Day 10 — Passive Activity Rules + Rivera Review",
-        description: "This week you build the foundation of real-estate-focused tax advisory: passive activity rules, the short-term rental exception, material participation, and the Real Estate Professional Status (REPS) qualification. By end of week you have two deliverables — a Wednesday presentation walking your Manager through the STR strategy framework end-to-end, and a Friday presentation walking through REPS qualification end-to-end.\n\nToday is the safety net AND the synthesis. Most real estate clients DON\'T qualify for the STR loophole or REPS — they\'re regular landlords with W-2 income and a few rentals. For them, the §469(i) $25,000 active-participation allowance is the only path to current-year deductibility, and the phaseout is unforgiving. Today you study active participation (different from material participation, commonly conflated), the $25K allowance, MAGI phaseout mechanics, and Schedule E reporting. End of day: you have both Wednesday and Friday presentations finalized and pressure-tested against the assessment scorecard.\n\nAuthoritative sources for this week live in the IRC, Treasury Regulations, IRS publications and audit technique guides, and Tax Court opinions. You\'re expected to identify and cite the specific sections yourself — primary authority only; secondary commentary as context. Tax law changes — verify currency of any source you cite, and bring questions to your Manager.",
-        weeklyRubric: {
-          title: "Week 2 Scorecard",
-          intro: "This rubric applies to BOTH your Wednesday STR presentation AND your Friday REPS presentation. Pressure-test your own work against it before delivering.",
-          categories: [
-            { num: 1, name: "Technical Accuracy", desc: "Rules, tests, thresholds, and exceptions stated correctly. No doctrinal errors." },
-            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / IRS guidance / case law with specific citations. Binding authority distinguished from secondary." },
-            { num: 3, name: "Coverage & Completeness", desc: "All key elements addressed: definitions, qualifications, every relevant test, exceptions, gray areas, audit defensibility." },
-            { num: 4, name: "Application to Real Client Facts", desc: "Framework cleanly applied to assigned client. Gray areas and risks named with what it would take to resolve them." },
-            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
-          ],
-          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
-          fullDocLink: "/scorecard-week2.html",
-          fullDocLabel: "View Full Scorecard"
-        },
-        topicTags: ["passive_loss", "special_25k_allowance", "schedule_e", "suspended_losses", "material_participation_tests"],
-        learningObjectives: [
-          "Apply the $25,000 special allowance for active participation, including the $100k-$150k MAGI phase-out",
-          "Explain the role of Form 8582 in tracking passive activity losses",
-          "Distinguish active participation (lower bar, for $25k allowance) from material participation (higher bar, for nonpassive treatment)",
-          "Complete a full Schedule E return review identifying categorization, depreciation, and loss-treatment issues",
-        ],
-        tasks: [
-          { id: "d10t1", text: "Be able to articulate the difference between \'active participation\' (§469(i)) and \'material participation\' (§469(h)). They are different tests with different thresholds and different consequences — conflating them is a common audit-defense failure." },
-          { id: "d10t2", text: "Understand the §469(i) $25,000 special allowance: who qualifies, the MAGI phaseout, and how suspended losses interact with it across multiple tax years." },
-          { id: "d10t3", text: "Be able to read a rental Schedule E and identify the §469 reporting positions taken on it." },
-          { id: "d10t4", text: "Finalize Wednesday and Friday presentations. Pressure-test each against the scorecard categories your Manager shared on Monday. Identify and close any gaps before delivery." },
-          { id: "d10t5", text: "Schedule the end-of-week wrap call with your Manager." },
-        ],
-        resources: [],
-        assessment: [
-          // ── EXISTING: Rivera Document Markup ──
-          {
-            type: "DOCUMENT_MARKUP", id: "w2_doc_rivera_schedule_e",
-            title: "Review Rivera's Schedule E",
-            topicTags: ["schedule_e", "rental_classification", "depreciation", "passive_loss"],
-            context: "This is the Alex & Aerin Rivera 2024 federal return (anonymized mock client). Aerin is a W-2 software engineer; Alex runs a consulting business. They have one rental property in Florida. Open the return, find the Schedule E, and flag every line you'd want to follow up on before considering this return final. Click on the area, choose a category, and write a 1-2 sentence note on what concerns you.",
-            documentUrl: "/docs/Rivera_2024_Federal_Return.pdf",
-            documentType: "pdf",
-            // TODO_SAM: After running this prompt, open the actual PDF, screenshot the Schedule E page,
-            // and translate the regions below into actual % coordinates. Conceptual answer key follows.
-            regions: [
-              {
-                id: "r_property_type",
-                label: "Property type classification (Schedule E Line 1b)",
-                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM: real coords from PDF
-                severity: "critical", category: "risk",
-                explanation: "Property type drives passive activity treatment. If marked '1 - Single Family' but client mentioned short-term renting (avg stay <= 7 days), this opens the STR loophole and the property may NOT be a 'rental activity' under Reg. §1.469-1T(e)(3)(ii). Verify avg stay before accepting the classification.",
-              },
-              {
-                id: "r_fair_rental_days",
-                label: "Fair rental days vs personal use days (Schedule E Line 2)",
-                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-                severity: "critical", category: "risk",
-                explanation: "Personal use > 14 days OR > 10% of fair rental days triggers vacation home rules under §280A — deductions limited to rental income. If personal use is non-zero, verify the math. If client used the property at all (including for 'maintenance' beyond a reasonable amount), this is in scope.",
-              },
-              {
-                id: "r_depreciation_zero",
-                label: "Depreciation expense (Schedule E Line 18)",
-                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-                severity: "critical", category: "missing",
-                explanation: "Most rentals should be claiming depreciation. Residential rental real estate = 27.5 years straight-line MACRS. If line 18 is zero or suspiciously low, either depreciation is missing (malpractice-adjacent — client overpaying tax) or the property hasn't been placed in service yet. Verify the basis worksheet exists and Form 4562 is filed.",
-              },
-              {
-                id: "r_repairs_vs_improvements",
-                label: "Repairs (Line 14) vs Capital Improvements",
-                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-                severity: "important", category: "risk",
-                explanation: "If 'Repairs' is unusually large (e.g., > 20% of rental income, or > $10k), inspect — could be capitalized improvements miscategorized as repairs. Tangible Property Regulations (Reg. §1.263(a)-3) draw the line: betterment, restoration, or adaptation = capitalize. Routine maintenance = expense. Misclassifying improvements as repairs is a common audit issue.",
-              },
-              {
-                id: "r_net_loss_suspended",
-                label: "Net rental result (Schedule E Line 26) interaction with AGI",
-                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-                severity: "critical", category: "risk",
-                explanation: "If the rental shows a net loss AND combined AGI is high, verify the loss is properly suspended. The $25k special allowance for active participation phases out 50% per dollar of MAGI over $100k MFJ, fully phased out at $150k. Above $150k, losses are suspended entirely (carry forward) UNLESS the taxpayer qualifies as a real estate professional under §469(c)(7). Form 8582 should reflect this.",
-              },
-              {
-                id: "r_mortgage_interest",
-                label: "Mortgage interest (Schedule E Line 12)",
-                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-                severity: "important", category: "missing",
-                explanation: "Should tie exactly to Form 1098 from the lender. Common error: mixing personal-use months with rental months on a property that converted use during the year. If mortgage interest splits between Schedule A (personal) and Schedule E (rental), verify the allocation method matches the use period.",
-              },
-              {
-                id: "r_insurance",
-                label: "Insurance (Line 9)",
-                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-                severity: "nice", category: "opportunity",
-                explanation: "Verify it's landlord/dwelling policy not personal homeowner's insurance. Also check if PMI is included — generally deductible against rental income.",
-              },
-              {
-                id: "r_property_tax",
-                label: "Taxes (Line 16)",
-                coords: { x: 0, y: 0, w: 0, h: 0 }, // TODO_SAM
-                severity: "nice", category: "opportunity",
-                explanation: "Property tax on the rental is fully deductible against rental income, NOT subject to the $10k SALT cap (which applies only to Schedule A personal SALT). Easy money left on the table if the trainee thinks SALT cap applies here.",
-              },
-            ],
-            answerKeyExplanation: "A thorough Schedule E review for a real estate advisory client examines: classification (property type, schedule choice), use (personal vs rental days), depreciation (claimed correctly?), expense categorization (repair vs improvement), and loss treatment (active participation vs REPS vs suspended). Missing any of these is how clients overpay or underclaim. The big four flags in priority order: (1) depreciation correctness, (2) §280A personal use trip, (3) loss suspension under §469, (4) repair/improvement classification.",
-          },
-          // ── EXISTING: $25k Partial Phase-Out ──
-          {
-            type: "COMPUTATION", id: "w2_comp_25k_allowance_partial",
-            title: "$25k Special Allowance — Partial Phase-Out",
-            topicTags: ["special_25k_allowance", "passive_loss", "schedule_e"],
-            prompt: "A married-filing-jointly taxpayer has a rental net loss of $18,000. They actively participate (made management decisions, approved tenants). Their MAGI before the rental loss is $135,000. How much rental loss can they deduct against their other (active) income this year? (Provide a dollar amount.)",
-            expectedAnswer: 7500,
-            tolerance: 0,
-            unit: "dollars",
-            formLine: "Form 8582 Worksheet",
-            workedSolution: [
-              "Step 1: Confirm active participation requirement met (it is).",
-              "Step 2: Base allowance is $25,000 for MFJ with active participation.",
-              "Step 3: Phase-out begins at $100,000 MAGI. Reduces by $0.50 per $1.00 over the threshold.",
-              "Step 4: MAGI excess = $135,000 - $100,000 = $35,000",
-              "Step 5: Allowance reduction = $35,000 × 0.50 = $17,500",
-              "Step 6: Available allowance = $25,000 - $17,500 = $7,500",
-              "Step 7: Loss is $18,000; allowance limits the deduction to $7,500. The remaining $10,500 is suspended under §469 and carries forward.",
-              "Note: Phase-out is fully complete at $150k MAGI for MFJ.",
-            ],
-            commonWrongAnswers: [
-              { value: 18000, indicates: "Ignored the phase-out — full loss claimed." },
-              { value: 25000, indicates: "Applied base allowance without phase-out adjustment." },
-              { value: 0, indicates: "Assumed full phase-out, but $135k is below the $150k complete phase-out threshold." },
-            ],
-          },
-          // ── EXISTING: $25k Full Phase-Out ──
-          {
-            type: "COMPUTATION", id: "w2_comp_25k_allowance_full",
-            title: "$25k Special Allowance — Full Phase-Out",
-            topicTags: ["special_25k_allowance", "passive_loss", "suspended_losses"],
-            prompt: "Same client as before, same $18,000 rental loss, same active participation. But now their MAGI is $165,000 (MFJ). How much rental loss can they deduct against active income this year?",
-            expectedAnswer: 0,
-            tolerance: 0,
-            unit: "dollars",
-            formLine: "Form 8582 Worksheet",
-            workedSolution: [
-              "Step 1: Check phase-out: at $150,000 MAGI MFJ, the $25k allowance is fully eliminated.",
-              "Step 2: $165,000 > $150,000 -> allowance = $0.",
-              "Step 3: Entire $18,000 loss is suspended under §469 and carries forward indefinitely.",
-              "Step 4: Suspended loss is released when (a) future passive income offsets it, or (b) the property is sold in a fully taxable disposition (§469(g)).",
-              "Note: This client is a candidate to discuss real estate professional status (§469(c)(7)) if their facts support it — covered earlier this week (REPS qualification).",
-            ],
-            commonWrongAnswers: [
-              { value: 7500, indicates: "Used same allowance as the $135k MAGI case — but at $165k the allowance is fully phased out." },
-              { value: 18000, indicates: "Ignored phase-out entirely." },
-              { value: 25000, indicates: "Applied full allowance — phase-out begins at $100k and ends at $150k MFJ." },
-            ],
-          },
-          // ── EXISTING: $25k Phase-Out Threshold ──
-          {
-            type: "CONFIDENCE_MCQ", id: "w2_mcq_25k_phaseout",
-            question: "The $25,000 special allowance for active participation in rental real estate phases out as MAGI increases. At what MAGI is the allowance FULLY phased out for a married-filing-jointly couple?",
-            options: [
-              "$100,000",
-              "$150,000",
-              "$200,000",
-              "There is no phase-out",
-            ],
-            correct: 1,
-            topicTags: ["special_25k_allowance", "passive_loss"],
-            difficulty: 2,
-            explanation: "Phase-out begins at $100,000 MAGI (MFJ), reducing the $25k allowance by $0.50 per $1.00 of excess MAGI. At $150,000 MAGI, the allowance is fully eliminated. (For married-filing-separately who lived apart all year: thresholds are $50k and $75k. MFS who lived together: $0 allowance.)",
-          },
-          // ── NEW: Form 8582 ──
-          {
-            type: "CONFIDENCE_MCQ", id: "d10_mcq_form_8582",
-            question: "Form 8582 (Passive Activity Loss Limitations) is used to compute which of the following?",
-            options: [
-              "Self-employment tax",
-              "The $25,000 active participation rental real estate allowance under §469(i), and overall passive activity loss limitations carrying to Schedule E and Schedule 1",
-              "Depreciation recapture on sale",
-              "QBI deduction under §199A",
-            ],
-            correct: 1,
-            topicTags: ["passive_loss", "special_25k_allowance", "schedule_e"],
-            difficulty: 2,
-            explanation: "Form 8582 tracks passive activity income and losses, applies the $25k special allowance (with phase-out), tracks suspended losses carrying forward, and ultimately determines how much passive loss flows through to Schedule E and the 1040. If a return shows a rental loss but no Form 8582, that's a flag — either the activity is nonpassive (verify with §469 exception or REPS) or the form is missing. SE tax is Schedule SE; recapture is Form 4797; QBI is Form 8995/8995-A.",
-          },
-          // ── NEW: Active vs Material Participation ──
           {
             type: "CONFIDENCE_MCQ", id: "d10_mcq_active_vs_material",
             question: "ACTIVE participation (qualifying for the $25k allowance) and MATERIAL participation (qualifying for nonpassive treatment) — what's the difference?",
@@ -4938,6 +4691,13 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 const pp=phaseProg(phase,completedTasks); const isE=eP[phase.id];
                 return(
                   <div key={phase.id}>
+                    {phase.items.length === 1 ? (
+                      <button onClick={()=>{sel(phase.id,phase.items[0].id);}}
+                        style={{width:"100%",display:"flex",alignItems:"center",gap:6,padding:"6px 20px",border:"none",background:"none",cursor:"pointer",fontSize:12,fontWeight:600,color:aP===phase.id&&!perfPage?B.blue:B.t1,fontFamily:"inherit",textAlign:"left"}}>
+                        <span style={{width:7,height:7,borderRadius:4,flexShrink:0,background:pp===100?B.ok:pp>0?B.blue:B.bdr}}/><span style={{flex:1}}>{phase.label}</span>
+                        {pp===100?<span style={{width:16,height:16,borderRadius:8,background:B.ok,display:"flex",alignItems:"center",justifyContent:"center"}}><Chk/></span>:<span style={{fontSize:10,color:B.t3}}>{pp}%</span>}
+                      </button>
+                    ) : (<>
                     <button onClick={()=>{setEP(p=>({...p,[phase.id]:!p[phase.id]}));if(!isE)sel(phase.id,phase.items[0].id);}}
                       style={{width:"100%",display:"flex",alignItems:"center",gap:6,padding:"6px 20px",border:"none",background:"none",cursor:"pointer",fontSize:12,fontWeight:600,color:aP===phase.id&&!perfPage?B.blue:B.t1,fontFamily:"inherit",textAlign:"left"}}>
                       <Chev open={isE}/><span style={{flex:1}}>{phase.label}</span>
@@ -4950,6 +4710,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                         <span style={{width:7,height:7,borderRadius:4,flexShrink:0,background:ip===100?B.ok:ip>0?B.blue:B.bdr}}/><span style={{flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{item.title.split(" — ")[0]}</span>
                       </button>;
                     })}</div>}
+                    </>)}
                   </div>
                 );
               })}
@@ -5277,6 +5038,27 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 </div>
               </div>
             )}
+            {cIt.deliverables && cIt.deliverables.length > 0 && (
+              <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
+                <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:16}}>📅</span>
+                  <span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:0.8}}>Deliverables</span>
+                </div>
+                <div style={{padding:"16px 20px"}}>
+                  {cIt.deliverables.map((d,i) => (
+                    <div key={d.id} style={{paddingBottom:12,marginBottom:12,borderBottom:i < cIt.deliverables.length - 1 ? `1px solid ${B.bdr}` : "none"}}>
+                      <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",gap:12,marginBottom:4}}>
+                        <span style={{fontSize:14,fontWeight:700,color:B.navy}}>{d.title}</span>
+                        <span style={{fontSize:12,fontWeight:600,color:B.blue,whiteSpace:"nowrap"}}>Due {d.dueDate}</span>
+                      </div>
+                      <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{d.description}</div>
+                    </div>
+                  ))}
+                  <div style={{fontSize:12,color:B.t2,fontStyle:"italic",marginTop:4}}>Add these as tasks in ClickUp as necessary.</div>
+                </div>
+              </div>
+            )}
+            {cIt.tasks && cIt.tasks.length > 0 && (<>
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
               <div style={{flex:1,height:7,borderRadius:4,background:B.blueL,overflow:"hidden"}}><div style={{height:"100%",borderRadius:4,transition:"width .4s",width:`${itemProg(cIt,completedTasks)}%`,background:itemProg(cIt,completedTasks)===100?B.ok:`linear-gradient(90deg,${B.blue},${B.blueD})`}}/></div>
               <span style={{fontSize:12,fontWeight:600,color:itemProg(cIt,completedTasks)===100?B.ok:B.blue,whiteSpace:"nowrap"}}>{cIt.tasks.filter(t=>completedTasks[t.id]).length} / {cIt.tasks.length}</span>
@@ -5295,6 +5077,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 );
               })}
             </div>
+            </>)}
             {/* Resources */}
             {cIt.resources?.length>0&&(
               <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
