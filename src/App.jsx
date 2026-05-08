@@ -4302,7 +4302,7 @@ function TeamKpiChart({ trainees, allKpiData }) {
   );
 }
 
-function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateReport, onLogout, kpiData: allKpiData }) {
+function AdminDashboard({ user, allData, onViewTrainee, onViewPerformance, onGenerateReport, onLogout, kpiData: allKpiData }) {
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
@@ -4516,7 +4516,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
                 <span style={{fontSize:12,color:B.t2}} title="Passed / Total">{prog.passedQuizzes}/{totalQuizzes}</span>
                 <div style={{display:"flex",gap:6}}>
                   <button onClick={()=>onViewTrainee(t)} style={{padding:"5px 10px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>View</button>
-                  <button onClick={()=>onViewKpi(t)} style={{padding:"5px 10px",border:`1px solid ${B.purple}`,borderRadius:6,background:"#fff",color:B.purple,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>KPI</button>
+                  <button onClick={()=>onViewPerformance(t)} style={{padding:"5px 10px",border:`1px solid ${B.purple}`,borderRadius:6,background:"#fff",color:B.purple,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Performance</button>
                   <button onClick={()=>onGenerateReport(t)} style={{padding:"5px 10px",border:`1px solid ${B.ok}`,borderRadius:6,background:"#fff",color:B.ok,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:3}}>
                     <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5.59L13 4.91V14.5H4V1.5z" stroke="currentColor" strokeWidth="1.3"/><path d="M9.5 1.5V5H13" stroke="currentColor" strokeWidth="1.3"/><path d="M7 8v4m0 0l-2-2m2 2l2-2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     Report
@@ -4537,7 +4537,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
 // TRAINEE PORTAL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard }) {
+function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard, onAddKpiScore, initialPerfPage }) {
   const [aP, setAP] = useState("week1");
   const [aI, setAI] = useState("d1");
   const [qM, setQM] = useState(null); // which item's quiz is open
@@ -4547,10 +4547,11 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   const [qDone, setQDone] = useState(false); // showing summary
   const [sO, setSO] = useState(() => typeof window !== 'undefined' ? window.innerWidth > 768 : true);
   const [eP, setEP] = useState({week1:true});
-  const [perfPage, setPerfPage] = useState(false);
+  const [perfPage, setPerfPage] = useState(!!initialPerfPage);
   const [expandedWeeks, setExpandedWeeks] = useState({});
   const [scorecardForm, setScorecardForm] = useState(null);
   const [expandedScorecards, setExpandedScorecards] = useState({});
+  const [kpiSubmitForm, setKpiSubmitForm] = useState(null);
   const mR = useRef(null);
   const prog = calcProg(completedTasks, quizResults);
   const cPh = PHASES.find(p=>p.id===aP);
@@ -4776,6 +4777,65 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                   <div style={{fontSize:12,color:B.t3,textAlign:"center",padding:"12px 0"}}>No KPI scores recorded yet. Your manager will add scores as you progress.</div>
                 )}
               </div>
+              {/* Admin KPI Submit Form */}
+              {isAdminView && onAddKpiScore && (
+                <div style={{borderTop:`1px solid ${B.bdr}`,padding:"12px 18px"}}>
+                  {!kpiSubmitForm ? (
+                    <button onClick={()=>{ const d=daysSince(user.startDate); setKpiSubmitForm({kpiId:"communication",phase:d<=30?"day30":d<=60?"day60":"day90",score:"",date:new Date().toISOString().slice(0,10),comment:""}); }}
+                      style={{padding:"6px 14px",border:"none",borderRadius:8,background:B.blue,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>+ Submit New Score</button>
+                  ) : (
+                    <form onSubmit={(e)=>{
+                      e.preventDefault();
+                      const s=parseFloat(kpiSubmitForm.score);
+                      if(isNaN(s)||s<1||s>5)return;
+                      const all=kpiData?.[kpiSubmitForm.kpiId]||[];
+                      const maxWeek=all.length>0?Math.max(...all.map(en=>en.week)):0;
+                      onAddKpiScore(user.id,kpiSubmitForm.kpiId,{week:maxWeek+1,score:s,manager:"Nick Aiola",date:kpiSubmitForm.date,comment:kpiSubmitForm.comment,phase:kpiSubmitForm.phase});
+                      setKpiSubmitForm(null);
+                    }} style={{display:"flex",flexDirection:"column",gap:10}}>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+                        <div>
+                          <label style={{display:"block",fontSize:10,fontWeight:600,color:B.t2,marginBottom:3}}>KPI Category</label>
+                          <select value={kpiSubmitForm.kpiId} onChange={e=>setKpiSubmitForm(p=>({...p,kpiId:e.target.value}))}
+                            style={{width:"100%",padding:"8px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:12,fontFamily:"'DM Sans',sans-serif",color:B.t1,background:"#fff"}}>
+                            {ONBOARDING_KPIS.map(k=><option key={k.id} value={k.id}>{k.category}</option>)}
+                          </select>
+                        </div>
+                        <div>
+                          <label style={{display:"block",fontSize:10,fontWeight:600,color:B.t2,marginBottom:3}}>Phase</label>
+                          <select value={kpiSubmitForm.phase} onChange={e=>setKpiSubmitForm(p=>({...p,phase:e.target.value}))}
+                            style={{width:"100%",padding:"8px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:12,fontFamily:"'DM Sans',sans-serif",color:B.t1,background:"#fff"}}>
+                            <option value="day30">30-Day Phase</option>
+                            <option value="day60">60-Day Phase</option>
+                            <option value="day90">90-Day Phase</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label style={{display:"block",fontSize:10,fontWeight:600,color:B.t2,marginBottom:3}}>Score (1.0–5.0)</label>
+                          <input type="number" min="1" max="5" step="0.1" value={kpiSubmitForm.score} onChange={e=>setKpiSubmitForm(p=>({...p,score:e.target.value}))} placeholder="e.g. 4.2" required
+                            style={{width:"100%",padding:"8px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:12,fontFamily:"'DM Sans',sans-serif",color:B.t1,boxSizing:"border-box"}}/>
+                        </div>
+                      </div>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 2fr",gap:10}}>
+                        <div>
+                          <label style={{display:"block",fontSize:10,fontWeight:600,color:B.t2,marginBottom:3}}>Date</label>
+                          <input type="date" value={kpiSubmitForm.date} onChange={e=>setKpiSubmitForm(p=>({...p,date:e.target.value}))}
+                            style={{width:"100%",padding:"8px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:12,fontFamily:"'DM Sans',sans-serif",color:B.t1,boxSizing:"border-box"}}/>
+                        </div>
+                        <div>
+                          <label style={{display:"block",fontSize:10,fontWeight:600,color:B.t2,marginBottom:3}}>Comment (optional)</label>
+                          <input type="text" value={kpiSubmitForm.comment} onChange={e=>setKpiSubmitForm(p=>({...p,comment:e.target.value}))} placeholder="Brief note..."
+                            style={{width:"100%",padding:"8px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:12,fontFamily:"'DM Sans',sans-serif",color:B.t1,boxSizing:"border-box"}}/>
+                        </div>
+                      </div>
+                      <div style={{display:"flex",gap:8}}>
+                        <button type="submit" style={{padding:"8px 18px",border:"none",borderRadius:6,background:B.blue,color:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Submit Score</button>
+                        <button type="button" onClick={()=>setKpiSubmitForm(null)} style={{padding:"8px 18px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",color:B.t2,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Weekly KPI Drill-Down (inside Card 1) */}
@@ -5582,221 +5642,6 @@ function KpiBarChart({ commEntries, teamEntries, weekLabels, target }) {
   );
 }
 
-function TraineeKpiDashboard({ user, kpiData, onAddScore, onBackToAdmin, onLogout }) {
-  const [showForm, setShowForm] = useState(false);
-  const [formKpi, setFormKpi] = useState("communication");
-  const [formScore, setFormScore] = useState("");
-  const [formComment, setFormComment] = useState("");
-  const [formDate, setFormDate] = useState(new Date().toISOString().slice(0,10));
-
-  const days = daysSince(user.startDate);
-  const defaultPhase = days <= 30 ? "day30" : days <= 60 ? "day60" : "day90";
-  const [activePhase, setActivePhase] = useState(defaultPhase);
-  const [formPhase, setFormPhase] = useState(defaultPhase);
-
-  const PHASES = [
-    { id: "day30", label: "Days 1–30", target: 4.0, weeks: ["W1","W2","W3","W4"], weekOffset: 0 },
-    { id: "day60", label: "Days 31–60", target: 4.2, weeks: ["W5","W6","W7","W8"], weekOffset: 4 },
-    { id: "day90", label: "Days 61–90", target: 4.5, weeks: ["W9","W10","W11","W12"], weekOffset: 8 },
-  ];
-  const phase = PHASES.find(p => p.id === activePhase);
-  const phaseTarget = phase.target;
-  const phaseLbl = phase.label;
-
-  const getPhaseEntries = (kpiId) => {
-    const all = kpiData?.[kpiId] || [];
-    return all.filter(e => {
-      const p = e.phase || inferPhase(e.week);
-      return p === activePhase;
-    });
-  };
-  const inferPhase = (week) => week <= 4 ? "day30" : week <= 8 ? "day60" : "day90";
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const s = parseFloat(formScore);
-    if (isNaN(s) || s < 1 || s > 5) return;
-    const all = kpiData?.[formKpi] || [];
-    const maxWeek = all.length > 0 ? Math.max(...all.map(e => e.week)) : 0;
-    onAddScore(user.id, formKpi, { week: maxWeek + 1, score: s, manager: "Nick Aiola", date: formDate, comment: formComment, phase: formPhase });
-    setFormScore(""); setFormComment(""); setShowForm(false);
-  };
-
-  const inputSt = {width:"100%",padding:"10px 12px",border:`1px solid ${B.bdr}`,borderRadius:8,fontSize:13,fontFamily:"'DM Sans',sans-serif",color:B.t1,boxSizing:"border-box",outline:"none",transition:"border-color .2s"};
-
-  return (
-    <div style={{fontFamily:"'DM Sans',sans-serif",minHeight:"100vh",background:B.bg,color:B.t1}}>
-      <header className="r-header" style={{background:"#fff",borderBottom:`1px solid ${B.bdr}`,padding:"14px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
-        <div style={{display:"flex",alignItems:"center",gap:14}}>
-          <Logo size={32}/>
-          <div><div className="r-header-title" style={{fontWeight:700,fontSize:15,color:B.navy}}>KPI & Performance</div><div className="r-header-sub" style={{fontSize:11,color:B.t3}}>{user.name} · {user.track || "Advisory"} Track</div></div>
-        </div>
-        <div className="r-header-right" style={{display:"flex",alignItems:"center",gap:12}}>
-          <button onClick={onBackToAdmin} className="r-touch" style={{padding:"6px 14px",border:`1px solid ${B.blue}`,borderRadius:6,background:"#fff",color:B.blue,fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>← Back to Admin</button>
-          <button onClick={onLogout} className="r-touch" style={{padding:"6px 14px",border:`1px solid ${B.bdr}`,borderRadius:6,background:"#fff",cursor:"pointer",fontSize:11,color:B.t3,fontFamily:"inherit"}}>Sign Out</button>
-        </div>
-      </header>
-      <div className="r-content" style={{padding:"28px 32px",maxWidth:1200,margin:"0 auto"}}>
-        {/* Trainee Info Bar */}
-        <div style={{background:"#fff",borderRadius:12,padding:"18px 24px",border:`1px solid ${B.bdr}`,marginBottom:24,display:"flex",alignItems:"center",gap:16,boxShadow:"0 1px 3px rgba(0,0,0,.04)"}}>
-          <div style={{width:48,height:48,borderRadius:24,background:B.blue,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,fontWeight:700}}>{user.avatar}</div>
-          <div style={{flex:1}}>
-            <div style={{fontSize:16,fontWeight:700,color:B.navy}}>{user.name}</div>
-            <div style={{fontSize:12,color:B.t3}}>{user.email} · Started {new Date(user.startDate).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</div>
-          </div>
-          <div style={{textAlign:"right"}}>
-            <div style={{fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>Day {days} of 90</div>
-            <div style={{height:5,borderRadius:3,background:B.blueL,overflow:"hidden",width:120,marginTop:6}}><div style={{height:"100%",borderRadius:3,width:`${Math.min(100,Math.round(days/90*100))}%`,background:B.blue,transition:"width .4s"}}/></div>
-          </div>
-        </div>
-
-        {/* Phase Tabs */}
-        <div style={{display:"flex",gap:10,marginBottom:24}}>
-          {PHASES.map(p => (
-            <button key={p.id} onClick={()=>setActivePhase(p.id)} style={{flex:1,padding:"12px 16px",borderRadius:10,border:`2px solid ${activePhase===p.id?B.blue:B.bdr}`,background:activePhase===p.id?B.blueL:"#fff",cursor:"pointer",fontFamily:"inherit",textAlign:"center",transition:"all .15s"}}>
-              <div style={{fontSize:13,fontWeight:700,color:activePhase===p.id?B.blue:B.t1}}>{p.label}</div>
-              <div style={{fontSize:10,color:activePhase===p.id?B.blue:B.t3,marginTop:2}}>Target ≥{p.target.toFixed(1)}</div>
-            </button>
-          ))}
-        </div>
-
-        {/* KPI Cards */}
-        {ONBOARDING_KPIS.map(kpi => {
-          const entries = getPhaseEntries(kpi.id);
-          const avg = entries.length > 0 ? (entries.reduce((a, e) => a + e.score, 0) / entries.length) : 0;
-          const target = phaseTarget;
-          const pct = target > 0 ? Math.min(100, Math.round(avg / target * 100)) : 0;
-          const status = entries.length === 0 ? "behind" : avg >= target ? "on-track" : avg >= target - 0.3 ? "at-risk" : "behind";
-          const statusColor = status === "on-track" ? B.ok : status === "at-risk" ? B.warn : B.err;
-          const statusLabel = status === "on-track" ? "On Track" : status === "at-risk" ? "At Risk" : "Behind";
-          const trend = entries.length >= 2 ? (entries[entries.length-1].score >= entries[entries.length-2].score ? "up" : "down") : "flat";
-
-          return (
-            <div key={kpi.id} style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,marginBottom:20,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden"}}>
-              {/* Card Header */}
-              <div style={{padding:"20px 24px",borderBottom:`1px solid ${B.bdr}`}}>
-                <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:12}}>
-                  <div style={{flex:1}}>
-                    <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
-                      <h3 style={{margin:0,fontSize:15,fontWeight:700,color:B.navy}}>{kpi.category}</h3>
-                      <span style={{fontSize:10,fontWeight:600,color:statusColor,background:status==="on-track"?B.okL:status==="at-risk"?B.warnL:"#fef2f2",padding:"2px 8px",borderRadius:10}}>{statusLabel}</span>
-                      {trend !== "flat" && (
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{transform:trend==="down"?"rotate(180deg)":"none"}}>
-                          <path d="M7 2L12 9H2L7 2Z" fill={trend==="up"?B.ok:B.err}/>
-                        </svg>
-                      )}
-                    </div>
-                    <p style={{margin:0,fontSize:12,color:B.t3,lineHeight:1.5,maxWidth:500}}>{kpi.description}</p>
-                  </div>
-                  <div style={{textAlign:"right",marginLeft:24}}>
-                    <div style={{fontSize:32,fontWeight:700,color:entries.length>0?statusColor:B.t3,lineHeight:1}}>{entries.length > 0 ? avg.toFixed(1) : "—"}</div>
-                    <div style={{fontSize:11,color:B.t3,marginTop:2}}>Target: {target.toFixed(1)} ({phaseLbl})</div>
-                  </div>
-                </div>
-                {/* Progress gauge */}
-                <div style={{display:"flex",alignItems:"center",gap:12}}>
-                  <div style={{flex:1,height:8,borderRadius:4,background:"#f1f5f9",overflow:"hidden",position:"relative"}}>
-                    <div style={{height:"100%",borderRadius:4,width:`${entries.length>0?pct:0}%`,background:statusColor,transition:"width .5s"}}/>
-                    <div style={{position:"absolute",top:-2,bottom:-2,left:"100%",width:2,background:B.navy,borderRadius:1,transform:"translateX(-1px)"}}/>
-                  </div>
-                  <span style={{fontSize:12,fontWeight:600,color:statusColor,minWidth:40,textAlign:"right"}}>{entries.length > 0 ? `${pct}%` : "N/A"}</span>
-                </div>
-                <div style={{display:"flex",gap:16,marginTop:8,fontSize:10,color:B.t3}}>
-                  <span>Frequency: {kpi.frequency}</span><span>Source: {kpi.source}</span><span>{entries.length} score{entries.length !== 1 ? "s" : ""} in this phase</span>
-                </div>
-              </div>
-              {/* Score History */}
-              <div style={{padding:"16px 24px"}}>
-                <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1.2,color:B.t3,marginBottom:10}}>Score History — {phaseLbl}</div>
-                {entries.length === 0 ? (
-                  <div style={{padding:"20px 0",textAlign:"center",fontSize:13,color:B.t3}}>No scores recorded for this phase</div>
-                ) : (
-                  <div>
-                    <div style={{display:"grid",gridTemplateColumns:"60px 70px 1fr 140px 1fr",padding:"8px 0",borderBottom:`1px solid ${B.bdr}`,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:B.t3}}>
-                      <span>Week</span><span>Score</span><span>Visual</span><span>Submitted By</span><span>Comment</span>
-                    </div>
-                    {entries.map((entry, i) => {
-                      const barW = Math.round(entry.score / 5 * 100);
-                      const barColor = entry.score >= target ? B.ok : entry.score >= target - 0.3 ? B.warn : B.err;
-                      return (
-                        <div key={i} style={{display:"grid",gridTemplateColumns:"60px 70px 1fr 140px 1fr",padding:"10px 0",borderBottom:`1px solid ${B.bdr}`,alignItems:"center",fontSize:12}}>
-                          <span style={{color:B.t2,fontWeight:600}}>Week {entry.week}</span>
-                          <span style={{fontWeight:700,color:barColor}}>{entry.score.toFixed(1)}</span>
-                          <div style={{paddingRight:12}}>
-                            <div style={{height:6,borderRadius:3,background:"#f1f5f9",overflow:"hidden"}}>
-                              <div style={{height:"100%",borderRadius:3,width:`${barW}%`,background:barColor,transition:"width .3s"}}/>
-                            </div>
-                          </div>
-                          <span style={{fontSize:11,color:B.t3}}>{entry.manager}<br/><span style={{fontSize:10}}>{new Date(entry.date).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span></span>
-                          <span style={{fontSize:11,color:B.t2,fontStyle:entry.comment?"italic":"normal"}}>{entry.comment || "—"}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Bar Chart — both KPIs side by side */}
-        <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,padding:"20px 24px",marginBottom:20,boxShadow:"0 1px 3px rgba(0,0,0,.04)"}}>
-          <KpiBarChart commEntries={getPhaseEntries("communication")} teamEntries={getPhaseEntries("teamwork")} weekLabels={phase.weeks} target={phaseTarget}/>
-        </div>
-
-        {/* Add Score Form */}
-        <div style={{background:"#fff",borderRadius:12,border:`1px solid ${B.bdr}`,boxShadow:"0 1px 3px rgba(0,0,0,.04)",overflow:"hidden"}}>
-          <div style={{padding:"18px 24px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-            <h3 style={{margin:0,fontSize:15,fontWeight:700,color:B.navy}}>Submit New Score</h3>
-            <button onClick={()=>setShowForm(!showForm)} style={{padding:"6px 16px",border:"none",borderRadius:8,background:showForm?B.bdr:B.blue,color:showForm?B.t2:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
-              {showForm ? "Cancel" : "+ Add Score"}
-            </button>
-          </div>
-          {showForm && (
-            <form onSubmit={handleSubmit} style={{padding:"20px 24px",display:"flex",flexDirection:"column",gap:14}}>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14}}>
-                <div>
-                  <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>KPI Category</label>
-                  <select value={formKpi} onChange={e=>setFormKpi(e.target.value)} style={{...inputSt,background:"#fff"}}>
-                    {ONBOARDING_KPIS.map(k=><option key={k.id} value={k.id}>{k.category}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Phase</label>
-                  <select value={formPhase} onChange={e=>setFormPhase(e.target.value)} style={{...inputSt,background:"#fff"}}>
-                    <option value="day30">30-Day Phase</option>
-                    <option value="day60">60-Day Phase</option>
-                    <option value="day90">90-Day Phase</option>
-                  </select>
-                </div>
-                <div>
-                  <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Score (1.0 – 5.0)</label>
-                  <input type="number" min="1" max="5" step="0.1" value={formScore} onChange={e=>setFormScore(e.target.value)} placeholder="e.g. 4.2" required style={inputSt}
-                    onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
-                </div>
-              </div>
-              <div>
-                <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Date</label>
-                <input type="date" value={formDate} onChange={e=>setFormDate(e.target.value)} style={inputSt}
-                  onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
-              </div>
-              <div>
-                <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Comment (optional)</label>
-                <input type="text" value={formComment} onChange={e=>setFormComment(e.target.value)} placeholder="Brief note about this score..." style={inputSt}
-                  onFocus={e=>{e.target.style.borderColor=B.blue}} onBlur={e=>{e.target.style.borderColor=B.bdr}}/>
-              </div>
-              <button type="submit" style={{padding:"12px 24px",border:"none",borderRadius:8,background:B.blue,color:"#fff",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit",alignSelf:"flex-start",transition:"background .2s"}}
-                onMouseEnter={e=>{e.currentTarget.style.background=B.blueD}} onMouseLeave={e=>{e.currentTarget.style.background=B.blue}}>
-                Submit Score
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ═════════════════════════════════════════════════════════════════════════════
 // CLIENT PORTAL SHELL (standalone view for client role)
 // ═════════════════════════════════════════════════════════════════════════════
@@ -5876,8 +5721,9 @@ export default function App() {
   // Persist scorecard data on change
   useEffect(()=>{ if(Object.keys(scorecardData).length===0)return; (async()=>{ try{await window.storage.set("aiola-scorecards-v1",JSON.stringify(scorecardData))}catch{}})(); },[scorecardData]);
 
-  const viewTrainee = t => { setViewingTrainee(t); setView("trainee-admin"); };
-  const viewTraineeKpi = t => { setViewingTrainee(t); setView("trainee-kpi"); };
+  const [landOnPerf, setLandOnPerf] = useState(false);
+  const viewTrainee = t => { setViewingTrainee(t); setLandOnPerf(false); setView("trainee-admin"); };
+  const viewTraineePerf = t => { setViewingTrainee(t); setLandOnPerf(true); setView("trainee-admin"); };
   const addKpiScore = (uid, kpiId, entry) => {
     setKpiData(prev => ({...prev, [uid]: {...(prev[uid]||{}), [kpiId]: [...((prev[uid]||{})[kpiId]||[]), entry]}}));
   };
@@ -5885,10 +5731,16 @@ export default function App() {
     setScorecardData(prev => ({...prev, [uid]: [...(prev[uid] || []), entry]}));
   };
   const addNote = (uid, note) => {
-    setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), notes: [...((prev[uid]||{}).notes||[]), note]}}));
+    const trainee = MOCK_TRAINEES.find(t => t.id === uid);
+    const phase = inferScorecardPhase(daysSince(trainee?.startDate || new Date().toISOString().slice(0,10)));
+    const noteWithPhase = { ...note, phase: note.phase || phase };
+    setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), notes: [...((prev[uid]||{}).notes||[]), noteWithPhase]}}));
   };
   const addBadge = (uid, badge) => {
-    setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), badges: [...((prev[uid]||{}).badges||[]), badge]}}));
+    const trainee = MOCK_TRAINEES.find(t => t.id === uid);
+    const phase = inferScorecardPhase(daysSince(trainee?.startDate || new Date().toISOString().slice(0,10)));
+    const badgeWithPhase = { ...badge, phase: badge.phase || phase };
+    setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), badges: [...((prev[uid]||{}).badges||[]), badgeWithPhase]}}));
   };
   const updateBadge = (uid, badgeId, updates) => {
     setNotesData(prev => {
@@ -5919,9 +5771,8 @@ export default function App() {
 
   let content = null;
   if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
-  else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onGenerateReport={handleGenerateReport} onLogout={handleLogout} kpiData={kpiData}/>;
-  else if(view==="trainee-kpi"&&viewingTrainee) content = <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
-  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard}/>; }
+  else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewPerformance={viewTraineePerf} onGenerateReport={handleGenerateReport} onLogout={handleLogout} kpiData={kpiData}/>;
+  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard} onAddKpiScore={addKpiScore} initialPerfPage={landOnPerf}/>; }
   else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)} scorecards={scorecardData[uid]||[]}/>; }
   else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
 
