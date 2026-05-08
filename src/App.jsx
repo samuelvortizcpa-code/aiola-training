@@ -5679,8 +5679,39 @@ export default function App() {
     const val = result || true;
     setAllUserData(p=>({...p,[uid]:{tasks:p[uid]?.tasks||{},quizzes:{...(p[uid]?.quizzes||{}),[iid]:val}}}));
   };
-  const [kpiData, setKpiData] = useState({...KPI_SEED_DATA});
-  const [notesData, setNotesData] = useState({...NOTES_SEED_DATA});
+  const [kpiData, setKpiData] = useState({});
+  const [notesData, setNotesData] = useState({});
+  const [scorecardData, setScorecardData] = useState({});
+
+  // Load KPI, notes/badges, and scorecard data from storage (or seed on first load)
+  useEffect(()=>{ (async()=>{
+    // KPI
+    try {
+      const sk = await window.storage.get("aiola-kpi-v1");
+      if (sk?.value) { setKpiData(JSON.parse(sk.value)); }
+      else { await window.storage.set("aiola-kpi-v1", JSON.stringify(KPI_SEED_DATA)); setKpiData({...KPI_SEED_DATA}); }
+    } catch { setKpiData({...KPI_SEED_DATA}); }
+    // Notes & Badges
+    try {
+      const sn = await window.storage.get("aiola-notes-v1");
+      if (sn?.value) { setNotesData(JSON.parse(sn.value)); }
+      else { await window.storage.set("aiola-notes-v1", JSON.stringify(NOTES_SEED_DATA)); setNotesData({...NOTES_SEED_DATA}); }
+    } catch { setNotesData({...NOTES_SEED_DATA}); }
+    // Scorecards
+    try {
+      const ss = await window.storage.get("aiola-scorecards-v1");
+      if (ss?.value) { setScorecardData(JSON.parse(ss.value)); }
+      else { await window.storage.set("aiola-scorecards-v1", JSON.stringify({})); }
+    } catch {}
+  })(); },[]);
+
+  // Persist KPI data on change
+  useEffect(()=>{ if(Object.keys(kpiData).length===0)return; (async()=>{ try{await window.storage.set("aiola-kpi-v1",JSON.stringify(kpiData))}catch{}})(); },[kpiData]);
+  // Persist notes/badges data on change
+  useEffect(()=>{ if(Object.keys(notesData).length===0)return; (async()=>{ try{await window.storage.set("aiola-notes-v1",JSON.stringify(notesData))}catch{}})(); },[notesData]);
+  // Persist scorecard data on change
+  useEffect(()=>{ if(Object.keys(scorecardData).length===0)return; (async()=>{ try{await window.storage.set("aiola-scorecards-v1",JSON.stringify(scorecardData))}catch{}})(); },[scorecardData]);
+
   const viewTrainee = t => { setViewingTrainee(t); setView("trainee-admin"); };
   const viewTraineeKpi = t => { setViewingTrainee(t); setView("trainee-kpi"); };
   const addKpiScore = (uid, kpiId, entry) => {
