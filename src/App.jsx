@@ -4582,7 +4582,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewPerformance, onGen
 // TRAINEE PORTAL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard, onAddKpiScore, initialPerfPage }) {
+function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard, onAddKpiScore, initialPerfPage, getTaskText, getResource, onSetOverride, overrides }) {
   const [aP, setAP] = useState("week1");
   const [aI, setAI] = useState("d1");
   const [qM, setQM] = useState(null); // which item's quiz is open
@@ -4597,6 +4597,8 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   const [scorecardForm, setScorecardForm] = useState(null);
   const [expandedScorecards, setExpandedScorecards] = useState({});
   const [kpiSubmitForm, setKpiSubmitForm] = useState(null);
+  // Inline edit state for admin overrides: { key, text, label, url }
+  const [editingOverride, setEditingOverride] = useState(null);
   const mR = useRef(null);
   const prog = calcProg(completedTasks, quizResults);
   const cPh = PHASES.find(p=>p.id===aP);
@@ -5272,11 +5274,27 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`}}><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Tasks</span></div>
               {cIt.tasks.map((task,idx)=>{
                 const done=!!completedTasks[task.id];
+                const tKey = `task::${task.id}`;
+                const displayText = getTaskText ? getTaskText(task.id, task.text) : task.text;
+                const isEditing = editingOverride?.key === tKey;
+                const saveTask = () => { const val=editingOverride.text.trim(); if(!val){/* empty = cancel */} else if(val===task.text)onSetOverride(tKey,null); else onSetOverride(tKey,{text:val}); setEditingOverride(null); };
+                if (isEditing) return (
+                  <div key={task.id} style={{padding:"10px 18px",borderBottom:idx<cIt.tasks.length-1?`1px solid ${B.bdr}`:"none",background:"#fffbeb"}} onClick={e=>e.stopPropagation()}>
+                    <input value={editingOverride.text} onChange={e=>setEditingOverride(p=>({...p,text:e.target.value}))} autoFocus style={{width:"100%",fontSize:13,padding:"6px 8px",border:`1px solid ${B.blue}`,borderRadius:6,fontFamily:"inherit",boxSizing:"border-box"}}
+                      onKeyDown={e=>{if(e.key==="Enter"){e.preventDefault();saveTask();}if(e.key==="Escape")setEditingOverride(null);}}/>
+                    <div style={{display:"flex",gap:6,marginTop:6}}>
+                      <button onClick={saveTask} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:"none",background:B.blue,color:"#fff",cursor:"pointer",fontFamily:"inherit"}}>Save</button>
+                      <button onClick={()=>setEditingOverride(null)} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                      {overrides?.[tKey] && <button onClick={()=>{onSetOverride(tKey,null);setEditingOverride(null);}} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:"#DC2626",cursor:"pointer",fontFamily:"inherit"}}>Reset to default</button>}
+                    </div>
+                  </div>
+                );
                 return(
                   <div key={task.id} onClick={()=>onToggleTask(task.id)} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"12px 18px",borderBottom:idx<cIt.tasks.length-1?`1px solid ${B.bdr}`:"none",cursor:"pointer",transition:"background .15s",background:done?B.okBg:"transparent"}}
                     onMouseEnter={e=>{if(!done)e.currentTarget.style.background="#fafbfc"}} onMouseLeave={e=>{e.currentTarget.style.background=done?B.okBg:"transparent"}}>
                     <div style={{width:20,height:20,borderRadius:5,flexShrink:0,marginTop:1,border:done?"none":`2px solid ${B.bdr}`,background:done?B.ok:"#fff",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s"}}>{done&&<Chk/>}</div>
-                    <span style={{fontSize:13,lineHeight:1.5,color:done?B.t3:B.t1,textDecoration:done?"line-through":"none",transition:"color .2s"}}>{task.text}</span>
+                    <span style={{fontSize:13,lineHeight:1.5,color:done?B.t3:B.t1,textDecoration:done?"line-through":"none",transition:"color .2s",flex:1}}>{displayText}</span>
+                    {isAdminView && onSetOverride && <button onClick={e=>{e.stopPropagation();setEditingOverride({key:tKey,text:displayText});}} style={{flexShrink:0,background:"none",border:"none",cursor:"pointer",padding:"2px 4px",fontSize:13,color:B.t3,opacity:.5}} title="Edit task text">✏️</button>}
                   </div>
                 );
               })}
@@ -5287,7 +5305,28 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
                 <div style={{padding:"12px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:6}}><BookIc/><span style={{fontSize:12,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Resources</span></div>
                 <div style={{padding:"10px 18px",display:"flex",flexWrap:"wrap",gap:8}}>
-                  {cIt.resources.map((r,i)=>{
+                  {cIt.resources.map((rawR,i)=>{
+                    const r = getResource ? getResource(cIt.id, i, rawR) : rawR;
+                    const rKey = `resource::${cIt.id}::${i}`;
+                    const isEditing = editingOverride?.key === rKey;
+                    const saveResource = () => { const lbl=editingOverride.label.trim(); if(!lbl){setEditingOverride(null);return;} const urlVal=editingOverride.url.trim()||null; if(lbl===rawR.label && urlVal===rawR.url) onSetOverride(rKey,null); else onSetOverride(rKey,{label:lbl,url:urlVal}); setEditingOverride(null); };
+                    if (isEditing) return (
+                      <div key={i} style={{width:"100%",background:"#fffbeb",borderRadius:8,border:`1px solid ${B.blue}`,padding:"10px 12px"}} onClick={e=>e.stopPropagation()}>
+                        <div style={{display:"flex",gap:8,marginBottom:6}}>
+                          <label style={{fontSize:11,color:B.t3,width:40,paddingTop:6}}>Title</label>
+                          <input value={editingOverride.label} onChange={e=>setEditingOverride(p=>({...p,label:e.target.value}))} autoFocus style={{flex:1,fontSize:13,padding:"5px 8px",border:`1px solid ${B.bdr}`,borderRadius:6,fontFamily:"inherit"}}/>
+                        </div>
+                        <div style={{display:"flex",gap:8,marginBottom:8}}>
+                          <label style={{fontSize:11,color:B.t3,width:40,paddingTop:6}}>URL</label>
+                          <input value={editingOverride.url||""} onChange={e=>setEditingOverride(p=>({...p,url:e.target.value}))} placeholder="Leave empty for no link" style={{flex:1,fontSize:13,padding:"5px 8px",border:`1px solid ${B.bdr}`,borderRadius:6,fontFamily:"inherit"}}/>
+                        </div>
+                        <div style={{display:"flex",gap:6,marginLeft:48}}>
+                          <button onClick={saveResource} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:"none",background:B.blue,color:"#fff",cursor:"pointer",fontFamily:"inherit"}}>Save</button>
+                          <button onClick={()=>setEditingOverride(null)} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                          {overrides?.[rKey] && <button onClick={()=>{onSetOverride(rKey,null);setEditingOverride(null);}} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:"#DC2626",cursor:"pointer",fontFamily:"inherit"}}>Reset to default</button>}
+                        </div>
+                      </div>
+                    );
                     const lbl = (r.label||"").toLowerCase();
                     const typeIcon = r.type === "pdf" || lbl.includes("pdf") || lbl.includes("handbook") || lbl.includes("checklist") || lbl.includes("guide") || lbl.includes("template") || lbl.includes("overview") ? "\uD83D\uDCC4" : r.type === "video" || lbl.includes("video") ? "\uD83D\uDCF9" : "\uD83D\uDD17";
                     const typeLabel = typeIcon === "\uD83D\uDCC4" ? "PDF Document" : typeIcon === "\uD83D\uDCF9" ? "Video" : "Link";
@@ -5295,6 +5334,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                     const pill = <span key={i} title={`${r.label} (${typeLabel})${hasUrl ? "" : " — pending"}`} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"10px 14px",minHeight:44,borderRadius:22,fontSize:13,fontWeight:500,background:hasUrl ? B.blueL : "#f1f5f9",color:hasUrl ? B.blue : B.t3,border:`1px solid ${hasUrl ? B.blueM : B.bdr}`,cursor:hasUrl ? "pointer" : "default",boxSizing:"border-box",transition:"background .15s",opacity:hasUrl ? 1 : 0.7}}
                       onMouseEnter={e=>{if(hasUrl)e.currentTarget.style.background="#dbeafe"}} onMouseLeave={e=>{if(hasUrl)e.currentTarget.style.background=hasUrl?B.blueL:"#f1f5f9"}}>
                       <span style={{fontSize:15}}>{typeIcon}</span>{r.label}{!hasUrl && <span style={{fontSize:9,fontWeight:700,color:B.t3,background:"#e2e8f0",padding:"1px 6px",borderRadius:4,marginLeft:4}}>pending</span>}
+                      {isAdminView && onSetOverride && <span onClick={e=>{e.preventDefault();e.stopPropagation();setEditingOverride({key:rKey,label:r.label,url:r.url||""});}} style={{marginLeft:4,cursor:"pointer",fontSize:11,opacity:.5}} title="Edit resource">✏️</span>}
                     </span>;
                     if (hasUrl) return <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>{pill}</a>;
                     return pill;
@@ -5742,6 +5782,9 @@ export default function App() {
   const [kpiData, setKpiData] = useState({});
   const [notesData, setNotesData] = useState({});
   const [scorecardData, setScorecardData] = useState({});
+  // Content overrides for task text and resource title/URL (admin edits).
+  // Keys: "task::<taskId>" → { text }, "resource::<itemId>::<index>" → { label, url }
+  const [overrides, setOverrides] = useState({});
 
   // Load KPI, notes/badges, and scorecard data from storage (or seed on first load)
   useEffect(()=>{ (async()=>{
@@ -5763,6 +5806,11 @@ export default function App() {
       if (ss?.value) { setScorecardData(JSON.parse(ss.value)); }
       else { await window.storage.set("aiola-scorecards-v1", JSON.stringify({})); }
     } catch {}
+    // Content overrides
+    try {
+      const so = await window.storage.get("aiola-overrides-v1");
+      if (so?.value) { setOverrides(JSON.parse(so.value)); }
+    } catch {}
   })(); },[]);
 
   // Persist KPI data on change
@@ -5771,6 +5819,8 @@ export default function App() {
   useEffect(()=>{ if(Object.keys(notesData).length===0)return; (async()=>{ try{await window.storage.set("aiola-notes-v1",JSON.stringify(notesData))}catch{}})(); },[notesData]);
   // Persist scorecard data on change
   useEffect(()=>{ if(Object.keys(scorecardData).length===0)return; (async()=>{ try{await window.storage.set("aiola-scorecards-v1",JSON.stringify(scorecardData))}catch{}})(); },[scorecardData]);
+  // Persist content overrides on change
+  useEffect(()=>{ if(Object.keys(overrides).length===0)return; (async()=>{ try{await window.storage.set("aiola-overrides-v1",JSON.stringify(overrides))}catch{}})(); },[overrides]);
 
   const [landOnPerf, setLandOnPerf] = useState(false);
   const viewTrainee = t => { setViewingTrainee(t); setLandOnPerf(false); setView("trainee-admin"); };
@@ -5800,6 +5850,18 @@ export default function App() {
     });
   };
 
+  // Override getters — merge admin edits onto source data
+  const getTaskText = (taskId, sourceText) => overrides[`task::${taskId}`]?.text ?? sourceText;
+  const getResource = (itemId, index, original) => {
+    const o = overrides[`resource::${itemId}::${index}`];
+    if (!o) return original;
+    return { ...original, label: o.label ?? original.label, url: o.url !== undefined ? o.url : original.url };
+  };
+  const setOverride = (key, value) => setOverrides(prev => {
+    if (value == null) { const next = {...prev}; delete next[key]; return next; }
+    return {...prev, [key]: value};
+  });
+
   // Report modal state: { trainee, isTraineeReport }
   const [reportModal, setReportModal] = useState(null);
 
@@ -5823,8 +5885,8 @@ export default function App() {
   let content = null;
   if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
   else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewPerformance={viewTraineePerf} onGenerateReport={handleGenerateReport} onLogout={handleLogout} kpiData={kpiData}/>;
-  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard} onAddKpiScore={addKpiScore} initialPerfPage={landOnPerf}/>; }
-  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)} scorecards={scorecardData[uid]||[]}/>; }
+  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard} onAddKpiScore={addKpiScore} initialPerfPage={landOnPerf} getTaskText={getTaskText} getResource={getResource} onSetOverride={setOverride} overrides={overrides}/>; }
+  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)} scorecards={scorecardData[uid]||[]} getTaskText={getTaskText} getResource={getResource} overrides={overrides}/>; }
   else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
 
   return <>
