@@ -2988,70 +2988,6 @@ function TrainingAssistant({ traineeName, currentPhase, currentSection, progress
   );
 }
 
-// AI Log modal for admin view
-function AiLogModal({ traineeName, onClose }) {
-  const chats = loadChats(traineeName);
-  const totalQuestions = chats.reduce((a, c) => a + c.messages.filter(m => m.role === "user").length, 0);
-  return (
-    <div style={{position:"fixed",inset:0,zIndex:2000,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,.4)",fontFamily:"'DM Sans',sans-serif"}} onClick={onClose}>
-      <div style={{width:560,maxHeight:"80vh",background:"#fff",borderRadius:16,boxShadow:"0 8px 40px rgba(0,0,0,.2)",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-        <div style={{padding:"16px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div>
-            <div style={{fontSize:15,fontWeight:700,color:B.navy}}>AI Chat Log — {traineeName}</div>
-            <div style={{fontSize:11,color:B.t3,marginTop:2}}>{chats.length} conversation{chats.length!==1?"s":""} · {totalQuestions} question{totalQuestions!==1?"s":""}</div>
-          </div>
-          <button onClick={onClose} style={{background:"none",border:"none",cursor:"pointer",padding:4,display:"flex"}}>
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke={B.t2} strokeWidth="2" strokeLinecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke={B.t2} strokeWidth="2" strokeLinecap="round"/></svg>
-          </button>
-        </div>
-        <div style={{flex:1,overflowY:"auto",padding:0}}>
-          {chats.length === 0 && <div style={{padding:32,textAlign:"center",color:B.t3,fontSize:13}}>No AI conversations recorded for this trainee.</div>}
-          {chats.map(c => {
-            const userMsgs = c.messages.filter(m => m.role === "user");
-            return (
-              <details key={c.id} style={{borderBottom:`1px solid ${B.bdr}`}}>
-                <summary style={{padding:"12px 20px",cursor:"pointer",display:"flex",alignItems:"center",gap:12,fontSize:13,color:B.t1,listStyle:"none"}}>
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{flexShrink:0,transition:"transform .15s"}}><path d="M3 1l4 4-4 4" stroke={B.t3} strokeWidth="1.5" strokeLinecap="round"/></svg>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.title}</div>
-                    <div style={{fontSize:10,color:B.t3,marginTop:1}}>{new Date(c.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})} · {c.messages.length} messages ({userMsgs.length} questions)</div>
-                  </div>
-                </summary>
-                <div style={{padding:"0 20px 16px",marginLeft:22}}>
-                  {c.messages.map((m, i) => (
-                    <div key={i} style={{padding:"6px 0",borderTop:i>0?`1px solid #f1f5f9`:"none"}}>
-                      <span style={{fontSize:10,fontWeight:600,color:m.role==="user"?B.blue:B.t3,textTransform:"uppercase",letterSpacing:.5}}>{m.role==="user"?"Trainee":"Assistant"}</span>
-                      <div style={{fontSize:12,color:B.t1,marginTop:2,lineHeight:1.5,whiteSpace:"pre-wrap",wordBreak:"break-word"}}>{m.content}</div>
-                      {m.ts && <div style={{fontSize:9,color:B.t3,marginTop:2}}>{new Date(m.ts).toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</div>}
-                    </div>
-                  ))}
-                </div>
-              </details>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function AiQuestionCount({ traineeName }) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    try {
-      const chats = loadChats(traineeName);
-      const total = chats.reduce((a, c) => a + c.messages.filter(m => m.role === "user").length, 0);
-      setCount(total);
-    } catch { /* ignore */ }
-  }, [traineeName]);
-  if (count === 0) return null;
-  return (
-    <span style={{fontSize:9,color:B.t3,display:"flex",alignItems:"center",gap:3,marginLeft:2}} title={`${count} question${count!==1?"s":""} asked to Training Assistant`}>
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" stroke={B.t3} strokeWidth="2"/></svg>
-      {count}
-    </span>
-  );
-}
 
 // ─── Shared Icons ────────────────────────────────────────────────────────────
 
@@ -4362,7 +4298,6 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
   const [trackFilter, setTrackFilter] = useState("All");
   const [adminTab, setAdminTab] = useState("training");
   const [drillDown, setDrillDown] = useState(null); // {type:"deadlines"|"quizzes"|"kpi", data:[...]}
-  const [aiLogTrainee, setAiLogTrainee] = useState(null);
 
   const handleAdd = () => {
     if(!newName.trim()||!newEmail.trim()) return;
@@ -4573,11 +4508,6 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
                     <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M4 1.5h5.59L13 4.91V14.5H4V1.5z" stroke="currentColor" strokeWidth="1.3"/><path d="M9.5 1.5V5H13" stroke="currentColor" strokeWidth="1.3"/><path d="M7 8v4m0 0l-2-2m2 2l2-2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     Report
                   </button>
-                  <button onClick={()=>setAiLogTrainee(t.name)} style={{padding:"5px 10px",border:`1px solid ${B.t3}`,borderRadius:6,background:"#fff",color:B.t3,fontSize:10,fontWeight:600,cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"center",gap:3}}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z" stroke="currentColor" strokeWidth="2"/></svg>
-                    AI Log
-                  </button>
-                  <AiQuestionCount traineeName={t.name}/>
                 </div>
               </div>
             );
@@ -4586,7 +4516,6 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
         </div>
         </>}
       </div>
-      {aiLogTrainee && <AiLogModal traineeName={aiLogTrainee} onClose={()=>setAiLogTrainee(null)}/>}
     </div>
   );
 }
@@ -4650,7 +4579,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             <span style={{fontSize:12,fontWeight:700,color:prog.pct===100?B.ok:B.blue}}>{prog.pct}%</span>
           </div>
           <div style={{height:5,borderRadius:3,background:B.blueL,overflow:"hidden"}}><div style={{height:"100%",width:`${prog.pct}%`,borderRadius:3,background:prog.pct===100?B.ok:`linear-gradient(90deg,${B.blue},${B.blueD})`,transition:"width .5s"}}/></div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:10,color:B.t3}}><span>{prog.doneTasks}/{totalTasks} tasks</span><span>{prog.passedQuizzes}/{totalQuizzes} quizzes</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:10,color:B.t3}}><span>{prog.doneTasks}/{totalTasks} tasks</span><span>{prog.passedQuizzes}/{totalQuizzes} assessments</span></div>
           {/* Phase indicator + days remaining */}
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:10}}>
             <span style={{fontSize:10,fontWeight:600,color:pMeta[currentPhaseIdx].color,background:currentPhaseIdx===0?B.blueL:currentPhaseIdx===1?B.purpleL:B.okL,padding:"2px 8px",borderRadius:6}}>{pMeta[currentPhaseIdx].label}</span>
@@ -4661,9 +4590,9 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             {milestones.map(m => (
               <div key={m.id} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2}} title={m.unlocked?`${m.label} — Unlocked!`:m.label}>
                 <div style={m.unlocked?{animation:"milestoneGlow 2s ease-in-out infinite"}:{}}>
-                  <TrophySvg size={20} color={m.unlocked ? m.color : "#d1d5db"} glow={m.unlocked}/>
+                  <TrophySvg size={32} color={m.unlocked ? m.color : "#d1d5db"} glow={m.unlocked}/>
                 </div>
-                <span style={{fontSize:8,fontWeight:600,color:m.unlocked?m.color:B.t3}}>{m.done}/{m.total}</span>
+                <span style={{fontSize:10,fontWeight:600,color:m.unlocked?m.color:B.t3}}>{m.done}/{m.total}</span>
               </div>
             ))}
           </div>
