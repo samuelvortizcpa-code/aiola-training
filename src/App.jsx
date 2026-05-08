@@ -3075,6 +3075,19 @@ const calcProg = (ts,qs) => {
 const phaseProg = (phase,ts) => { const a=phase.items.flatMap(i=>i.tasks),d=a.filter(t=>ts?.[t.id]).length; return a.length?Math.round(d/a.length*100):0; };
 const itemProg = (item,ts) => { const d=item.tasks.filter(t=>ts?.[t.id]).length; return item.tasks.length?Math.round(d/item.tasks.length*100):0; };
 const daysSince = s => Math.max(0,Math.floor((new Date()-new Date(s))/864e5));
+const inferScorecardPhase = (daysSinceStart) => daysSinceStart <= 30 ? "day30" : daysSinceStart <= 60 ? "day60" : "day90";
+const computeScorecard = (scores) => {
+  const total = Object.values(scores).reduce((sum, s) => sum + (s?.score || 0), 0);
+  let band;
+  if (total >= 17) band = "Mastery";
+  else if (total >= 14) band = "Proficient";
+  else if (total >= 11) band = "Developing";
+  else band = "Below Bar";
+  const ones = Object.values(scores).filter(s => s?.score === 1).length;
+  if (ones >= 2) band = "Below Bar";
+  else if (ones === 1 && band !== "Below Bar") band = "Developing";
+  return { total, band };
+};
 const pMeta = [{ids:["week1","week2","week3","week4"],label:"Days 1–30",color:B.blue},{ids:["week5_8"],label:"Days 31–60",color:B.purple},{ids:["week9_12"],label:"Days 61–90",color:B.ok}];
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -4524,7 +4537,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewKpi, onGenerateRep
 // TRAINEE PORTAL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData }) {
+function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard }) {
   const [aP, setAP] = useState("week1");
   const [aI, setAI] = useState("d1");
   const [qM, setQM] = useState(null); // which item's quiz is open
@@ -4536,6 +4549,8 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   const [eP, setEP] = useState({week1:true});
   const [perfPage, setPerfPage] = useState(false);
   const [expandedWeeks, setExpandedWeeks] = useState({});
+  const [scorecardForm, setScorecardForm] = useState(null);
+  const [expandedScorecards, setExpandedScorecards] = useState({});
   const mR = useRef(null);
   const prog = calcProg(completedTasks, quizResults);
   const cPh = PHASES.find(p=>p.id===aP);
@@ -4930,6 +4945,155 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 );
               })()}
             </div>
+
+            {/* Card 4: Presentation Scorecards */}
+            {(()=>{
+              // Collect all deliverables that have a weeklyRubric on their parent item (exclude assessment deliverables)
+              const scorecardDeliverables = [];
+              PHASES.forEach(phase => { phase.items.forEach(item => {
+                if (item.weeklyRubric && item.deliverables) {
+                  item.deliverables.forEach(d => {
+                    if (d.id.endsWith("_assessment")) return;
+                    scorecardDeliverables.push({ ...d, weekItemId: item.id, rubric: item.weeklyRubric });
+                  });
+                }
+              }); });
+              const userScorecards = (scorecards || []).slice().sort((a,b) => new Date(b.date) - new Date(a.date));
+              const bandColor = (band) => band === "Mastery" ? B.ok : band === "Proficient" ? B.blue : band === "Developing" ? B.warn : "#DC2626";
+              const bandBg = (band) => band === "Mastery" ? B.okL : band === "Proficient" ? B.blueL : band === "Developing" ? B.warnL : "#fee2e2";
+              const phaseLabel = (p) => p === "day30" ? "Days 1–30" : p === "day60" ? "Days 31–60" : "Days 61–90";
+              return (
+                <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginTop:20}}>
+                  <div style={{padding:"14px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:16}}>📊</span><span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>Presentation Scorecards</span></div>
+                    {isAdminView && onAddScorecard && scorecardDeliverables.length > 0 && (
+                      <button onClick={()=>setScorecardForm(p => p ? null : { deliverableId: scorecardDeliverables[0].id, scores: {}, overallNotes: "" })}
+                        style={{padding:"6px 14px",border:"none",borderRadius:8,background:scorecardForm?B.bdr:B.blue,color:scorecardForm?B.t2:"#fff",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
+                        {scorecardForm ? "Cancel" : "+ Add Scorecard"}
+                      </button>
+                    )}
+                  </div>
+                  {/* Admin scorecard form */}
+                  {isAdminView && scorecardForm && (()=>{
+                    const selDeliv = scorecardDeliverables.find(d => d.id === scorecardForm.deliverableId) || scorecardDeliverables[0];
+                    const rubricCats = selDeliv?.rubric?.categories || [];
+                    const handleScFormSubmit = (e) => {
+                      e.preventDefault();
+                      const scores = {};
+                      rubricCats.forEach(cat => {
+                        scores[cat.num] = { score: parseInt(scorecardForm.scores[cat.num]?.score) || 1, notes: scorecardForm.scores[cat.num]?.notes || "" };
+                      });
+                      const { total, band } = computeScorecard(scores);
+                      const entry = {
+                        id: "sc_" + Date.now(),
+                        deliverableId: selDeliv.id,
+                        weekItemId: selDeliv.weekItemId,
+                        date: new Date().toISOString().slice(0,10),
+                        submittedBy: "Nick Aiola",
+                        phase: inferScorecardPhase(daysSince(user.startDate)),
+                        scores,
+                        total,
+                        band,
+                        overallNotes: scorecardForm.overallNotes || ""
+                      };
+                      onAddScorecard(user.id, entry);
+                      setScorecardForm(null);
+                    };
+                    return (
+                      <form onSubmit={handleScFormSubmit} style={{padding:"18px",borderBottom:`1px solid ${B.bdr}`,background:"#f8fafc"}}>
+                        <div style={{marginBottom:14}}>
+                          <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Deliverable</label>
+                          <select value={scorecardForm.deliverableId} onChange={e => setScorecardForm(p => ({...p, deliverableId: e.target.value, scores: {}}))}
+                            style={{width:"100%",padding:"10px 12px",border:`1px solid ${B.bdr}`,borderRadius:8,fontSize:13,fontFamily:"'DM Sans',sans-serif",color:B.t1,background:"#fff"}}>
+                            {scorecardDeliverables.map(d => <option key={d.id} value={d.id}>{d.title}</option>)}
+                          </select>
+                        </div>
+                        <div style={{fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1,color:B.t3,marginBottom:10}}>Category Scores (1–4)</div>
+                        {rubricCats.map(cat => (
+                          <div key={cat.num} style={{marginBottom:12,padding:"10px 14px",background:"#fff",borderRadius:8,border:`1px solid ${B.bdr}`}}>
+                            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+                              <div>
+                                <span style={{fontSize:12,fontWeight:700,color:B.navy}}>{cat.num}. {cat.name}</span>
+                                <div style={{fontSize:10,color:B.t3,marginTop:1}}>{cat.desc}</div>
+                              </div>
+                              <div style={{display:"flex",gap:4,flexShrink:0,marginLeft:12}}>
+                                {[1,2,3,4].map(s => (
+                                  <button key={s} type="button" onClick={()=>setScorecardForm(p=>({...p,scores:{...p.scores,[cat.num]:{...(p.scores[cat.num]||{}),score:s}}}))}
+                                    style={{width:32,height:32,borderRadius:8,border:`2px solid ${(scorecardForm.scores[cat.num]?.score===s)?B.blue:B.bdr}`,background:(scorecardForm.scores[cat.num]?.score===s)?B.blueL:"#fff",color:(scorecardForm.scores[cat.num]?.score===s)?B.blue:B.t2,fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+                                    {s}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <textarea placeholder="Notes (optional)" value={scorecardForm.scores[cat.num]?.notes||""} onChange={e=>setScorecardForm(p=>({...p,scores:{...p.scores,[cat.num]:{...(p.scores[cat.num]||{}),notes:e.target.value}}}))}
+                              style={{width:"100%",padding:"6px 10px",border:`1px solid ${B.bdr}`,borderRadius:6,fontSize:11,fontFamily:"'DM Sans',sans-serif",color:B.t2,resize:"vertical",minHeight:28,boxSizing:"border-box"}}/>
+                          </div>
+                        ))}
+                        <div style={{marginBottom:14}}>
+                          <label style={{display:"block",fontSize:11,fontWeight:600,color:B.t2,marginBottom:4}}>Overall Notes</label>
+                          <textarea value={scorecardForm.overallNotes} onChange={e=>setScorecardForm(p=>({...p,overallNotes:e.target.value}))}
+                            style={{width:"100%",padding:"10px 12px",border:`1px solid ${B.bdr}`,borderRadius:8,fontSize:12,fontFamily:"'DM Sans',sans-serif",color:B.t1,resize:"vertical",minHeight:48,boxSizing:"border-box"}} placeholder="Overall feedback..."/>
+                        </div>
+                        <button type="submit" style={{padding:"10px 24px",border:"none",borderRadius:8,background:B.blue,color:"#fff",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Submit Scorecard</button>
+                      </form>
+                    );
+                  })()}
+                  {/* Scorecard entries */}
+                  <div style={{padding:"14px 18px"}}>
+                    {userScorecards.length === 0 ? (
+                      <div style={{padding:"20px 0",textAlign:"center",fontSize:12,color:B.t3}}>
+                        {isAdminView ? "No scorecards submitted yet. Use the button above to score a presentation." : "No scorecards yet. Your manager will score your presentations as you deliver them."}
+                      </div>
+                    ) : userScorecards.map(sc => {
+                      const deliv = scorecardDeliverables.find(d => d.id === sc.deliverableId);
+                      const rubricCats = deliv?.rubric?.categories || [];
+                      const isExpanded = expandedScorecards[sc.id];
+                      return (
+                        <div key={sc.id} style={{marginBottom:10}}>
+                          <button onClick={()=>setExpandedScorecards(p=>({...p,[sc.id]:!p[sc.id]}))}
+                            style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 14px",border:`1px solid ${B.bdr}`,borderRadius:isExpanded?"8px 8px 0 0":"8px",background:isExpanded?"#f8fafc":"#fff",cursor:"pointer",fontFamily:"inherit",fontSize:12,fontWeight:600,color:B.t1,transition:"background .15s"}}>
+                            <div style={{display:"flex",alignItems:"center",gap:10}}>
+                              <span>{deliv?.title || sc.deliverableId}</span>
+                              <span style={{fontSize:9,fontWeight:600,padding:"2px 8px",borderRadius:4,background:bandBg(sc.band),color:bandColor(sc.band)}}>{sc.band} ({sc.total}/20)</span>
+                              <span style={{fontSize:9,padding:"2px 6px",borderRadius:4,background:B.blueL,color:B.blue}}>{phaseLabel(sc.phase)}</span>
+                            </div>
+                            <div style={{display:"flex",alignItems:"center",gap:8}}>
+                              <span style={{fontSize:10,color:B.t3}}>{new Date(sc.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>
+                              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{transition:"transform .15s",transform:isExpanded?"rotate(180deg)":"none"}}><path d="M2 3.5l3 3 3-3" stroke={B.t3} strokeWidth="1.5" strokeLinecap="round"/></svg>
+                            </div>
+                          </button>
+                          {isExpanded && (
+                            <div style={{padding:"12px 14px",border:`1px solid ${B.bdr}`,borderTop:"none",borderRadius:"0 0 8px 8px",background:"#fff"}}>
+                              <div style={{fontSize:10,color:B.t3,marginBottom:10}}>Submitted by {sc.submittedBy}</div>
+                              {rubricCats.map(cat => {
+                                const catScore = sc.scores?.[cat.num];
+                                if (!catScore) return null;
+                                const scoreColor = catScore.score >= 4 ? B.ok : catScore.score >= 3 ? B.blue : catScore.score >= 2 ? B.warn : "#DC2626";
+                                return (
+                                  <div key={cat.num} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"6px 0",borderBottom:`1px solid #f1f5f9`}}>
+                                    <div style={{width:32,height:32,borderRadius:8,background:scoreColor+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color:scoreColor,flexShrink:0}}>{catScore.score}</div>
+                                    <div style={{flex:1}}>
+                                      <div style={{fontSize:12,fontWeight:600,color:B.t1}}>{cat.name}</div>
+                                      {catScore.notes && <div style={{fontSize:11,color:B.t3,marginTop:2}}>{catScore.notes}</div>}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                              {sc.overallNotes && (
+                                <div style={{marginTop:10,padding:"10px 12px",background:"#f8fafc",borderRadius:6,border:`1px solid ${B.bdr}`}}>
+                                  <div style={{fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:1,color:B.t3,marginBottom:4}}>Overall Notes</div>
+                                  <div style={{fontSize:12,color:B.t1,lineHeight:1.5}}>{sc.overallNotes}</div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
         {/* Section content */}
@@ -5717,6 +5881,9 @@ export default function App() {
   const addKpiScore = (uid, kpiId, entry) => {
     setKpiData(prev => ({...prev, [uid]: {...(prev[uid]||{}), [kpiId]: [...((prev[uid]||{})[kpiId]||[]), entry]}}));
   };
+  const addScorecard = (uid, entry) => {
+    setScorecardData(prev => ({...prev, [uid]: [...(prev[uid] || []), entry]}));
+  };
   const addNote = (uid, note) => {
     setNotesData(prev => ({...prev, [uid]: {...(prev[uid]||{notes:[],badges:[]}), notes: [...((prev[uid]||{}).notes||[]), note]}}));
   };
@@ -5754,8 +5921,8 @@ export default function App() {
   if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
   else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewKpi={viewTraineeKpi} onGenerateReport={handleGenerateReport} onLogout={handleLogout} kpiData={kpiData}/>;
   else if(view==="trainee-kpi"&&viewingTrainee) content = <TraineeKpiDashboard user={viewingTrainee} kpiData={kpiData[viewingTrainee.id]||{}} onAddScore={addKpiScore} onBackToAdmin={()=>setView("admin")} onLogout={handleLogout}/>;
-  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}}/>; }
-  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)}/>; }
+  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard}/>; }
+  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)} scorecards={scorecardData[uid]||[]}/>; }
   else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
 
   return <>
