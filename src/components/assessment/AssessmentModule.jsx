@@ -165,6 +165,14 @@ export default function AssessmentModule({ blocks, sectionId, userId, onModuleCo
         <span style={{ fontSize: 10, color: B.t3 }}>{completedCount}/{allBlocks.length} blocks</span>
       </div>
 
+      {/* No-research notice */}
+      {!allDone && (
+        <div style={{ padding: "10px 18px", background: B.blueL, borderBottom: `1px solid ${B.bdr}`, fontSize: 12, color: B.navy, lineHeight: 1.5, display: "flex", alignItems: "flex-start", gap: 8 }}>
+          <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>&#x1F4CB;</span>
+          <span>Answer based on what you've learned this week — please don't research questions before answering. The goal of this check is to calibrate where your understanding is right now, so your manager can target the next sprint of learning. There's no penalty for getting things wrong.</span>
+        </div>
+      )}
+
       {/* Resurface banner */}
       {resurfacedBlocks.length > 0 && !allDone && (
         <div style={{ padding: "8px 18px", background: B.purpleL, borderBottom: `1px solid ${B.bdr}`, fontSize: 11, color: B.purple, display: "flex", alignItems: "center", gap: 6 }}>
