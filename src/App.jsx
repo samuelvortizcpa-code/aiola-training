@@ -4749,7 +4749,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
         </div>
         {/* My Performance Page */}
         {perfPage && (
-          <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
+          <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:1200,width:"100%"}}>
             {/* Generate My Report button — trainee only */}
             {!isAdminView && onGenerateReport && (
               <div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
@@ -5211,7 +5211,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
         )}
         {/* Section content */}
         {!perfPage&&cIt&&(
-          <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:960,width:"100%"}}>
+          <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:1200,width:"100%"}}>
             <p style={{fontSize:13,color:B.t2,lineHeight:1.6,marginTop:0,marginBottom:20}}>{cIt.description}</p>
             {cIt.learningObjectives?.length > 0 && (
               <div style={{background:B.blueL,border:`1px solid ${B.blue}22`,borderRadius:10,padding:"14px 18px",marginBottom:20}}>
