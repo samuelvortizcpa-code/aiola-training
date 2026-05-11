@@ -4585,7 +4585,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewPerformance, onGen
 // TRAINEE PORTAL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard, onAddKpiScore, initialPerfPage, getTaskText, getResource, getItemDescription, getObjective, getRubricCategory, getDeliverable, onSetOverride, overrides }) {
+function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard, onAddKpiScore, initialPerfPage, getTaskText, getResource, getItemDescription, getObjective, getRubricCategory, getDeliverable, getRealWorld, onSetOverride, overrides }) {
   const [aP, setAP] = useState("week1");
   const [aI, setAI] = useState("d1");
   const [qM, setQM] = useState(null); // which item's quiz is open
@@ -5304,15 +5304,30 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 </div>
               </div>
             )}
-            <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
-              <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}>
-                <span style={{fontSize:16}}>{"\uD83D\uDCA1"}</span>
-                <span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:0.8}}>Real World Application</span>
-              </div>
-              <div style={{padding:"16px 20px"}}>
-                <p style={{margin:0,fontSize:13,color:B.t1,lineHeight:1.5}}>Your manager will share anonymized client examples for both deliverables during the week. One STR scenario for Wednesday's presentation and one REPS scenario for Friday's. Refer to your manager for the Week 2 client packets and walk through them together before each presentation.</p>
-              </div>
-            </div>
+            {(() => {
+              const REAL_WORLD_BODY = "Your manager will share anonymized client examples for both deliverables during the week. One STR scenario for Wednesday's presentation and one REPS scenario for Friday's. Refer to your manager for the Week 2 client packets and walk through them together before each presentation.";
+              const rwKey = `realworld::${cIt.id}`;
+              const rwBody = getRealWorld ? getRealWorld(cIt.id, REAL_WORLD_BODY) : REAL_WORLD_BODY;
+              return <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
+                <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:16}}>{"\uD83D\uDCA1"}</span>
+                  <span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:0.8}}>Real World Application</span>
+                </div>
+                <div style={{padding:"16px 20px"}}>
+                  {editingOverride?.key === rwKey ? <>
+                    <textarea value={editingOverride.body} onChange={e=>setEditingOverride({...editingOverride,body:e.target.value})} onKeyDown={e=>{if(e.key==="Escape")setEditingOverride(null);}} rows={4} style={{width:"100%",fontSize:13,color:B.t1,lineHeight:1.5,padding:"6px 8px",border:`1px solid ${B.blue}`,borderRadius:4,fontFamily:"inherit",resize:"vertical",boxSizing:"border-box"}}/>
+                    <div style={{display:"flex",gap:6,marginTop:4}}>
+                      <button onClick={()=>{const val=editingOverride.body.trim();if(!val){setEditingOverride(null);return;}if(val===REAL_WORLD_BODY)onSetOverride(rwKey,null);else onSetOverride(rwKey,{body:val});setEditingOverride(null);}} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:"none",background:B.blue,color:"#fff",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>Save</button>
+                      <button onClick={()=>setEditingOverride(null)} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:B.t2,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                      {overrides?.[rwKey] && <button onClick={()=>{onSetOverride(rwKey,null);setEditingOverride(null);}} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:"#DC2626",cursor:"pointer",fontFamily:"inherit"}}>Reset to default</button>}
+                    </div>
+                  </> : <div style={{display:"flex",alignItems:"flex-start",gap:4}}>
+                    <p style={{margin:0,fontSize:13,color:B.t1,lineHeight:1.5,flex:1}}>{rwBody}</p>
+                    {isAdminView && onSetOverride && <button onClick={()=>setEditingOverride({key:rwKey,body:rwBody})} style={{...PENCIL_STYLE,fontSize:11}} onMouseEnter={pencilHoverOn} onMouseLeave={pencilHoverOff} title="Edit real world application">{"\u270F\uFE0F"}</button>}
+                  </div>}
+                </div>
+              </div>;
+            })()}
             {cIt.deliverables && cIt.deliverables.length > 0 && (
               <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
                 <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}>
@@ -5958,6 +5973,8 @@ export default function App() {
     if (!ov) return sourceDeliv;
     return { ...sourceDeliv, description: ov.description ?? sourceDeliv.description };
   };
+  const getRealWorld = (itemId, sourceBody) =>
+    overrides[`realworld::${itemId}`]?.body ?? sourceBody;
   const setOverride = (key, value) => setOverrides(prev => {
     if (value == null) { const next = {...prev}; delete next[key]; return next; }
     return {...prev, [key]: value};
@@ -5986,8 +6003,8 @@ export default function App() {
   let content = null;
   if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
   else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewPerformance={viewTraineePerf} onGenerateReport={handleGenerateReport} onLogout={handleLogout} kpiData={kpiData}/>;
-  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard} onAddKpiScore={addKpiScore} initialPerfPage={landOnPerf} getTaskText={getTaskText} getResource={getResource} getItemDescription={getItemDescription} getObjective={getObjective} getRubricCategory={getRubricCategory} getDeliverable={getDeliverable} onSetOverride={setOverride} overrides={overrides}/>; }
-  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)} scorecards={scorecardData[uid]||[]} getTaskText={getTaskText} getResource={getResource} getItemDescription={getItemDescription} getObjective={getObjective} getRubricCategory={getRubricCategory} getDeliverable={getDeliverable} overrides={overrides}/>; }
+  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard} onAddKpiScore={addKpiScore} initialPerfPage={landOnPerf} getTaskText={getTaskText} getResource={getResource} getItemDescription={getItemDescription} getObjective={getObjective} getRubricCategory={getRubricCategory} getDeliverable={getDeliverable} getRealWorld={getRealWorld} onSetOverride={setOverride} overrides={overrides}/>; }
+  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)} scorecards={scorecardData[uid]||[]} getTaskText={getTaskText} getResource={getResource} getItemDescription={getItemDescription} getObjective={getObjective} getRubricCategory={getRubricCategory} getDeliverable={getDeliverable} getRealWorld={getRealWorld} overrides={overrides}/>; }
   else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
 
   return <>
