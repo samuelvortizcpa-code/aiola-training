@@ -4590,7 +4590,7 @@ function AdminDashboard({ user, allData, onViewTrainee, onViewPerformance, onGen
 // TRAINEE PORTAL
 // ═════════════════════════════════════════════════════════════════════════════
 
-function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard, onAddKpiScore, initialPerfPage, getTaskText, getResource, onSetOverride, overrides }) {
+function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPassQuiz, onLogout, isAdminView, onBackToAdmin, onGenerateReport, notes, badges, onAddNote, onAddBadge, onUpdateBadge, kpiData, scorecards, onAddScorecard, onAddKpiScore, initialPerfPage, getTaskText, getResource, getItemDescription, getObjective, getRubricCategory, getDeliverable, onSetOverride, overrides }) {
   const [aP, setAP] = useState("week1");
   const [aI, setAI] = useState("d1");
   const [qM, setQM] = useState(null); // which item's quiz is open
@@ -4605,8 +4605,12 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
   const [scorecardForm, setScorecardForm] = useState(null);
   const [expandedScorecards, setExpandedScorecards] = useState({});
   const [kpiSubmitForm, setKpiSubmitForm] = useState(null);
-  // Inline edit state for admin overrides: { key, text, label, url }
+  // Inline edit state for admin overrides: { key, text, label, url, name, desc, description }
   const [editingOverride, setEditingOverride] = useState(null);
+  // Shared pencil button style for all admin edit icons
+  const PENCIL_STYLE = {flexShrink:0,background:"none",border:"none",borderRadius:4,cursor:"pointer",padding:"2px 4px",fontSize:13,color:B.t3,opacity:.85,transition:"opacity .15s, background .15s"};
+  const pencilHoverOn = e => {e.currentTarget.style.opacity="1";e.currentTarget.style.background="#dbeafe";};
+  const pencilHoverOff = e => {e.currentTarget.style.opacity=".85";e.currentTarget.style.background="none";};
   const mR = useRef(null);
   const prog = calcProg(completedTasks, quizResults);
   const cPh = PHASES.find(p=>p.id===aP);
@@ -5220,7 +5224,25 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
         {/* Section content */}
         {!perfPage&&cIt&&(
           <div className="r-trainee-content" style={{padding:"24px 28px",maxWidth:1200,width:"100%"}}>
-            <p style={{fontSize:13,color:B.t2,lineHeight:1.6,marginTop:0,marginBottom:20}}>{cIt.description}</p>
+            {(()=>{
+              const descKey = `description::${cIt.id}`;
+              const descText = getItemDescription ? getItemDescription(cIt.id, cIt.description) : cIt.description;
+              if (editingOverride?.key === descKey) {
+                const saveDesc = () => { const val=editingOverride.text.trim(); if(!val){setEditingOverride(null);return;} if(val===cIt.description)onSetOverride(descKey,null); else onSetOverride(descKey,{text:val}); setEditingOverride(null); };
+                return <div style={{marginBottom:20}}>
+                  <textarea value={editingOverride.text} onChange={e=>setEditingOverride({...editingOverride,text:e.target.value})} onKeyDown={e=>{if(e.key==="Escape")setEditingOverride(null);}} rows={4} style={{width:"100%",fontSize:13,color:B.t2,lineHeight:1.6,padding:"8px 10px",border:`1px solid ${B.blue}`,borderRadius:6,fontFamily:"inherit",resize:"vertical",boxSizing:"border-box"}}/>
+                  <div style={{display:"flex",gap:6,marginTop:6}}>
+                    <button onClick={saveDesc} style={{fontSize:11,padding:"4px 12px",borderRadius:4,border:"none",background:B.blue,color:"#fff",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>Save</button>
+                    <button onClick={()=>setEditingOverride(null)} style={{fontSize:11,padding:"4px 12px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:B.t2,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                    {overrides?.[descKey] && <button onClick={()=>{onSetOverride(descKey,null);setEditingOverride(null);}} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:"#DC2626",cursor:"pointer",fontFamily:"inherit"}}>Reset to default</button>}
+                  </div>
+                </div>;
+              }
+              return <div style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:20}}>
+                <p style={{fontSize:13,color:B.t2,lineHeight:1.6,marginTop:0,marginBottom:0,flex:1}}>{descText}</p>
+                {isAdminView && onSetOverride && <button onClick={()=>setEditingOverride({key:descKey,text:descText})} style={PENCIL_STYLE} onMouseEnter={pencilHoverOn} onMouseLeave={pencilHoverOff} title="Edit description">✏️</button>}
+              </div>;
+            })()}
             {cIt.learningObjectives?.length > 0 && (
               <div style={{background:B.blueL,border:`1px solid ${B.blue}22`,borderRadius:10,padding:"14px 18px",marginBottom:20}}>
                 <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
@@ -5228,9 +5250,25 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                   <span style={{fontSize:11,fontWeight:700,color:B.blue,textTransform:"uppercase",letterSpacing:.8}}>Learning Objectives</span>
                 </div>
                 <ul style={{margin:0,paddingLeft:18,listStyleType:"disc"}}>
-                  {cIt.learningObjectives.map((obj,i)=>(
-                    <li key={i} style={{fontSize:12,color:B.t1,lineHeight:1.6,marginBottom:4}}>{obj}</li>
-                  ))}
+                  {cIt.learningObjectives.map((obj,i)=>{
+                    const objKey = `objective::${cIt.id}::${i}`;
+                    const objText = getObjective ? getObjective(cIt.id, i, obj) : obj;
+                    if (editingOverride?.key === objKey) {
+                      const saveObj = () => { const val=editingOverride.text.trim(); if(!val){setEditingOverride(null);return;} if(val===obj)onSetOverride(objKey,null); else onSetOverride(objKey,{text:val}); setEditingOverride(null); };
+                      return <li key={i} style={{fontSize:12,color:B.t1,lineHeight:1.6,marginBottom:4}}>
+                        <input value={editingOverride.text} onChange={e=>setEditingOverride({...editingOverride,text:e.target.value})} onKeyDown={e=>{if(e.key==="Enter")saveObj();if(e.key==="Escape")setEditingOverride(null);}} style={{width:"100%",fontSize:12,padding:"4px 8px",border:`1px solid ${B.blue}`,borderRadius:4,fontFamily:"inherit",boxSizing:"border-box"}} autoFocus/>
+                        <div style={{display:"flex",gap:6,marginTop:4}}>
+                          <button onClick={saveObj} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:"none",background:B.blue,color:"#fff",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>Save</button>
+                          <button onClick={()=>setEditingOverride(null)} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:B.t2,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                          {overrides?.[objKey] && <button onClick={()=>{onSetOverride(objKey,null);setEditingOverride(null);}} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:"#DC2626",cursor:"pointer",fontFamily:"inherit"}}>Reset to default</button>}
+                        </div>
+                      </li>;
+                    }
+                    return <li key={i} style={{fontSize:12,color:B.t1,lineHeight:1.6,marginBottom:4,display:"flex",alignItems:"flex-start",gap:4}}>
+                      <span style={{flex:1}}>{objText}</span>
+                      {isAdminView && onSetOverride && <button onClick={()=>setEditingOverride({key:objKey,text:objText})} style={{...PENCIL_STYLE,fontSize:11}} onMouseEnter={pencilHoverOn} onMouseLeave={pencilHoverOff} title="Edit objective">✏️</button>}
+                    </li>;
+                  })}
                 </ul>
               </div>
             )}
@@ -5243,9 +5281,28 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 <div style={{padding:"16px 20px"}}>
                   <p style={{margin:"0 0 16px",fontSize:13,fontStyle:"italic",color:B.t2,lineHeight:1.5}}>{cIt.weeklyRubric.intro}</p>
                   <ol style={{margin:"0 0 16px",paddingLeft:22,fontSize:13,color:B.t1,lineHeight:1.6}}>
-                    {cIt.weeklyRubric.categories.map(cat=>(
-                      <li key={cat.num} style={{marginBottom:8}}><strong>{cat.name}</strong> — {cat.desc}</li>
-                    ))}
+                    {cIt.weeklyRubric.categories.map(cat=>{
+                      const rcKey = `rubricCat::${cIt.id}::${cat.num}`;
+                      const rc = getRubricCategory ? getRubricCategory(cIt.id, cat.num, cat) : cat;
+                      if (editingOverride?.key === rcKey) {
+                        const saveRc = () => { const n=editingOverride.name.trim(); const d=editingOverride.desc.trim(); if(!n||!d){setEditingOverride(null);return;} if(n===cat.name&&d===cat.desc)onSetOverride(rcKey,null); else onSetOverride(rcKey,{name:n,desc:d}); setEditingOverride(null); };
+                        return <li key={cat.num} style={{marginBottom:8}}>
+                          <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                            <input value={editingOverride.name} onChange={e=>setEditingOverride({...editingOverride,name:e.target.value})} onKeyDown={e=>{if(e.key==="Escape")setEditingOverride(null);}} placeholder="Category name" style={{fontSize:13,fontWeight:700,padding:"4px 8px",border:`1px solid ${B.blue}`,borderRadius:4,fontFamily:"inherit",boxSizing:"border-box"}} autoFocus/>
+                            <textarea value={editingOverride.desc} onChange={e=>setEditingOverride({...editingOverride,desc:e.target.value})} onKeyDown={e=>{if(e.key==="Escape")setEditingOverride(null);}} rows={3} placeholder="Description" style={{fontSize:13,padding:"4px 8px",border:`1px solid ${B.blue}`,borderRadius:4,fontFamily:"inherit",resize:"vertical",boxSizing:"border-box"}}/>
+                            <div style={{display:"flex",gap:6}}>
+                              <button onClick={saveRc} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:"none",background:B.blue,color:"#fff",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>Save</button>
+                              <button onClick={()=>setEditingOverride(null)} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:B.t2,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                              {overrides?.[rcKey] && <button onClick={()=>{onSetOverride(rcKey,null);setEditingOverride(null);}} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:"#DC2626",cursor:"pointer",fontFamily:"inherit"}}>Reset to default</button>}
+                            </div>
+                          </div>
+                        </li>;
+                      }
+                      return <li key={cat.num} style={{marginBottom:8,display:"flex",alignItems:"flex-start",gap:4}}>
+                        <span style={{flex:1}}><strong>{rc.name}</strong> — {rc.desc}</span>
+                        {isAdminView && onSetOverride && <button onClick={()=>setEditingOverride({key:rcKey,name:rc.name,desc:rc.desc})} style={{...PENCIL_STYLE,fontSize:11}} onMouseEnter={pencilHoverOn} onMouseLeave={pencilHoverOff} title="Edit rubric category">✏️</button>}
+                      </li>;
+                    })}
                   </ol>
                   <div style={{fontSize:12,color:B.t2,fontStyle:"italic",paddingTop:12,borderTop:`1px solid ${B.bdr}`,marginBottom:12}}>{cIt.weeklyRubric.banding}</div>
                   <a href={cIt.weeklyRubric.fullDocLink} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",padding:"8px 16px",background:B.blue,color:"#fff",textDecoration:"none",borderRadius:7,fontSize:12,fontWeight:600}}>{cIt.weeklyRubric.fullDocLabel} →</a>
@@ -5278,15 +5335,35 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                   <span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:0.8}}>Deliverables</span>
                 </div>
                 <div style={{padding:"16px 20px"}}>
-                  {cIt.deliverables.map((d,i) => (
-                    <div key={d.id} style={{paddingBottom:12,marginBottom:12,borderBottom:i < cIt.deliverables.length - 1 ? `1px solid ${B.bdr}` : "none"}}>
+                  {cIt.deliverables.map((d,i) => {
+                    const dlKey = `deliverable::${cIt.id}::${d.id}`;
+                    const dl = getDeliverable ? getDeliverable(cIt.id, d.id, d) : d;
+                    if (editingOverride?.key === dlKey) {
+                      const saveDl = () => { const val=editingOverride.description.trim(); if(!val){setEditingOverride(null);return;} if(val===d.description)onSetOverride(dlKey,null); else onSetOverride(dlKey,{description:val}); setEditingOverride(null); };
+                      return <div key={d.id} style={{paddingBottom:12,marginBottom:12,borderBottom:i < cIt.deliverables.length - 1 ? `1px solid ${B.bdr}` : "none"}}>
+                        <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",gap:12,marginBottom:4}}>
+                          <span style={{fontSize:14,fontWeight:700,color:B.navy}}>{d.title}</span>
+                          <span style={{fontSize:12,fontWeight:600,color:B.blue,whiteSpace:"nowrap"}}>Due {d.dueDate}</span>
+                        </div>
+                        <textarea value={editingOverride.description} onChange={e=>setEditingOverride({...editingOverride,description:e.target.value})} onKeyDown={e=>{if(e.key==="Escape")setEditingOverride(null);}} rows={3} style={{width:"100%",fontSize:13,color:B.t1,lineHeight:1.5,padding:"6px 8px",border:`1px solid ${B.blue}`,borderRadius:4,fontFamily:"inherit",resize:"vertical",boxSizing:"border-box"}}/>
+                        <div style={{display:"flex",gap:6,marginTop:4}}>
+                          <button onClick={saveDl} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:"none",background:B.blue,color:"#fff",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>Save</button>
+                          <button onClick={()=>setEditingOverride(null)} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:B.t2,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+                          {overrides?.[dlKey] && <button onClick={()=>{onSetOverride(dlKey,null);setEditingOverride(null);}} style={{fontSize:11,padding:"3px 10px",borderRadius:4,border:`1px solid ${B.bdr}`,background:"#fff",color:"#DC2626",cursor:"pointer",fontFamily:"inherit"}}>Reset to default</button>}
+                        </div>
+                      </div>;
+                    }
+                    return <div key={d.id} style={{paddingBottom:12,marginBottom:12,borderBottom:i < cIt.deliverables.length - 1 ? `1px solid ${B.bdr}` : "none"}}>
                       <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",gap:12,marginBottom:4}}>
                         <span style={{fontSize:14,fontWeight:700,color:B.navy}}>{d.title}</span>
                         <span style={{fontSize:12,fontWeight:600,color:B.blue,whiteSpace:"nowrap"}}>Due {d.dueDate}</span>
                       </div>
-                      <div style={{fontSize:13,color:B.t1,lineHeight:1.5}}>{d.description}</div>
-                    </div>
-                  ))}
+                      <div style={{display:"flex",alignItems:"flex-start",gap:4}}>
+                        <div style={{fontSize:13,color:B.t1,lineHeight:1.5,flex:1}}>{dl.description}</div>
+                        {isAdminView && onSetOverride && <button onClick={()=>setEditingOverride({key:dlKey,description:dl.description})} style={{...PENCIL_STYLE,fontSize:11}} onMouseEnter={pencilHoverOn} onMouseLeave={pencilHoverOff} title="Edit deliverable">✏️</button>}
+                      </div>
+                    </div>;
+                  })}
                   <div style={{fontSize:12,color:B.t2,fontStyle:"italic",marginTop:4}}>Add these as tasks in ClickUp as necessary.</div>
                 </div>
               </div>
@@ -5321,7 +5398,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                     onMouseEnter={e=>{if(!done)e.currentTarget.style.background="#fafbfc"}} onMouseLeave={e=>{e.currentTarget.style.background=done?B.okBg:"transparent"}}>
                     <div style={{width:20,height:20,borderRadius:5,flexShrink:0,marginTop:1,border:done?"none":`2px solid ${B.bdr}`,background:done?B.ok:"#fff",display:"flex",alignItems:"center",justifyContent:"center",transition:"all .2s"}}>{done&&<Chk/>}</div>
                     <span style={{fontSize:13,lineHeight:1.5,color:done?B.t3:B.t1,textDecoration:done?"line-through":"none",transition:"color .2s",flex:1}}>{displayText}</span>
-                    {isAdminView && onSetOverride && <button onClick={e=>{e.stopPropagation();setEditingOverride({key:tKey,text:displayText});}} style={{flexShrink:0,background:"none",border:"none",cursor:"pointer",padding:"2px 4px",fontSize:13,color:B.t3,opacity:.5}} title="Edit task text">✏️</button>}
+                    {isAdminView && onSetOverride && <button onClick={e=>{e.stopPropagation();setEditingOverride({key:tKey,text:displayText});}} style={PENCIL_STYLE} onMouseEnter={pencilHoverOn} onMouseLeave={pencilHoverOff} title="Edit task text">✏️</button>}
                   </div>
                 );
               })}
@@ -5361,7 +5438,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                     const pill = <span key={i} title={`${r.label} (${typeLabel})${hasUrl ? "" : " — pending"}`} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"10px 14px",minHeight:44,borderRadius:22,fontSize:13,fontWeight:500,background:hasUrl ? B.blueL : "#f1f5f9",color:hasUrl ? B.blue : B.t3,border:`1px solid ${hasUrl ? B.blueM : B.bdr}`,cursor:hasUrl ? "pointer" : "default",boxSizing:"border-box",transition:"background .15s",opacity:hasUrl ? 1 : 0.7}}
                       onMouseEnter={e=>{if(hasUrl)e.currentTarget.style.background="#dbeafe"}} onMouseLeave={e=>{if(hasUrl)e.currentTarget.style.background=hasUrl?B.blueL:"#f1f5f9"}}>
                       <span style={{fontSize:15}}>{typeIcon}</span>{r.label}{!hasUrl && <span style={{fontSize:9,fontWeight:700,color:B.t3,background:"#e2e8f0",padding:"1px 6px",borderRadius:4,marginLeft:4}}>pending</span>}
-                      {isAdminView && onSetOverride && <span onClick={e=>{e.preventDefault();e.stopPropagation();setEditingOverride({key:rKey,label:r.label,url:r.url||""});}} style={{marginLeft:4,cursor:"pointer",fontSize:11,opacity:.5}} title="Edit resource">✏️</span>}
+                      {isAdminView && onSetOverride && <span onClick={e=>{e.preventDefault();e.stopPropagation();setEditingOverride({key:rKey,label:r.label,url:r.url||""});}} style={{...PENCIL_STYLE,marginLeft:4,fontSize:11}} onMouseEnter={pencilHoverOn} onMouseLeave={pencilHoverOff} title="Edit resource">✏️</span>}
                     </span>;
                     if (hasUrl) return <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none"}}>{pill}</a>;
                     return pill;
@@ -5884,6 +5961,18 @@ export default function App() {
     if (!o) return original;
     return { ...original, label: o.label ?? original.label, url: o.url !== undefined ? o.url : original.url };
   };
+  const getItemDescription = (itemId, sourceText) => overrides[`description::${itemId}`]?.text ?? sourceText;
+  const getObjective = (itemId, idx, sourceText) => overrides[`objective::${itemId}::${idx}`]?.text ?? sourceText;
+  const getRubricCategory = (itemId, catNum, sourceCat) => {
+    const ov = overrides[`rubricCat::${itemId}::${catNum}`];
+    if (!ov) return sourceCat;
+    return { ...sourceCat, name: ov.name ?? sourceCat.name, desc: ov.desc ?? sourceCat.desc };
+  };
+  const getDeliverable = (itemId, delivId, sourceDeliv) => {
+    const ov = overrides[`deliverable::${itemId}::${delivId}`];
+    if (!ov) return sourceDeliv;
+    return { ...sourceDeliv, description: ov.description ?? sourceDeliv.description };
+  };
   const setOverride = (key, value) => setOverrides(prev => {
     if (value == null) { const next = {...prev}; delete next[key]; return next; }
     return {...prev, [key]: value};
@@ -5912,8 +6001,8 @@ export default function App() {
   let content = null;
   if(view==="login") content = <LoginScreen onLogin={handleLogin}/>;
   else if(view==="admin") content = <AdminDashboard user={currentUser} allData={allUserData} onViewTrainee={viewTrainee} onViewPerformance={viewTraineePerf} onGenerateReport={handleGenerateReport} onLogout={handleLogout} kpiData={kpiData}/>;
-  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard} onAddKpiScore={addKpiScore} initialPerfPage={landOnPerf} getTaskText={getTaskText} getResource={getResource} onSetOverride={setOverride} overrides={overrides}/>; }
-  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)} scorecards={scorecardData[uid]||[]} getTaskText={getTaskText} getResource={getResource} overrides={overrides}/>; }
+  else if(view==="trainee-admin"&&viewingTrainee){ const uid=viewingTrainee.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={viewingTrainee} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={true} onBackToAdmin={()=>setView("admin")} onGenerateReport={()=>handleGenerateReport(viewingTrainee)} notes={nd.notes} badges={nd.badges} onAddNote={addNote} onAddBadge={addBadge} onUpdateBadge={updateBadge} kpiData={kpiData[uid]||{}} scorecards={scorecardData[uid]||[]} onAddScorecard={addScorecard} onAddKpiScore={addKpiScore} initialPerfPage={landOnPerf} getTaskText={getTaskText} getResource={getResource} getItemDescription={getItemDescription} getObjective={getObjective} getRubricCategory={getRubricCategory} getDeliverable={getDeliverable} onSetOverride={setOverride} overrides={overrides}/>; }
+  else if(view==="trainee"&&currentUser){ const uid=currentUser.id; const nd=notesData[uid]||{notes:[],badges:[]}; content = <TraineePortal user={currentUser} completedTasks={allUserData[uid]?.tasks||{}} quizResults={allUserData[uid]?.quizzes||{}} onToggleTask={toggleTask(uid)} onPassQuiz={passQuiz(uid)} onLogout={handleLogout} isAdminView={false} onBackToAdmin={null} notes={nd.notes} badges={nd.badges} kpiData={kpiData[uid]||{}} onGenerateReport={()=>handleTraineeReport(currentUser)} scorecards={scorecardData[uid]||[]} getTaskText={getTaskText} getResource={getResource} getItemDescription={getItemDescription} getObjective={getObjective} getRubricCategory={getRubricCategory} getDeliverable={getDeliverable} overrides={overrides}/>; }
   else if(view==="client"&&currentUser) content = <ClientPortalShell user={currentUser} onLogout={handleLogout}/>;
 
   return <>
