@@ -491,14 +491,7 @@ const PHASES = [
           "Explain the §469(c)(7)(A) aggregation election: how it\u2019s made, when beneficial, what \u2018binding\u2019 means, disposition risk",
           "Articulate the difference between active participation (§469(i)) and material participation (§469(h))"
         ],
-        clientExamples: [
-          {
-            id: "ce_k",
-            label: "Client K \u2014 STR Strategy",
-            summary: "Married filing jointly, high-W-2 household. Acquired one short-term rental property, executed cost segregation engagement, met material participation through 100-hour-and-most-significant test. Expected federal liability ~$100K became a ~$45K refund \u2014 net ~$145K swing in a single tax year.",
-            citationFrame: "STR loophole (Reg \u00A71.469-1T(e)(3)(ii)(A)) + cost seg + MP via 100-hour test"
-          }
-        ],
+        clientExamples: [],
         deliverables: [
           {
             id: "w2_deliv_str",
@@ -5309,25 +5302,15 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                 </div>
               </div>
             )}
-            {cIt.clientExamples?.length > 0 && (
-              <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
-                <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}>
-                  <span style={{fontSize:16}}>{"\uD83D\uDCA1"}</span>
-                  <span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:0.8}}>Real-World Application</span>
-                </div>
-                <div style={{padding:"16px 20px"}}>
-                  <p style={{margin:"0 0 16px",fontSize:12,color:B.t2,lineHeight:1.5}}>Real Aiola clients who executed this strategy. Use these as anchors for what the framework looks like in practice. Names redacted.</p>
-                  {cIt.clientExamples.map((ex,i)=>(
-                    <div key={ex.id} style={{paddingBottom:14,marginBottom:14,borderBottom:i<cIt.clientExamples.length-1?`1px solid ${B.bdr}`:"none"}}>
-                      <div style={{fontSize:14,fontWeight:700,color:B.navy,marginBottom:6}}>{ex.label}</div>
-                      <p style={{margin:"0 0 8px",fontSize:13,color:B.t1,lineHeight:1.5}}>{ex.summary}</p>
-                      <div style={{fontSize:11,fontStyle:"italic",color:B.t3}}>{ex.citationFrame}</div>
-                    </div>
-                  ))}
-                  <div style={{fontSize:12,color:B.t3,fontStyle:"italic",marginTop:4}}>More examples will be added by your Manager this week.</div>
-                </div>
+            <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
+              <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}>
+                <span style={{fontSize:16}}>{"\uD83D\uDCA1"}</span>
+                <span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:0.8}}>Real World Application</span>
               </div>
-            )}
+              <div style={{padding:"16px 20px"}}>
+                <p style={{margin:0,fontSize:13,color:B.t1,lineHeight:1.5}}>Your manager will share anonymized client examples for both deliverables during the week. One STR scenario for Wednesday's presentation and one REPS scenario for Friday's. Refer to your manager for the Week 2 client packets and walk through them together before each presentation.</p>
+              </div>
+            </div>
             {cIt.deliverables && cIt.deliverables.length > 0 && (
               <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
                 <div style={{padding:"14px 20px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}>
