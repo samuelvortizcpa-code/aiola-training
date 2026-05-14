@@ -1173,6 +1173,21 @@ const PHASES = [
             difficulty: 2,
             explanation: "Residential rental real estate = 27.5 years straight-line under MACRS. Non-residential (commercial) = 39 years straight-line. 15-year is for qualified improvement property and certain land improvements. Land itself is never depreciated. The cost basis allocation between land (non-depreciable) and building (depreciable) matters — Aiola typically uses the property tax assessor's ratio as a defensible starting point.",
           },
+          // ── NEW: Residential vs Nonresidential 80% Cliff ──
+          {
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_residential_80_percent_test",
+            question: "A mixed-use property generates rental income from two sources: 75% from residential dwelling units (apartments) and 25% from a commercial ground-floor retail space. Under §168(e)(2)(A), what MACRS recovery period applies to the entire building basis?",
+            options: [
+              "27.5 years — the majority of rental income is residential, so the property is classified as residential rental real estate",
+              "39 years — fails the §168(e)(2)(A) 80% gross-rental-income-from-dwelling-units test, so the entire building is nonresidential",
+              "Split proportionally: 75% of the building basis at 27.5 years, 25% at 39 years",
+              "Taxpayer elects either 27.5 or 39 years based on whichever produces the better outcome",
+            ],
+            correct: 1,
+            topicTags: ["depreciation", "recovery_period", "residential_vs_commercial", "mixed_use"],
+            difficulty: 4,
+            explanation: "§168(e)(2)(A) defines residential rental real property as property where 80% or more of the gross rental income comes from dwelling units. Below 80% (this property is at 75%), the ENTIRE building converts to nonresidential — 39-year MACRS, not a proportional split. This is a hard cliff: a property at 79% residential income is 39-year; at 80.01% it is 27.5-year. The same trap can hit STR operators who add substantial services (concierge, daily housekeeping, meals) and tip into hotel-like classification, which Reg §1.469-1T(e)(3)(iii) treats as nonresidential. The 80% test should be checked on every mixed-use intake before the property goes on Form 4562.",
+          },
           // ── NEW: Year-1 Depreciation Computation ──
           {
             type: "COMPUTATION", id: "d13_comp_depreciation_year1",
