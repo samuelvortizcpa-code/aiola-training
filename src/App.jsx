@@ -5,7 +5,7 @@ import WeeklyReview from "./components/assessment/WeeklyReview.jsx";
 import ConfidentMisses from "./components/assessment/ConfidentMisses.jsx";
 import CohortHeatmap from "./components/assessment/CohortHeatmap.jsx";
 import { migrateLegacyQuiz } from "./lib/migrateLegacyQuiz.js";
-import { storage } from './lib/storage';
+import { storage, scorecards } from './lib/storage';
 
 // ─── Responsive CSS ─────────────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
@@ -5906,12 +5906,35 @@ export default function App() {
       if (sn?.value) { setNotesData(JSON.parse(sn.value)); }
       else { await storage.set("aiola-notes-v1", JSON.stringify(NOTES_SEED_DATA)); setNotesData({...NOTES_SEED_DATA}); }
     } catch { setNotesData({...NOTES_SEED_DATA}); }
-    // Scorecards
+    // Scorecards — load from Supabase deliverable_scores table
     try {
-      const ss = await storage.get("aiola-scorecards-v1");
-      if (ss?.value) { setScorecardData(JSON.parse(ss.value)); }
-      else { await storage.set("aiola-scorecards-v1", JSON.stringify({})); }
-    } catch {}
+      const userIds = MOCK_TRAINEES.map(t => t.id);
+      const allScorecardsByUser = {};
+      for (const uid of userIds) {
+        const rows = await scorecards.listForTrainee(uid);
+        allScorecardsByUser[uid] = rows.map(row => {
+          const { total, band } = computeScorecard(row.scores || {});
+          const trainee = MOCK_TRAINEES.find(t => t.id === uid);
+          const phase = inferScorecardPhase(daysSince(trainee?.startDate || new Date().toISOString().slice(0,10)));
+          return {
+            id: row.id,
+            weekItemId: row.item_id,
+            deliverableId: row.deliverable_id,
+            scores: row.scores,
+            total: row.total ?? total,
+            band,
+            phase,
+            overallNotes: row.notes || "",
+            submittedBy: row.scored_by || "",
+            date: row.scored_at,
+          };
+        });
+      }
+      setScorecardData(allScorecardsByUser);
+    } catch (e) {
+      console.warn('Failed to load scorecards from Supabase', e);
+      setScorecardData({});
+    }
     // Content overrides
     try {
       const so = await storage.get("aiola-overrides-v1");
@@ -5924,8 +5947,6 @@ export default function App() {
   useEffect(()=>{ if (!dataLoaded.current) return; if(Object.keys(kpiData).length===0)return; (async()=>{ try{await storage.set("aiola-kpi-v1",JSON.stringify(kpiData))}catch{}})(); },[kpiData]);
   // Persist notes/badges data on change
   useEffect(()=>{ if (!dataLoaded.current) return; if(Object.keys(notesData).length===0)return; (async()=>{ try{await storage.set("aiola-notes-v1",JSON.stringify(notesData))}catch{}})(); },[notesData]);
-  // Persist scorecard data on change
-  useEffect(()=>{ if (!dataLoaded.current) return; if(Object.keys(scorecardData).length===0)return; (async()=>{ try{await storage.set("aiola-scorecards-v1",JSON.stringify(scorecardData))}catch{}})(); },[scorecardData]);
   // Persist content overrides on change
   useEffect(()=>{ if (!dataLoaded.current) return; if(Object.keys(overrides).length===0)return; (async()=>{ try{await storage.set("aiola-overrides-v1",JSON.stringify(overrides))}catch{}})(); },[overrides]);
 
@@ -5935,8 +5956,38 @@ export default function App() {
   const addKpiScore = (uid, kpiId, entry) => {
     setKpiData(prev => ({...prev, [uid]: {...(prev[uid]||{}), [kpiId]: [...((prev[uid]||{})[kpiId]||[]), entry]}}));
   };
-  const addScorecard = (uid, entry) => {
-    setScorecardData(prev => ({...prev, [uid]: [...(prev[uid] || []), entry]}));
+  const addScorecard = async (uid, entry) => {
+    const row = await scorecards.upsert({
+      trainee_user_id: uid,
+      item_id: entry.weekItemId,
+      deliverable_id: entry.deliverableId,
+      scores: entry.scores,
+      total: entry.total,
+      max_total: 20,
+      notes: entry.overallNotes || null,
+      scored_by: entry.submittedBy || null,
+    });
+    if (row) {
+      const mapped = {
+        id: row.id,
+        weekItemId: row.item_id,
+        deliverableId: row.deliverable_id,
+        scores: row.scores,
+        total: row.total,
+        overallNotes: row.notes || "",
+        submittedBy: row.scored_by || "",
+        date: row.scored_at,
+        band: entry.band,
+        phase: entry.phase,
+      };
+      setScorecardData(prev => {
+        const userList = prev[uid] || [];
+        const filtered = userList.filter(e => !(e.weekItemId === mapped.weekItemId && e.deliverableId === mapped.deliverableId));
+        return {...prev, [uid]: [...filtered, mapped]};
+      });
+    } else {
+      console.warn('scorecards.upsert failed for', uid, entry.deliverableId);
+    }
   };
   const addNote = (uid, note) => {
     const trainee = MOCK_TRAINEES.find(t => t.id === uid);
