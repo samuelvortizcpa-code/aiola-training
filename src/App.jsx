@@ -933,37 +933,72 @@ const PHASES = [
     id: "week3", label: "Week 3", subtitle: "Schedule E + Depreciation + Cost Segregation", phase: "Days 1–30",
     items: [
       {
-        id: "d6", title: "Day 11 — Schedule E Orientation",
-        description: "Get oriented to Form 1040 Schedule E and how rental real estate flows through to the personal return. Today is reading + form-structure foundations. By end of day you should be able to read a Schedule E line by line and know where each dollar comes from and goes to.",
-        topicTags: ["schedule_e", "rental_classification", "form_1040"],
+        id: "week3_main",
+        title: "Week 3 \u2014 Schedule E + Depreciation + Cost Segregation",
+        description: "This week you build the technical foundation for real-property advisory work: Schedule E line-by-line, defensible basis allocation between land and building, MACRS recovery period classification across 5, 15, 27.5, and 39-year buckets, IRC \u00a7168(k) bonus depreciation, improvements versus repairs under Reg \u00a71.263(a)-3, and cost segregation fundamentals. By end of week you have three deliverables: a Wednesday Property Research, Basis Allocation and Depreciation Schedule presentation walking your Manager through methodology applied to an assigned real property; a Friday Schedule E review presentation that flags every issue across an assigned client\u2019s full Schedule E and identifies where Week 2 strategies apply; and a 20-question end-of-week assessment covering Schedule E mechanics, MACRS classification, improvements versus repairs, the \u00a7469(i) $25,000 active-participation allowance, and cost segregation. Both presentations must be technical, grounded in primary authority, with citations to IRC \u00a7168, \u00a7168(k), \u00a7263(a), \u00a7469(i), Pubs 527 and 946, the IRS Cost Segregation Audit Technique Guide, and Reg \u00a71.263(a)-3.",
+        topicTags: [
+          "schedule_e", "rental_classification", "form_1040", "depreciation",
+          "basis", "cost_seg_basics", "bonus_depreciation", "case_law",
+          "passive_loss", "special_25k_allowance"
+        ],
+        weeklyRubric: {
+          title: "Week 3 Scorecard",
+          intro: "This rubric applies to BOTH your Wednesday Property Research presentation AND your Friday Schedule E Review presentation. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "Technical Accuracy", desc: "Rules, recovery periods, conventions, and exception classifications stated correctly. No doctrinal errors on \u00a7168, \u00a7168(k), \u00a7263(a), or \u00a7469(i)." },
+            { num: 2, name: "Methodology & Source Defensibility", desc: "County assessor records, comparable sales, and GIS records pulled and cited. Aiola Property Research Methodology followed. Override decisions documented when made. Working paper would survive review under Meiers v. Commissioner." },
+            { num: 3, name: "Calculation Accuracy", desc: "Basis allocation math correct. MACRS recovery period assignments correct. Year-1 depreciation correct with and without cost seg. Bonus depreciation overlay applied correctly. Math is auditable from inputs to output." },
+            { num: 4, name: "Coverage & Completeness", desc: "All Schedule E lines addressed. Improvement vs repair calls made. Component classifications complete. Strategy opportunities from Week 2 flagged where they apply." },
+            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-week3.html",
+          fullDocLabel: "View Full Scorecard"
+        },
         learningObjectives: [
-          "Identify the three Parts of Schedule E and explain what each covers",
-          "Determine which receipts from a tenant count as rental income (advance rent, security deposits, services-in-lieu-of-rent)",
-          "Navigate the Rivera 2024 Federal Return and locate the Schedule E",
-          "Explain why average guest stay duration matters for §469 classification (covered in Week 2; this week applies the rules to Schedule E reporting)",
+          "Read Schedule E line-by-line and identify every input that flows to each line (Pub 527, Schedule E instructions)",
+          "Apply the Aiola Property Research Methodology to allocate a property\u2019s purchase price between land and building. Default to the county assessor ratio; override only with documented evidence",
+          "Classify property components into MACRS recovery period buckets: 5-year personal property under \u00a7168(e)(3)(B), 15-year land improvements under \u00a7168(e)(3)(E), 27.5-year residential rental real property under \u00a7168(e)(2)(A), and 39-year nonresidential real property under \u00a7168(e)(2)(B)",
+          "Apply MACRS conventions correctly: mid-month for real property (27.5 and 39-year), half-year (or mid-quarter when applicable) for personal property and land improvements",
+          "Apply IRC \u00a7168(k) bonus depreciation including the current phase-down (40% for 2025, 20% for 2026 absent legislative change). Identify which property classes are bonus-eligible",
+          "Distinguish a capital improvement (capitalize under Reg \u00a71.263(a)-3) from a deductible repair using the betterment, restoration, and adaptation tests",
+          "Compute year-one depreciation for a rental property both without cost segregation and with a hypothetical cost segregation reclassification",
+          "Apply the IRC \u00a7469(i) $25,000 active-participation allowance including the AGI phaseout from $100,000 to $150,000",
+          "Track suspended passive losses on Form 8582 and identify when they release under \u00a7469(g)",
+          "Identify on a real Schedule E where Week 2 strategies apply or fail: STR loophole eligibility under Reg \u00a71.469-1T(e)(3)(ii)(A), the material-participation tests, and REPS qualification under \u00a7469(c)(7)",
+          "Apply the case law foundations from Meiers v. Commissioner (basis allocation) and Hospital Corp of America (engineering-based cost seg methodology) when defending positions on review",
+          "Recognize escalation triggers: unusual land ratios, mixed-use parcels, partial-interest acquisitions, historic properties, leasehold structures"
         ],
-        tasks: [
-          { id: "d6t1", text: "Read IRS Pub 527, Chapter 1 (Rental Income and Expenses overview) — focus on what counts as rental income" },
-          { id: "d6t2", text: "Read Schedule E Instructions (2024) — Part I line-by-line" },
-          { id: "d6t3", text: "Read IRS Pub 925, Chapter 1 (Passive Activity intro) — preview only" },
-          { id: "d6t4", text: "Open the Rivera 2024 Federal Return PDF and locate the Schedule E. Note which Part(s) are populated" },
-          { id: "d6t5", text: "Practice: For 5 sample receipts (advance rent, security deposit, late fee, lease cancellation payment, services-in-lieu-of-rent), determine includibility" },
-          { id: "d6t6", text: "Watch: Schedule E line-by-line walkthrough by your Manager (TODO_NICK: record video)" },
-          { id: "d6t7", text: "Document any questions for Friday wrap-up" },
+        realWorldApplication: "Your manager will share anonymized client returns this week and walk through the Aiola Property Research Methodology before your Wednesday presentation. Refer to your manager for the Week 3 client packets, the methodology document, the assigned property for Wednesday, and the assigned Schedule E for Friday.",
+        clientExamples: [],
+        deliverables: [
+          {
+            id: "w3d_wed",
+            title: "Property Research, Basis Allocation & Depreciation Schedule Presentation",
+            dueDate: "Wed",
+            description: "Walk your Manager through Aiola\u2019s property research methodology applied to your assigned property, then through the depreciation schedule classification (5, 15, 27.5, 39-year MACRS buckets) and year-1 computation with \u00a7168(k) bonus overlay. Technical, grounded in primary authority. Add as task to ClickUp."
+          },
+          {
+            id: "w3d_fri",
+            title: "Real-Client Schedule E Review Presentation",
+            dueDate: "Fri",
+            description: "Full Schedule E review of your assigned client. Flag every issue and identify strategy opportunities where Week 2 frameworks apply. Technical, grounded in primary authority. Add as task to ClickUp."
+          },
+          {
+            id: "w3d_assess",
+            title: "Week 3 End-of-Week Assessment",
+            dueDate: "Fri",
+            description: "20-question assessment covering Schedule E mechanics, MACRS classification across the four recovery period buckets, \u00a7168(k) bonus depreciation, improvements vs repairs, the \u00a7469(i) $25k allowance, and cost segregation. Honor system: do your best to answer without research. Anyone can look up these answers; what we\u2019re tracking is your understanding right now, what\u2019s solid, and what needs more attention before your presentations. Be honest with yourself. Your scores inform what you focus on next. Mid-week completion is fine."
+          }
         ],
-        resources: [
-          { label: "IRS Pub 527 (Residential Rental Property)", url: "https://www.irs.gov/pub/irs-pdf/p527.pdf" },
-          { label: "IRS Pub 925 (Passive Activity Rules)", url: "https://www.irs.gov/pub/irs-pdf/p925.pdf" },
-          { label: "Schedule E Instructions (2024)", url: "https://www.irs.gov/pub/irs-pdf/i1040se.pdf" },
-          { label: "Form 1040 Schedule E (blank)", url: "https://www.irs.gov/pub/irs-pdf/f1040se.pdf" },
-          { label: "Rivera 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
-          { label: "Schedule E Walkthrough Video", url: null /* TODO_NICK */ },
-          { label: "Aiola Rental Review Checklist", url: null /* TODO_NICK */ },
-        ],
+        assessmentIntro: "Answer based on what you\u2019ve learned this week. Please don\u2019t research questions before answering. The goal of this check is to calibrate where your understanding is right now, so your manager can target the next sprint of learning. There\u2019s no penalty for getting things wrong.",
+        tasks: [],
+        resources: [],
         assessment: [
+          // ── d11 (Day 11) ──
           // ── EXISTING: Schedule E Location ──
           {
-            type: "CONFIDENCE_MCQ", id: "w2_mcq_schedule_e_location",
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_schedule_e_location",
             question: "On Form 1040, where does rental real estate income or loss appear?",
             options: [
               "Schedule C, Line 31",
@@ -978,7 +1013,7 @@ const PHASES = [
           },
           // ── EXISTING: Substantial Services ──
           {
-            type: "CONFIDENCE_MCQ", id: "w2_mcq_substantial_services",
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_substantial_services",
             question: "A client rents out their cabin via Airbnb. Average guest stay is 5 days. They provide WiFi and basic cleaning between guests, but no daily housekeeping, no meals, no concierge service. What schedule does this rental belong on?",
             options: [
               "Schedule C — short stays mean it's an active business",
@@ -993,7 +1028,7 @@ const PHASES = [
           },
           // ── EXISTING: Average Stay Foreshadow ──
           {
-            type: "CONFIDENCE_MCQ", id: "w2_mcq_avg_stay_foreshadow",
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_avg_stay",
             question: "Why does Aiola's onboarding questionnaire specifically ask about the AVERAGE GUEST STAY duration on rental properties?",
             options: [
               "To compute occupancy rate for the client's records",
@@ -1004,11 +1039,11 @@ const PHASES = [
             correct: 1,
             topicTags: ["str_loophole", "avg_stay_test", "rental_classification"],
             difficulty: 4,
-            explanation: "This is the bridge to Week 2's §469 framework. Under Reg. §1.469-1T(e)(3)(ii)(A), if average customer use is 7 days or less, the activity is NOT a 'rental activity' for §469 purposes. That means losses are NOT automatically passive — if the taxpayer materially participates, losses can offset W-2 income WITHOUT real estate professional status. This is the foundation of the so-called 'STR loophole.' The schedule (E vs C) is determined separately by substantial services. We're foreshadowing this so you understand WHY Aiola asks the question — it's a $25k+ tax savings indicator.",
+            explanation: "Last week (Week 2) you built the §469 framework. This question confirms you can spot WHY the questionnaire asks about average guest stay — it's the qualifier for the STR exception under Reg §1.469-1T(e)(3)(ii)(A). Under that reg, if average customer use is 7 days or less, the activity is NOT a rental activity for §469 purposes, so losses are not automatically passive. If the taxpayer materially participates, losses offset W-2 income without real estate professional status. This is the foundation of the STR loophole. The schedule choice (E vs C) is determined separately by substantial services.",
           },
           // ── NEW: Schedule E Parts ──
           {
-            type: "CONFIDENCE_MCQ", id: "d6_mcq_sched_e_parts",
+            type: "CONFIDENCE_MCQ", id: "d11_mcq_sched_e_parts",
             question: "Schedule E has three parts. Which Part is for INCOME OR LOSS FROM RENTAL REAL ESTATE AND ROYALTIES?",
             options: ["Part I", "Part II — Partnerships and S-Corporations", "Part III — Estates and Trusts", "Part IV — REMICs"],
             correct: 0,
@@ -1018,7 +1053,7 @@ const PHASES = [
           },
           // ── NEW: Advance Rent ──
           {
-            type: "CONFIDENCE_MCQ", id: "d6_mcq_advance_rent",
+            type: "CONFIDENCE_MCQ", id: "d11_mcq_advance_rent",
             question: "A landlord receives $30,000 in December 2024 — $5,000 is the December 2024 rent and $25,000 is prepaid rent for January through May 2025. How much rental income should be reported on the 2024 Schedule E?",
             options: ["$5,000 — only the rent earned in December", "$30,000 — all amounts received in 2024 are includible regardless of period covered (per Pub 527, advance rent is taxable when received)", "$0 — wait until earned", "$25,000 — only the prepaid amount"],
             correct: 1,
@@ -1028,7 +1063,7 @@ const PHASES = [
           },
           // ── NEW: Security Deposit ──
           {
-            type: "CONFIDENCE_MCQ", id: "d6_mcq_security_deposit",
+            type: "CONFIDENCE_MCQ", id: "d11_mcq_security_deposit",
             question: "A tenant pays a $2,000 security deposit at lease signing. The lease states the deposit will be returned at lease end if no damages. Is this $2,000 reportable as 2024 rental income?",
             options: ["Yes — all cash received from a tenant is rental income", "No — security deposits intended to be returned are not income (Pub 527); they only become income if kept as damages or applied as final-month rent", "Half is income; half isn't", "Only if the lease term exceeds 12 months"],
             correct: 1,
@@ -1036,38 +1071,11 @@ const PHASES = [
             difficulty: 2,
             explanation: "Per Pub 527: 'Don't include a security deposit in your income if you may have to return it to the tenant at the end of the lease.' If the deposit is later applied as final-month rent or kept as damages, that's when it becomes income. Document this clearly when reviewing client returns — it's a frequent classification error.",
           },
-        ],
-      },
-      {
-        id: "d7", title: "Day 12 — Income & Expense Categorization",
-        description: "Master the categorization decisions on Schedule E lines 5-19. Today's focus: where each expense goes, the repair-vs-improvement test under Reg. §1.263(a)-3, and the most common miscategorizations that cost real estate clients money.",
-        topicTags: ["schedule_e", "form_1040", "depreciation", "rental_classification"],
-        learningObjectives: [
-          "Compute a net rental result from income, expenses, depreciation, and mortgage interest",
-          "Categorize each common expense to the correct Schedule E line",
-          "Apply the repair-vs-improvement test under Reg. §1.263(a)-3 (betterment, restoration, adaptation)",
-          "Explain why rental property tax is NOT subject to the SALT cap",
-        ],
-        tasks: [
-          { id: "d7t1", text: "Read IRS Pub 527, Chapter 2 (Rental Expenses)" },
-          { id: "d7t2", text: "Read Reg. §1.263(a)-3 (the 3-part test for improvements: betterment, restoration, adaptation)" },
-          { id: "d7t3", text: "Read IRS Pub 535 — focus on Repairs vs Improvements decision tree" },
-          { id: "d7t4", text: "Practice: For 8 sample expenses, decide: which Schedule E line, or capitalize?" },
-          { id: "d7t5", text: "Read about the SALT cap interaction with rental property (under §164)" },
-          { id: "d7t6", text: "Read Aiola's Rental Income Review Checklist (TODO_NICK: link to firm SOP)" },
-        ],
-        resources: [
-          { label: "IRS Pub 527 — Rental Expenses chapter", url: "https://www.irs.gov/pub/irs-pdf/p527.pdf" },
-          { label: "Reg. §1.263(a)-3 (Tangible Property — Improvements)", url: "https://www.law.cornell.edu/cfr/text/26/1.263(a)-3" },
-          { label: "IRS Pub 535 (Business Expenses)", url: "https://www.irs.gov/pub/irs-pdf/p535.pdf" },
-          { label: "IRC §164 (State and local taxes — SALT)", url: "https://www.law.cornell.edu/uscode/text/26/164" },
-          { label: "IRS — Tangible Property Regs FAQ", url: "https://www.irs.gov/businesses/small-businesses-self-employed/tangible-property-final-regulations" },
-          { label: "Aiola Rental Review Checklist", url: null /* TODO_NICK */ },
-        ],
-        assessment: [
+
+          // ── d12 (Day 12) ──
           // ── EXISTING: Net Rental Result ──
           {
-            type: "COMPUTATION", id: "w2_comp_net_rental",
+            type: "COMPUTATION", id: "w3_comp_net_rental",
             title: "Net Rental Result",
             topicTags: ["schedule_e", "form_1040"],
             prompt: "A rental property generated $42,000 of rental income for the year. Operating expenses (excluding depreciation and interest): $11,500. Depreciation expense: $9,800. Mortgage interest: $14,200. What is the net rental result reported on Schedule E Line 26?",
@@ -1089,7 +1097,7 @@ const PHASES = [
           },
           // ── NEW: Repair vs Improvement ──
           {
-            type: "CONFIDENCE_MCQ", id: "d7_mcq_repair_vs_improvement",
+            type: "CONFIDENCE_MCQ", id: "d12_mcq_repair_vs_improvement",
             question: "Under Reg. §1.263(a)-3, an expenditure must be CAPITALIZED (rather than deducted as a repair) if it constitutes a betterment, restoration, or adaptation. A landlord replaces an entire roof on a 30-year-old rental property — the old roof had reached end of useful life. How is this treated?",
             options: ["Repair — deducted in full on Schedule E Line 14", "Capitalize and depreciate — full roof replacement is a 'restoration' that returns the property to its ordinarily efficient operating condition; this is a unit-of-property issue under Reg. §1.263(a)-3(k)", "Half repair, half capitalize", "Deductible as a §179 expense"],
             correct: 1,
@@ -1099,7 +1107,7 @@ const PHASES = [
           },
           // ── NEW: Expense → Line Matching ──
           {
-            type: "DRAG_EXERCISE", id: "d7_match_expenses_to_lines",
+            type: "DRAG_EXERCISE", id: "d12_match_expenses_to_lines",
             title: "Expense → Schedule E Line",
             topicTags: ["schedule_e", "rental_classification"],
             prompt: "Match each expense to the correct Schedule E Part I line.",
@@ -1117,7 +1125,7 @@ const PHASES = [
           },
           // ── NEW: Property Tax SALT Cap ──
           {
-            type: "CONFIDENCE_MCQ", id: "d7_mcq_property_tax_salt",
+            type: "CONFIDENCE_MCQ", id: "d12_mcq_property_tax_salt",
             question: "A client pays $8,000 in property tax on their rental property and $14,000 in property tax on their personal residence. The $10,000 SALT deduction cap applies to:",
             options: ["The total $22,000 — both rental and personal property tax are subject to SALT cap", "Only the personal residence portion — rental property tax is fully deductible against rental income on Schedule E and is NOT subject to the $10k SALT cap", "Only the rental portion — rental property tax goes on Schedule A", "Neither — SALT cap doesn't apply to property tax"],
             correct: 1,
@@ -1127,7 +1135,7 @@ const PHASES = [
           },
           // ── NEW: Mixed-Use Allocation ──
           {
-            type: "COMPUTATION", id: "d7_comp_mixed_use",
+            type: "COMPUTATION", id: "d12_comp_mixed_use",
             title: "Allocate Mixed-Use Expenses",
             topicTags: ["schedule_e", "rental_classification"],
             prompt: "A client converts their primary residence to a rental property on July 1, 2024 (mid-year). Annual mortgage interest = $24,000, property tax = $9,000, insurance = $2,400. They lived in the home January–June (no rental use), then rented it July–December. Compute the rental portion of these expenses to report on Schedule E. (Use a calendar-day allocation method.)",
@@ -1148,38 +1156,11 @@ const PHASES = [
               { value: 17700, indicates: "Used exactly 50% — close, but the actual day count gives 50.27% in a leap year." },
             ],
           },
-        ],
-      },
-      {
-        id: "d8", title: "Day 13 — Depreciation Foundations",
-        description: "Depreciation is the single most-missed deduction on rental returns. By end of day you should be able to compute MACRS depreciation, allocate basis between land and building, place property in service correctly, and understand WHY this matters before we layer cost segregation tomorrow.",
-        topicTags: ["depreciation", "basis", "schedule_e"],
-        learningObjectives: [
-          "Compute year-1 MACRS depreciation using the mid-month convention",
-          "Allocate basis between land and building using the assessor's ratio method",
-          "Explain when depreciation begins (placed-in-service date, not closing date)",
-          "State the depreciation period and method for residential rental real estate (27.5 years straight-line MACRS)",
-        ],
-        tasks: [
-          { id: "d8t1", text: "Read IRS Pub 946 (How to Depreciate Property), Chapter 3 (residential rental property)" },
-          { id: "d8t2", text: "Read Form 4562 Instructions" },
-          { id: "d8t3", text: "Read IRC §168 — focus on (b)(3)(B) (residential rental 27.5 yrs), (d)(2) (mid-month), (g) (alternative depreciation system)" },
-          { id: "d8t4", text: "Practice: Compute year-1 depreciation for 3 different property purchases (different timing, different basis allocations)" },
-          { id: "d8t5", text: "Open the Rivera return and verify Form 4562 ties to Schedule E Line 18; check basis worksheet" },
-          { id: "d8t6", text: "Note: tomorrow we layer cost segregation on top of this — write down questions for the cost seg discussion" },
-        ],
-        resources: [
-          { label: "IRS Pub 946 (How to Depreciate Property)", url: "https://www.irs.gov/pub/irs-pdf/p946.pdf" },
-          { label: "Form 4562 Instructions", url: "https://www.irs.gov/pub/irs-pdf/i4562.pdf" },
-          { label: "Form 4562 (blank)", url: "https://www.irs.gov/pub/irs-pdf/f4562.pdf" },
-          { label: "IRC §168 (Modified Accelerated Cost Recovery System)", url: "https://www.law.cornell.edu/uscode/text/26/168" },
-          { label: "Rivera 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
-          { label: "Reg. §1.168(i)-4 (Conversion to business use)", url: "https://www.law.cornell.edu/cfr/text/26/1.168(i)-4" },
-        ],
-        assessment: [
+
+          // ── d13 (Day 13) ──
           // ── EXISTING: Depreciation Method ──
           {
-            type: "CONFIDENCE_MCQ", id: "w2_mcq_depreciation_method",
+            type: "CONFIDENCE_MCQ", id: "w3_mcq_depreciation_method",
             question: "Residential rental real estate placed in service after 1986 is depreciated over what period using what method?",
             options: [
               "15 years, MACRS 200% declining balance",
@@ -1194,7 +1175,7 @@ const PHASES = [
           },
           // ── NEW: Year-1 Depreciation Computation ──
           {
-            type: "COMPUTATION", id: "d8_comp_depreciation_year1",
+            type: "COMPUTATION", id: "d13_comp_depreciation_year1",
             title: "Year-1 Depreciation on Acquired Rental",
             topicTags: ["depreciation", "basis", "schedule_e"],
             prompt: "Client purchased a residential rental property on March 15, 2024. Total purchase price: $500,000. County property tax assessor's allocation: 20% land / 80% building. Property placed in service same date as closing. Compute year-1 depreciation expense (use mid-month convention applicable to residential rental real property).",
@@ -1219,7 +1200,7 @@ const PHASES = [
           },
           // ── NEW: Basis Allocation Computation ──
           {
-            type: "COMPUTATION", id: "d8_comp_basis_allocation",
+            type: "COMPUTATION", id: "d13_comp_basis_allocation",
             title: "Basis Allocation — Defensible Methodology",
             topicTags: ["depreciation", "basis"],
             prompt: "Client purchased a rental for $750,000 (cash + assumed mortgage). Closing costs added $12,000. The county property tax assessor's appraisal: total $640,000 ($128,000 land / $512,000 building). Compute the depreciable basis (building portion).",
@@ -1243,7 +1224,7 @@ const PHASES = [
           },
           // ── NEW: Placed in Service ──
           {
-            type: "CONFIDENCE_MCQ", id: "d8_mcq_placed_in_service",
+            type: "CONFIDENCE_MCQ", id: "d13_mcq_placed_in_service",
             question: "When does depreciation begin on a newly acquired residential rental property? (Per Pub 946.)",
             options: [
               "On the closing date when title transfers",
@@ -1258,7 +1239,7 @@ const PHASES = [
           },
           // ── NEW: Mid-Month Convention ──
           {
-            type: "CONFIDENCE_MCQ", id: "d8_mcq_mid_month",
+            type: "CONFIDENCE_MCQ", id: "d13_mcq_mid_month",
             question: "Why does residential rental real property use the MID-MONTH convention for depreciation rather than the half-year convention used for personal property?",
             options: [
               "Real property is generally larger and lasts longer",
@@ -1271,39 +1252,11 @@ const PHASES = [
             difficulty: 3,
             explanation: "§168(d)(2) prescribes the mid-month convention for nonresidential real and residential rental real property. The convention treats the property as placed in service (or disposed of) in the middle of the month. For property placed in service in March, that means 9.5 months of depreciation in year 1 (mid-March to year-end), not the full 10 months. Personal property uses the half-year convention (or mid-quarter in certain cases). Knowing this is on the bar exam-level basics for tax pros.",
           },
-        ],
-      },
-      {
-        id: "d9", title: "Day 14 — Cost Segregation Deep Dive",
-        description: "Cost segregation is one of the most valuable tools in the real estate advisory toolkit — it can convert 5+ years of depreciation into a single year-1 deduction for the right client. Today: what cost seg actually is, the 5-year/7-year/15-year component categories, the bonus depreciation phase-down, and how to qualify a client for a study.",
-        topicTags: ["cost_seg_basics", "bonus_depreciation", "depreciation", "basis"],
-        learningObjectives: [
-          "Explain cost segregation in plain English: it reclassifies parts of a building from 27.5/39-year property into 5/7/15-year property for accelerated depreciation",
-          "Identify the four MACRS recovery periods for cost-seg-relevant components: 5-year (carpet, certain finishes, removable fixtures), 7-year (some FF&E in commercial), 15-year (land improvements), 27.5-year residential / 39-year nonresidential building structure",
-          "Apply the bonus depreciation phase-down: 60% in 2024, 40% in 2025, 20% in 2026, 0% in 2027",
-          "Recognize when cost seg makes financial sense: typically property basis >= $400k AND owner has tax appetite (high income or active enough to use the loss)",
-          "Cite the IRS Cost Segregation Audit Technique Guide as the methodology source — qualified studies follow its framework",
-        ],
-        tasks: [
-          { id: "d9t1", text: "Read the IRS Cost Segregation Audit Technique Guide (the 'CSATG') — at minimum the introduction and Chapter 2" },
-          { id: "d9t2", text: "Read about the bonus depreciation rules under §168(k) — specifically the post-TCJA phase-down schedule" },
-          { id: "d9t3", text: "Read 3 sample cost segregation studies (TODO_NICK: link to past Aiola studies)" },
-          { id: "d9t4", text: "Watch: Aiola's Cost Seg explainer video (TODO_NICK: record)" },
-          { id: "d9t5", text: "Practice: For 3 sample property profiles, compute the year-1 depreciation difference WITH and WITHOUT cost seg" },
-          { id: "d9t6", text: "Read about §1245 vs §1250 recapture (preview only — Week 4 covers depreciation recapture mechanics in depth) since cost seg increases §1245 exposure on later sale" },
-        ],
-        resources: [
-          { label: "IRS Cost Segregation Audit Technique Guide", url: "https://www.irs.gov/pub/irs-utl/cost-segregation-atg.pdf" },
-          { label: "IRC §168(k) (Bonus depreciation)", url: "https://www.law.cornell.edu/uscode/text/26/168" },
-          { label: "IRS — TCJA Bonus Depreciation FAQ", url: "https://www.irs.gov/newsroom/new-rules-and-limitations-for-depreciation-and-expensing-under-the-tax-cuts-and-jobs-act" },
-          { label: "Aiola Cost Seg Explainer Video", url: null /* TODO_NICK */ },
-          { label: "Sample Aiola Cost Seg Studies", url: null /* TODO_NICK */ },
-          { label: "Cost Seg ROI Calculator", url: null /* TODO_NICK: firm tool — confirm if exists */ },
-        ],
-        assessment: [
+
+          // ── d14 (Day 14) ──
           // ── NEW: Cost Seg Definition ──
           {
-            type: "CONFIDENCE_MCQ", id: "d9_mcq_cost_seg_definition",
+            type: "CONFIDENCE_MCQ", id: "d14_mcq_cost_seg_definition",
             question: "What does a cost segregation study actually DO?",
             options: [
               "It allows the taxpayer to skip depreciation entirely",
@@ -1318,7 +1271,7 @@ const PHASES = [
           },
           // ── NEW: Components → Recovery Period ──
           {
-            type: "DRAG_EXERCISE", id: "d9_match_components_recovery",
+            type: "DRAG_EXERCISE", id: "d14_match_components_recovery",
             title: "Cost Seg Components → MACRS Recovery Period",
             topicTags: ["cost_seg_basics", "depreciation"],
             prompt: "Match each property component to its MACRS recovery period after a cost segregation study.",
@@ -1334,7 +1287,7 @@ const PHASES = [
           },
           // ── NEW: Cost Seg Year-1 Computation ──
           {
-            type: "COMPUTATION", id: "d9_comp_cost_seg_year1",
+            type: "COMPUTATION", id: "d14_comp_cost_seg_year1",
             title: "Year-1 Depreciation: Standard vs Cost Seg",
             topicTags: ["cost_seg_basics", "bonus_depreciation", "depreciation"],
             prompt: "Client acquired a residential rental for $1,000,000 ($200k land, $800k building) in 2024. WITHOUT cost seg, year-1 depreciation = $800k / 27.5 = $29,091 (use full year for simplicity). WITH a cost seg study, the building basis is reclassified as: $560k stays at 27.5-year, $80k as 15-year, $160k as 5-year. Apply 60% bonus depreciation to the 5- and 15-year property, then standard MACRS on the remainder. Compute total year-1 depreciation with cost seg.",
@@ -1359,7 +1312,7 @@ const PHASES = [
           },
           // ── NEW: Cost Seg Client Qualification Scenario ──
           {
-            type: "SCENARIO_BRANCHING", id: "d9_scenario_cost_seg_qualify",
+            type: "SCENARIO_BRANCHING", id: "d14_scenario_cost_seg_qualify",
             title: "Should We Recommend Cost Seg for This Client?",
             topicTags: ["cost_seg_basics", "bonus_depreciation"],
             context: "A new advisory client closes on a $850,000 STR (Asheville cabin, avg stay 4 nights) on March 1, 2024. Spouse manages the property full-time. Combined W-2 income $380k. They ask: 'Our buddy did a cost seg study and got a huge tax break. Should we do one?' Walk the conversation.",
@@ -1402,7 +1355,7 @@ const PHASES = [
           },
           // ── NEW: Bonus Phase-Down ──
           {
-            type: "CONFIDENCE_MCQ", id: "d9_mcq_bonus_phase_down",
+            type: "CONFIDENCE_MCQ", id: "d14_mcq_bonus_phase_down",
             question: "Bonus depreciation under §168(k) is phasing down post-TCJA. What are the rates for 2024 through 2027 under current law?",
             options: [
               "100% / 100% / 100% / 100%",
@@ -1415,39 +1368,11 @@ const PHASES = [
             difficulty: 3,
             explanation: "TCJA (2017) provided 100% bonus depreciation through 2022, then phased down: 80% in 2023, 60% in 2024, 40% in 2025, 20% in 2026, 0% in 2027 (and after). This phase-down is critical for cost seg planning — every year of delay costs the client roughly 20 percentage points of bonus benefit. Watch for legislative updates: Congress periodically debates extending or modifying this phase-down.",
           },
-        ],
-      },
-      {
-        id: "d15s",
-        title: "Day 15 — Aggressive Position Defense: Schedule E, Depreciation, and Cost Seg in Court",
-        description: "Week 3 synthesis. The technical content of Days 11-14 only matters if a position survives review and audit. Today the focus shifts from 'how the rules work' to 'what happens when the IRS challenges the position.' Study the case law that defines defensible practice on basis allocation, repair-vs-improvement, and cost segregation, then write a memo on what would and wouldn't survive review. Foreshadows Week 4 — the same documentation discipline drives recapture and §1031 outcomes.",
-        learningObjectives: [
-          "Articulate the line between aggressive-and-defensible vs. aggressive-and-indefensible across Schedule E, depreciation, and cost seg",
-          "Identify the documentation, methodology, and contemporaneous-record requirements that determine whether a position holds up under audit",
-          "Apply Tax Court reasoning to evaluate hypothetical taxpayer fact patterns before they become returns",
-          "Cite specific holdings — not just code sections — when defending a position to a Manager or client",
-          "Connect Week 3 mechanics to Week 4: documentation gaps that lose basis-allocation cases also drive recapture exposure on sale",
-        ],
-        tasks: [
-          { id: "d15st1", text: "Read Meiers v. Commissioner (T.C. Memo 1982-51) in full — the assessor's-ratio basis allocation case. Note exactly what the taxpayer offered, what the IRS challenged, and what the court accepted." },
-          { id: "d15st2", text: "Read Reg §1.263(a)-3 (improvements to tangible property) and a Tax Court memo applying the BAR test (Betterment / Adaptation / Restoration) to a rental property repair vs. improvement question." },
-          { id: "d15st3", text: "Read the IRS Cost Segregation ATG, Chapter 4 (Principal Elements of a Quality Cost Segregation Study). Identify the 13 principal elements and what the IRS expects in each." },
-          { id: "d15st4", text: "Research and brief Hospital Corporation of America v. Commissioner (109 T.C. 21, 1997) — the case that legitimized engineering-based cost segregation. Compare its methodology to a study that would NOT survive audit." },
-          { id: "d15st5", text: "Write a 1-page memo: 'Three review red flags I will check first.' For each, cite the case or authority that informs the priority. The memo is your operating doctrine for return review going forward." },
-          { id: "d15st6", text: "Find and brief one TAM, PLR, or Chief Counsel Advice issued in the last 5 years on Schedule E, depreciation, or cost seg. Cover: facts, IRS position, taxpayer position, outcome. Use the IRS written determinations search portal." },
-        ],
-        resources: [
-          { label: "Meiers v. Commissioner (T.C. Memo 1982-51)", url: "#" },
-          { label: "Hospital Corp of America v. Commissioner, 109 T.C. 21", url: "#" },
-          { label: "IRS Cost Segregation ATG (Chapter 4)", url: "#" },
-          { label: "Reg §1.263(a)-3 (Cornell LII)", url: "https://www.law.cornell.edu/cfr/text/26/1.263(a)-3" },
-          { label: "IRC §263(a) (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/263" },
-          { label: "IRS Written Determinations Search", url: "https://www.irs.gov/written-determinations" },
-        ],
-        assessment: [
+
+          // ── d15 (Day 15) ──
           {
             type: "CASE_LAW",
-            id: "d15s_case_meiers",
+            id: "d15_case_meiers",
             case_name: "Meiers v. Commissioner",
             citation: "T.C. Memo 1982-51",
             prompt: "Brief Meiers v. Commissioner. Cover: (1) the facts and the taxpayer's basis allocation method, (2) the IRS challenge, (3) the court's holding and reasoning, (4) why this case still drives basis allocation practice today, (5) one practical takeaway for return review.",
@@ -1463,7 +1388,7 @@ const PHASES = [
           },
           {
             type: "CASE_LAW",
-            id: "d15s_case_hca",
+            id: "d15_case_hca",
             case_name: "Hospital Corporation of America v. Commissioner",
             citation: "109 T.C. 21 (1997)",
             prompt: "Brief HCA v. Commissioner. Cover: (1) the facts (the property components at issue and the methodology used), (2) the IRS challenge to the engineering-based cost segregation, (3) the court's holding, (4) the principal elements of a 'quality cost segregation study' that emerged from this line of authority (cross-reference the IRS Cost Seg ATG Ch. 4), (5) one practical takeaway: when can you defend a study under audit, and when can't you?",
@@ -1479,7 +1404,7 @@ const PHASES = [
           },
           {
             type: "SHORT_ANSWER",
-            id: "d15s_sa_review_priorities",
+            id: "d15_sa_review_priorities",
             question: "When reviewing a rental Schedule E that includes depreciation and a cost segregation study, what are the first three things you check, and why? Tie each priority to specific authority — case, IRC, Reg, or IRS guidance. Write 4-6 sentences total.",
             model_answer: "First, basis allocation between land and building/improvements — Meiers v. Commissioner establishes that assessor's-ratio is a reasonable methodology, but every depreciation calculation downstream depends on this allocation, and aggressive land discounts are a top audit-trigger. Second, the cost seg study's methodology and supporting documentation — under the line of authority from Hospital Corp of America and the IRS Cost Seg ATG Ch. 4 (13 principal elements), engineering-based studies survive audit; residual or rule-of-thumb allocations do not. Third, repair-vs-improvement classifications — Reg §1.263(a)-3 and the BAR test (Betterment, Adaptation, Restoration) govern; aggressive §162 deductions for what should be capitalized improvements are common, easy to spot on review (compare expense magnitudes to the property's basis), and material to multi-year tax exposure. Each of these three priorities is chosen because it has the largest cascade impact: basis errors cascade through every depreciation calc, methodology errors invalidate the entire cost seg study, and BAR errors create both current-year overstatement and Year-of-sale recapture exposure.",
             topicTags: ["schedule_e", "depreciation", "basis", "cost_seg_basics"],
@@ -1487,7 +1412,7 @@ const PHASES = [
           },
           {
             type: "CONFIDENCE_MCQ",
-            id: "d15s_mcq_basis_allocation_method",
+            id: "d15_mcq_basis_allocation_method",
             question: "A taxpayer purchased a rental property for $500,000. The property tax assessor's most recent valuation shows: land $80,000, improvements $320,000 (total $400,000). The preparer allocated 20% to land and 80% to building based on the assessor's ratio (80/400 = 20% land). The IRS challenges, citing a contemporaneous appraisal that suggests 25% land. Which authority MOST DIRECTLY supports the preparer's methodology?",
             options: [
               "Pub 527 instructs taxpayers to 'use any reasonable method' — methodology is purely the taxpayer's choice.",
@@ -1502,7 +1427,7 @@ const PHASES = [
           },
           {
             type: "CONFIDENCE_MCQ",
-            id: "d15s_mcq_recapture_foreshadow",
+            id: "d15_mcq_recapture_foreshadow",
             question: "A taxpayer buys a rental property for $1,000,000 ($200K land, $800K building). They commission a $5K cost seg study reclassifying $200K of the $800K depreciable basis as 5-year §1245 property eligible for bonus depreciation. They take $120K of bonus depreciation in Year 1 plus normal MACRS on the remaining $680K building. In Year 5, they sell for $1,200,000. Assume the §1245 reclassified property is fully depreciated by Year 5. What is the recapture treatment of the $200K reclassified §1245 portion at sale?",
             options: [
               "§1250 unrecaptured gain (taxed at max 25%) on the entire $200K reclassified basis.",
@@ -5306,7 +5231,7 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
               </div>
             )}
             {(() => {
-              const REAL_WORLD_BODY = "Your manager will share anonymized client examples for both deliverables during the week. One STR scenario for Wednesday's presentation and one REPS scenario for Friday's. Refer to your manager for the Week 2 client packets and walk through them together before each presentation.";
+              const REAL_WORLD_BODY = cIt.realWorldApplication || "Your manager will share anonymized client examples for both deliverables during the week. One STR scenario for Wednesday's presentation and one REPS scenario for Friday's. Refer to your manager for the Week 2 client packets and walk through them together before each presentation.";
               const rwKey = `realworld::${cIt.id}`;
               const rwBody = getRealWorld ? getRealWorld(cIt.id, REAL_WORLD_BODY) : REAL_WORLD_BODY;
               return <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,0.06)",overflow:"hidden",marginBottom:24}}>
