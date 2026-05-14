@@ -5,6 +5,7 @@ import WeeklyReview from "./components/assessment/WeeklyReview.jsx";
 import ConfidentMisses from "./components/assessment/ConfidentMisses.jsx";
 import CohortHeatmap from "./components/assessment/CohortHeatmap.jsx";
 import { migrateLegacyQuiz } from "./lib/migrateLegacyQuiz.js";
+import { storage } from './lib/storage';
 
 // ─── Responsive CSS ─────────────────────────────────────────────────────────
 const RESPONSIVE_CSS = `
@@ -5871,9 +5872,10 @@ export default function App() {
   const [view, setView] = useState("login");
   const [viewingTrainee, setViewingTrainee] = useState(null);
   const [allUserData, setAllUserData] = useState({...SEED_DATA});
+  const dataLoaded = useRef(false);
 
-  useEffect(()=>{ (async()=>{ try{ const d=await window.storage.get("aiola-portal-v2"); if(d){ const p=JSON.parse(d.value); setAllUserData(prev=>{const m={...prev};for(const uid in p){m[uid]={tasks:{...(prev[uid]?.tasks||{}),...(p[uid]?.tasks||{})},quizzes:{...(prev[uid]?.quizzes||{}),...(p[uid]?.quizzes||{})}}}return m}); }}catch{}})(); },[]);
-  useEffect(()=>{ (async()=>{ try{await window.storage.set("aiola-portal-v2",JSON.stringify(allUserData))}catch{}})(); },[allUserData]);
+  useEffect(()=>{ (async()=>{ try{ const d=await storage.get("aiola-portal-v2"); if(d){ const p=JSON.parse(d.value); setAllUserData(prev=>{const m={...prev};for(const uid in p){m[uid]={tasks:{...(prev[uid]?.tasks||{}),...(p[uid]?.tasks||{})},quizzes:{...(prev[uid]?.quizzes||{}),...(p[uid]?.quizzes||{})}}}return m}); }}catch{} dataLoaded.current = true; })(); },[]);
+  useEffect(()=>{ if (!dataLoaded.current) return; (async()=>{ try{await storage.set("aiola-portal-v2",JSON.stringify(allUserData))}catch{}})(); },[allUserData]);
 
   const handleLogin = u => { setCurrentUser(u); setView(u.role==="admin"?"admin":u.role==="client"?"client":"trainee"); };
   const handleLogout = () => { setCurrentUser(null); setView("login"); setViewingTrainee(null); };
@@ -5894,37 +5896,38 @@ export default function App() {
   useEffect(()=>{ (async()=>{
     // KPI
     try {
-      const sk = await window.storage.get("aiola-kpi-v1");
+      const sk = await storage.get("aiola-kpi-v1");
       if (sk?.value) { setKpiData(JSON.parse(sk.value)); }
-      else { await window.storage.set("aiola-kpi-v1", JSON.stringify(KPI_SEED_DATA)); setKpiData({...KPI_SEED_DATA}); }
+      else { await storage.set("aiola-kpi-v1", JSON.stringify(KPI_SEED_DATA)); setKpiData({...KPI_SEED_DATA}); }
     } catch { setKpiData({...KPI_SEED_DATA}); }
     // Notes & Badges
     try {
-      const sn = await window.storage.get("aiola-notes-v1");
+      const sn = await storage.get("aiola-notes-v1");
       if (sn?.value) { setNotesData(JSON.parse(sn.value)); }
-      else { await window.storage.set("aiola-notes-v1", JSON.stringify(NOTES_SEED_DATA)); setNotesData({...NOTES_SEED_DATA}); }
+      else { await storage.set("aiola-notes-v1", JSON.stringify(NOTES_SEED_DATA)); setNotesData({...NOTES_SEED_DATA}); }
     } catch { setNotesData({...NOTES_SEED_DATA}); }
     // Scorecards
     try {
-      const ss = await window.storage.get("aiola-scorecards-v1");
+      const ss = await storage.get("aiola-scorecards-v1");
       if (ss?.value) { setScorecardData(JSON.parse(ss.value)); }
-      else { await window.storage.set("aiola-scorecards-v1", JSON.stringify({})); }
+      else { await storage.set("aiola-scorecards-v1", JSON.stringify({})); }
     } catch {}
     // Content overrides
     try {
-      const so = await window.storage.get("aiola-overrides-v1");
+      const so = await storage.get("aiola-overrides-v1");
       if (so?.value) { setOverrides(JSON.parse(so.value)); }
     } catch {}
+    dataLoaded.current = true;
   })(); },[]);
 
   // Persist KPI data on change
-  useEffect(()=>{ if(Object.keys(kpiData).length===0)return; (async()=>{ try{await window.storage.set("aiola-kpi-v1",JSON.stringify(kpiData))}catch{}})(); },[kpiData]);
+  useEffect(()=>{ if (!dataLoaded.current) return; if(Object.keys(kpiData).length===0)return; (async()=>{ try{await storage.set("aiola-kpi-v1",JSON.stringify(kpiData))}catch{}})(); },[kpiData]);
   // Persist notes/badges data on change
-  useEffect(()=>{ if(Object.keys(notesData).length===0)return; (async()=>{ try{await window.storage.set("aiola-notes-v1",JSON.stringify(notesData))}catch{}})(); },[notesData]);
+  useEffect(()=>{ if (!dataLoaded.current) return; if(Object.keys(notesData).length===0)return; (async()=>{ try{await storage.set("aiola-notes-v1",JSON.stringify(notesData))}catch{}})(); },[notesData]);
   // Persist scorecard data on change
-  useEffect(()=>{ if(Object.keys(scorecardData).length===0)return; (async()=>{ try{await window.storage.set("aiola-scorecards-v1",JSON.stringify(scorecardData))}catch{}})(); },[scorecardData]);
+  useEffect(()=>{ if (!dataLoaded.current) return; if(Object.keys(scorecardData).length===0)return; (async()=>{ try{await storage.set("aiola-scorecards-v1",JSON.stringify(scorecardData))}catch{}})(); },[scorecardData]);
   // Persist content overrides on change
-  useEffect(()=>{ if(Object.keys(overrides).length===0)return; (async()=>{ try{await window.storage.set("aiola-overrides-v1",JSON.stringify(overrides))}catch{}})(); },[overrides]);
+  useEffect(()=>{ if (!dataLoaded.current) return; if(Object.keys(overrides).length===0)return; (async()=>{ try{await storage.set("aiola-overrides-v1",JSON.stringify(overrides))}catch{}})(); },[overrides]);
 
   const [landOnPerf, setLandOnPerf] = useState(false);
   const viewTrainee = t => { setViewingTrainee(t); setLandOnPerf(false); setView("trainee-admin"); };
