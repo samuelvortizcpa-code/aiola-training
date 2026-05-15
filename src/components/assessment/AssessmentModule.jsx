@@ -11,7 +11,6 @@ import CaseLawResearch from "./CaseLawResearch.jsx";
 import { storage } from "../../lib/storage.js";
 import {
   addToPool, markMastered, recordTopicHit,
-  getMissedItemsForSection,
 } from "../../lib/spacedRepetition.js";
 
 const PASS_THRESHOLD = 0.75;
@@ -30,24 +29,11 @@ const COMPONENT_MAP = {
 export default function AssessmentModule({ blocks, sectionId, userId, onModuleComplete, isAdminView, sectionTopicTags }) {
   const [blockResults, setBlockResults] = useState({});
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [resurfacedBlocks, setResurfacedBlocks] = useState([]);
   const [allBlocks, setAllBlocks] = useState(blocks);
 
-  // On mount: fetch resurfaced items and prepend
   useEffect(() => {
-    if (isAdminView || !userId || !sectionTopicTags?.length) {
-      setAllBlocks(blocks);
-      return;
-    }
-    getMissedItemsForSection(userId, sectionTopicTags).then(items => {
-      if (items.length > 0) {
-        setResurfacedBlocks(items);
-        setAllBlocks([...items, ...blocks]);
-      } else {
-        setAllBlocks(blocks);
-      }
-    });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    setAllBlocks(blocks);
+  }, [blocks]);
 
   const completedCount = Object.keys(blockResults).length;
   const allDone = allBlocks.length > 0 && completedCount === allBlocks.length;
@@ -174,25 +160,16 @@ export default function AssessmentModule({ blocks, sectionId, userId, onModuleCo
         </div>
       )}
 
-      {/* Resurface banner */}
-      {resurfacedBlocks.length > 0 && !allDone && (
-        <div style={{ padding: "8px 18px", background: B.purpleL, borderBottom: `1px solid ${B.bdr}`, fontSize: 11, color: B.purple, display: "flex", alignItems: "center", gap: 6 }}>
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8 1v6M4 5l4 4 4-4" stroke={B.purple} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          Spaced review — {resurfacedBlocks.length} question{resurfacedBlocks.length !== 1 ? "s" : ""} you missed earlier resurface here. Get them right with confidence to mark them mastered.
-        </div>
-      )}
-
       {/* Progress dots */}
       <div style={{ display: "flex", gap: 4, padding: "10px 18px" }}>
         {allBlocks.map((b, i) => {
           const isDone = !!blockResults[b.id];
           const isCurrent = i === currentIdx;
-          const isResurfaced = i < resurfacedBlocks.length;
           return (
             <div key={b.id + "_" + i} onClick={() => { if (isDone || i <= currentIdx) setCurrentIdx(i); }}
               style={{
                 flex: 1, height: 4, borderRadius: 2, cursor: isDone || i <= currentIdx ? "pointer" : "default",
-                background: isDone ? B.ok : isCurrent ? (isResurfaced ? B.purple : B.blue) : B.bdr, transition: "background .3s",
+                background: isDone ? B.ok : isCurrent ? B.blue : B.bdr, transition: "background .3s",
               }} />
           );
         })}
