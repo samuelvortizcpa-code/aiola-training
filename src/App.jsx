@@ -1524,37 +1524,8 @@ const PHASES = [
         assessmentIntro: "Answer based on what you\u2019ve learned this week. Please don\u2019t research questions before answering. The goal of this check is to calibrate where your understanding is right now, so your manager can target the next sprint of learning. There\u2019s no penalty for getting things wrong.",
         tasks: [],
         resources: [],
-        assessment: [],
-      },
-      {
-        id: "d16", title: "Day 16 — Gain on Sale + §121 Home Exclusion",
-        description: "Real estate clients sell properties. When they do, the tax math determines whether they net the gain or get blindsided. Today: capital gain calculation on rental sale, the §121 principal residence exclusion, and the trap where §121 doesn't shield depreciation recapture. Tomorrow we go deeper into the recapture mechanics.",
-        topicTags: ["section_121", "basis", "recapture", "depreciation"],
-        learningObjectives: [
-          "Compute capital gain on sale of rental property: amount realized − adjusted basis",
-          "Compute adjusted basis correctly: original basis + improvements − accumulated depreciation",
-          "Apply the §121 home sale exclusion: $250k single / $500k MFJ, with ownership and use tests",
-          "Identify when reduced §121 exclusion applies (employment, health, unforeseen circumstances under Reg. §1.121-3)",
-          "Recognize the §121(d)(6) trap: depreciation recapture taken after May 6, 1997 is NOT excludable — it stays taxable",
-        ],
-        tasks: [
-          { id: "d16t1", text: "Read IRC §121 in full — focus on (a) general rule, (b) limitations, (c) reduced exclusion, (d)(6) recapture exception" },
-          { id: "d16t2", text: "Read Reg. §1.121-1 and §1.121-3 (Treasury implementation regs)" },
-          { id: "d16t3", text: "Read IRS Pub 523 (Selling Your Home)" },
-          { id: "d16t4", text: "Practice: Compute gain on sale for 3 sample property profiles (rental sold, primary residence sold, mixed-use sold)" },
-          { id: "d16t5", text: "Read Aiola's Sale of Property worksheet (TODO_NICK: link)" },
-          { id: "d16t6", text: "Watch: Aiola's §121 client conversation walkthrough (TODO_NICK: record)" },
-        ],
-        resources: [
-          { label: "IRC §121 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/121" },
-          { label: "Reg. §1.121-1 (General rules)", url: "https://www.law.cornell.edu/cfr/text/26/1.121-1" },
-          { label: "Reg. §1.121-3 (Reduced exclusion)", url: "https://www.law.cornell.edu/cfr/text/26/1.121-3" },
-          { label: "IRS Pub 523 (Selling Your Home)", url: "https://www.irs.gov/pub/irs-pdf/p523.pdf" },
-          { label: "IRC §1001 (Computation of gain or loss)", url: "https://www.law.cornell.edu/uscode/text/26/1001" },
-          { label: "Aiola Sale of Property Worksheet", url: null /* TODO_NICK */ },
-          { label: "Aiola §121 Walkthrough Video", url: null /* TODO_NICK */ },
-        ],
         assessment: [
+          // ── d16 (Day 16) ──
           {
             type: "COMPUTATION", id: "d16_comp_gain_on_sale_rental",
             title: "Capital Gain on Sale of Rental",
@@ -1663,34 +1634,7 @@ const PHASES = [
             difficulty: 4,
             explanation: "§1250 actually has TWO components: (1) §1250 recapture proper — applies to real property depreciated using methods FASTER than straight-line; the excess depreciation is recaptured at ordinary rates. For most modern real property (residential and nonresidential after 1986), this is zero because they're depreciated SL. (2) Unrecaptured §1250 gain — the SL depreciation portion of the gain. This is taxed at a maximum federal rate of 25% (per §1(h)(1)(D)), which is HIGHER than the typical 20% long-term capital gains rate. Critical: even though the property was depreciated SL, that depreciation still 'comes back' on sale at a 25% rate, not a 20% rate.",
           },
-        ],
-      },
-      {
-        id: "d17", title: "Day 17 — Depreciation Recapture: §1245 vs §1250",
-        description: "Recapture is where cost segregation comes back to bite — or doesn't, depending on planning. Today: §1245 ordinary recapture on personal property components, §1250 unrecaptured gain on real property, and the strategic implications for clients who've done cost seg studies.",
-        topicTags: ["recapture", "depreciation", "cost_seg_basics", "basis"],
-        learningObjectives: [
-          "Distinguish §1245 property (tangible personal property: 5/7-year cost-seg components, FF&E) from §1250 property (real property: building structure, land improvements)",
-          "Apply §1245 recapture: ordinary income up to total depreciation taken (no rate cap)",
-          "Apply §1250 unrecaptured gain: the SL depreciation portion of real property gain, taxed at max 25% federal",
-          "Identify how cost segregation INCREASES §1245 exposure (more 5/7-year property classified as §1245)",
-          "Recognize the recapture interaction with §121 (excluded gain doesn't shield recapture under §121(d)(6)) and 1031 (§1245 generally cannot be deferred)",
-        ],
-        tasks: [
-          { id: "d17t1", text: "Read IRC §1245 and §1250 in full" },
-          { id: "d17t2", text: "Read Reg. §1.1245-1 and §1.1250-1" },
-          { id: "d17t3", text: "Read Form 4797 Instructions — focus on Part III (Sale of Recapture Property)" },
-          { id: "d17t4", text: "Practice: For a property with cost seg components, compute §1245 vs §1250 recapture on sale" },
-          { id: "d17t5", text: "Read Aiola's Recapture worksheet (TODO_NICK: link to firm SOP)" },
-        ],
-        resources: [
-          { label: "IRC §1245", url: "https://www.law.cornell.edu/uscode/text/26/1245" },
-          { label: "IRC §1250", url: "https://www.law.cornell.edu/uscode/text/26/1250" },
-          { label: "Form 4797 Instructions", url: "https://www.irs.gov/pub/irs-pdf/i4797.pdf" },
-          { label: "Form 4797 (blank)", url: "https://www.irs.gov/pub/irs-pdf/f4797.pdf" },
-          { label: "Aiola Recapture Worksheet", url: null /* TODO_NICK */ },
-        ],
-        assessment: [
+          // ── d17 (Day 17) ──
           {
             type: "DRAG_EXERCISE", id: "d17_match_recapture_property",
             title: "Property Type → Recapture Category",
@@ -1774,38 +1718,7 @@ const PHASES = [
             difficulty: 2,
             explanation: "Form 4797 is the primary vehicle for sale of business or rental property. Part I = §1231 long-term gains/losses. Part II = ordinary gains/losses. Part III = recapture computations under §1245, §1250, §1252, §1254, §1255. The net §1231 gain (after recapture is carved out as ordinary) flows to Schedule D as long-term capital gain. Schedule D / Form 8949 alone is for non-business capital assets (stocks, personal residence under §121, etc.). Always use 4797 for rental property sales.",
           },
-        ],
-      },
-      {
-        id: "d18", title: "Day 18 — 1031 Like-Kind Exchange",
-        description: "1031 exchanges are how sophisticated real estate investors compound — defer gain, redeploy capital, repeat. Today: the 45/180-day mechanics, identification rules, qualified intermediary requirement, boot recognition, and the post-TCJA limitation to real property only.",
-        topicTags: ["section_1031", "recapture"],
-        learningObjectives: [
-          "Explain the 1031 framework: defer recognition of gain on exchange of like-kind property",
-          "Apply the timing rules: 45-day identification window, 180-day exchange window, both starting from sale of relinquished property",
-          "Identify the three identification methods: 3-property rule, 200% rule, 95% rule",
-          "Recognize the qualified intermediary requirement (taxpayer cannot constructively receive proceeds)",
-          "Compute boot recognition: gain recognized to the extent of boot received (cash or non-like-kind property)",
-          "Apply post-TCJA limitation: like-kind = REAL property for real property only (personal property no longer qualifies)",
-        ],
-        tasks: [
-          { id: "d18t1", text: "Read IRC §1031 in full — focus on (a) general rule, (a)(3) identification timing, (b) gain recognized on receipt of other property" },
-          { id: "d18t2", text: "Read Reg. §1.1031(a)-1 and (b)-1 (Treasury implementation)" },
-          { id: "d18t3", text: "Read IRS Pub 544 (Sales and Other Dispositions), Chapter 1" },
-          { id: "d18t4", text: "Read about Qualified Intermediary requirements under Reg. §1.1031(k)-1(g)" },
-          { id: "d18t5", text: "Practice: Walk through a 4-step 1031 timeline (sale, identification, exchange completion) with appropriate documents" },
-          { id: "d18t6", text: "Read Aiola's 1031 client checklist (TODO_NICK: link)" },
-        ],
-        resources: [
-          { label: "IRC §1031 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/1031" },
-          { label: "Reg. §1.1031(a)-1 (Like-kind property)", url: "https://www.law.cornell.edu/cfr/text/26/1.1031(a)-1" },
-          { label: "Reg. §1.1031(k)-1 (Deferred exchanges + qualified intermediary)", url: "https://www.law.cornell.edu/cfr/text/26/1.1031(k)-1" },
-          { label: "IRS Pub 544 (Sales and Other Dispositions)", url: "https://www.irs.gov/pub/irs-pdf/p544.pdf" },
-          { label: "Form 8824 Instructions (Like-Kind Exchanges)", url: "https://www.irs.gov/pub/irs-pdf/i8824.pdf" },
-          { label: "Form 8824 (blank)", url: "https://www.irs.gov/pub/irs-pdf/f8824.pdf" },
-          { label: "Aiola 1031 Client Checklist", url: null /* TODO_NICK */ },
-        ],
-        assessment: [
+          // ── d18 (Day 18) ──
           {
             type: "DRAG_EXERCISE", id: "d18_order_1031_timeline",
             title: "1031 Exchange Timeline",
@@ -1888,33 +1801,7 @@ const PHASES = [
             difficulty: 3,
             explanation: "TCJA (effective 1/1/2018) limited §1031 like-kind treatment to real property for real property only. Personal property (vehicles, art, equipment, livestock, collectibles) no longer qualifies. This affects: (1) cost seg interaction — the 5/7-year personal property components from a cost seg study cannot be 1031-deferred; only the real property structural component can. (2) Trade-ins of business equipment — used to qualify as 1031, now generate gain or loss on the trade-in side. Real estate investors are largely unaffected for the building-only side, but cost seg planning needs to account for the §1245 portion not deferring.",
           },
-        ],
-      },
-      {
-        id: "d19", title: "Day 19 — Entity Structures for Real Estate",
-        description: "Now that we've covered gain on sale, recapture, and 1031, layer in the entity structure question. Building on this week's sale and recapture mechanics: rentals go in LLCs, not S-Corps. Today reinforces that with the §1402(a)(1) and §311(b) reasoning.",
-        topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation", "rental_classification", "basis"],
-        learningObjectives: [
-          "Match each entity structure (SMLLC, multi-member LLC, S-Corp, C-Corp) to its best real estate use case",
-          "Articulate the two-part reason why rental real estate should NOT be in an S-Corp",
-          "Explain disregarded entity treatment for single-member LLCs under Reg. §301.7701-3",
-          "Recognize when transferring appreciated property to an SMLLC is a non-event vs a taxable event",
-        ],
-        tasks: [
-          { id: "d19t1", text: "Read IRC §301.7701 and the check-the-box regulations" },
-          { id: "d19t2", text: "Read about S-Corp election restrictions under §1361 (one-class-of-stock rule, eligibility)" },
-          { id: "d19t3", text: "Review Aiola's Entity Decision Tree (TODO_NICK: link)" },
-          { id: "d19t4", text: "Review your assigned client's return and S-Corp question (preview tomorrow's scenario)" },
-          { id: "d19t5", text: "Read about Wyoming and Delaware holding LLCs (TODO_NICK: firm preference)" },
-        ],
-        resources: [
-          { label: "Reg. §301.7701 (Check-the-box)", url: "https://www.law.cornell.edu/cfr/text/26/301.7701-3" },
-          { label: "IRC §1361 (S-Corp eligibility)", url: "https://www.law.cornell.edu/uscode/text/26/1361" },
-          { label: "IRC §721 (Partnership contributions)", url: "https://www.law.cornell.edu/uscode/text/26/721" },
-          { label: "Aiola Entity Decision Tree", url: null /* TODO_NICK */ },
-          { label: "Sample 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
-        ],
-        assessment: [
+          // ── d19 (Day 19) ──
           {
             type: "DRAG_EXERCISE", id: "w4_match_entity_use",
             title: "Entity Type → Best Real Estate Use Case",
@@ -1958,34 +1845,7 @@ const PHASES = [
             difficulty: 3,
             explanation: "Transfer to an SMLLC owned 100% by the same taxpayer = no recognition event federally because the LLC is disregarded. Original basis carries over. Title moves; tax position doesn't. Important caveats: (1) Some states impose transfer taxes on the deed change. (2) Lender consent may be required if there's a mortgage (technically a transfer of title). (3) Multi-member LLC transfers ARE potentially recognition events — check Reg. §1.721-1 contributions to partnerships.",
           },
-        ],
-      },
-      {
-        id: "d20", title: "Day 20 — S-Corp Advisory Decision + QBI + Week Wrap",
-        description: "Day 20 is the entity application day. The S-Corp advisory scenario IS the centerpiece — engage with each branch carefully (30+ min). Then layer in §199A QBI fundamentals to round out the entity discussion.",
-        topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax", "pass_through", "qbi", "rental_classification"],
-        learningObjectives: [
-          "Walk through a complete S-Corp advisory conversation: scoping, reasonable comp, savings sizing, and the rental trap",
-          "Compute SE tax on Schedule C and compare to FICA on S-Corp wages",
-          "Articulate §199A QBI at a working level: 20% deduction, SSTB rules, and the rental real estate safe harbor",
-          "Synthesize entity structure, SE tax, and QBI concepts into a coherent advisory framework",
-        ],
-        tasks: [
-          { id: "d20t1", text: "Complete the S-Corp advisory scenario for your assigned client — engage with EACH terminal outcome carefully" },
-          { id: "d20t2", text: "Submit a written analysis of whether your assigned client should elect S-Corp for 2025 to your manager via ClickUp" },
-          { id: "d20t3", text: "Read the IRS Fact Sheet: Wage Compensation for S-Corp Officers" },
-          { id: "d20t4", text: "Read Rev. Proc. 2019-38 for the rental real estate QBI safe harbor" },
-          { id: "d20t5", text: "30-min Friday wrap-up call with your Manager to discuss the week" },
-        ],
-        resources: [
-          { label: "IRC §1402(a)(1) (Rents excluded from SE)", url: "https://www.law.cornell.edu/uscode/text/26/1402" },
-          { label: "IRC §311(b) (Distribution of appreciated property)", url: "https://www.law.cornell.edu/uscode/text/26/311" },
-          { label: "IRC §199A (QBI)", url: "https://www.law.cornell.edu/uscode/text/26/199A" },
-          { label: "Rev. Proc. 2019-38 (Rental RE safe harbor)", url: "https://www.irs.gov/pub/irs-drop/rp-19-38.pdf" },
-          { label: "IRS Wage Compensation for S-Corp Officers", url: "https://www.irs.gov/businesses/small-businesses-self-employed/wage-compensation-for-s-corporation-officers" },
-          { label: "Sample 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
-        ],
-        assessment: [
+          // ── d20 (Day 20) ──
           {
             type: "SCENARIO_BRANCHING", id: "w4_scenario_scorp_decision",
             title: "Should the Client Elect S-Corp for 2025?",
@@ -2144,6 +2004,71 @@ const PHASES = [
             topicTags: ["qbi", "rental_classification"],
             difficulty: 4,
             explanation: "Rental income qualifies for QBI only if the rental rises to a §162 trade or business OR meets the Rev. Proc. 2019-38 safe harbor. The safe harbor requires: (1) separate books and records for the rental enterprise, (2) 250+ hours of rental services per year (provided by owner, agents, or contractors), (3) contemporaneous time logs starting in 2020, (4) the safe harbor statement filed with the return. A single passive rental that the owner does little active work on usually does NOT qualify. This is a common missed deduction — and a real client conversation: 'are you tracking your hours? If yes, you might pick up a 20% deduction on the net rental income.' Note: REPS status is a §469 concept, separate from §199A — a real estate professional doesn't automatically get QBI on rentals.",
+          },
+          // ── New blocks (coverage gaps) ──
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_469g_release",
+            question: "A taxpayer has $42,000 of suspended passive losses on a rental property from prior years. In 2024 they engage in one of the following transactions. Which transaction RELEASES the suspended losses under IRC §469(g)?",
+            options: [
+              "Refinancing the property with a new lender",
+              "Transferring the property to their wholly-owned single-member LLC",
+              "Selling the property in a fully taxable transaction to an unrelated party",
+              "Exchanging the property in a §1031 like-kind exchange with an unrelated party"
+            ],
+            correct: 2,
+            topicTags: ["passive_loss", "section_469g", "disposition", "section_1031"],
+            difficulty: 4,
+            explanation: "Under §469(g)(1)(A), suspended passive losses release on a FULLY TAXABLE DISPOSITION of the ENTIRE INTEREST in the passive activity to an UNRELATED party. A §1031 exchange is NOT fully taxable (gain is deferred, not recognized), so suspended losses carry forward and attach to the replacement property — they do NOT release. Refinancing, SMLLC transfers (a non-event since SMLLC is disregarded for federal tax), and related-party dispositions all fail to release. This is a critical sale-year planning point: if a client has large suspended losses, a §1031 exchange may not be the best move because it forfeits the chance to release those losses against ordinary income on the sale year.",
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_harpta_hawaii_nonconformity",
+            question: "A non-resident sells a Hawaii rental property for $800,000 and intends to defer the federal gain via §1031 into an Oregon replacement property. Which of the following state-tax considerations apply?",
+            options: [
+              "Hawaii fully conforms to §1031; the only state issue is filing a non-resident return showing zero state tax due",
+              "Hawaii imposes HARPTA withholding (currently 7.25%) on non-resident sellers AND has historically limited §1031 deferral when the replacement property is out-of-state — state gain may be currently taxable even though federal is deferred. Confirm current Hawaii DOR position before relying.",
+              "Hawaii does not tax capital gains on real estate",
+              "Hawaii defers federal AND state gain identically because Hawaii uses Internal Revenue Code conformity"
+            ],
+            correct: 1,
+            topicTags: ["harpta", "hawaii", "section_1031", "state_conformity"],
+            difficulty: 4,
+            explanation: "HARPTA (Hawaii Real Property Tax Act) imposes withholding on non-resident sellers at the time of closing — currently 7.25% of the sale price. This withholding is creditable against the actual Hawaii tax due, but it's a cash-flow event regardless. Separately, Hawaii has historically limited §1031 deferral when the replacement property is out-of-state, meaning the state gain may be currently taxable even though the federal gain is deferred. This position has shifted over time and should be confirmed against current Hawaii DOR guidance before relying. Always flag both issues for any Hawaii property sale on a 1031 — they are the two most common state-conformity traps in Aiola's practice.",
+          },
+          {
+            type: "COMPUTATION", id: "w4_comp_6654_safe_harbor",
+            title: "§6654 Estimated Tax Safe Harbor",
+            topicTags: ["estimated_tax", "section_6654", "safe_harbor"],
+            prompt: "Client's 2023 federal tax liability was $48,000. Client's 2023 AGI was $180,000. Client is planning a large 2024 sale that will significantly increase 2024 tax liability. Using the §6654(d)(1)(B) prior-year safe harbor, what is the minimum total of 2024 estimated tax payments + withholding the client must make through the year to AVOID underpayment penalty?",
+            expectedAnswer: 52800,
+            tolerance: 100,
+            unit: "dollars",
+            formLine: "Form 2210, Part I",
+            workedSolution: [
+              "Step 1: Identify the applicable safe-harbor percentage. §6654(d)(1)(B)(ii) requires 110% of prior-year tax for taxpayers with prior-year AGI > $150,000 (100% otherwise).",
+              "Step 2: Apply to prior-year tax. $48,000 × 110% = $52,800.",
+              "Step 3: This is the minimum the client must pay through withholding + estimated tax through the year to safe-harbor the penalty. Any additional 2024 tax owed beyond $52,800 is due at the April filing deadline without penalty.",
+              "Note: There is also a current-year safe harbor (pay 90% of current-year tax). Clients can choose whichever is lower, but the prior-year safe harbor is preferred for big-sale years because the 2024 tax is unknowable in advance.",
+              "Important: Withholding is treated as paid evenly through the year. Estimated tax payments are credited to the quarter in which paid. A Q4 estimate cannot retroactively cure a Q1 shortfall — the underpayment penalty is computed quarter by quarter on Form 2210.",
+            ],
+            commonWrongAnswers: [
+              { value: 48000, indicates: "Used 100% — but prior-year AGI > $150k triggers the 110% rule under §6654(d)(1)(B)(ii)." },
+              { value: 43200, indicates: "Used 90% — that's the CURRENT-year safe harbor, not the prior-year safe harbor. Question asks for prior-year." },
+              { value: 4800, indicates: "10% of prior-year tax — not a real safe harbor calculation." },
+            ],
+          },
+          {
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_rev_proc_2019_38_specifics",
+            question: "Your client has 3 residential rental properties they want to treat as a single 'rental real estate enterprise' for the §199A QBI safe harbor under Rev. Proc. 2019-38. Which of the following is NOT a requirement of the safe harbor?",
+            options: [
+              "Separate books and records for the rental real estate enterprise",
+              "250 or more hours of rental services performed per year by the taxpayer, employees, agents, or independent contractors",
+              "Contemporaneous records (time, services performed, who performed them) for tax years beginning after 2019",
+              "The taxpayer must materially participate in the rental activity under §469"
+            ],
+            correct: 3,
+            topicTags: ["qbi", "section_199A", "rev_proc_2019_38", "safe_harbor", "rental_classification"],
+            difficulty: 4,
+            explanation: "Rev. Proc. 2019-38 establishes a SAFE HARBOR for treating rental real estate as a §162 trade or business eligible for the §199A QBI deduction. The requirements are: (1) separate books and records for each rental enterprise (or aggregated commercial-or-residential enterprises), (2) 250+ hours of rental services per year (the threshold drops in years 3+ of the property's rental service), (3) contemporaneous records for years beginning after 2019, and (4) attached statement to the return claiming the safe harbor. Material participation under §469 is NOT a safe-harbor requirement — §469 governs whether losses are passive or non-passive; §199A safe harbor governs whether the rental is a §162 trade or business. These are independent tests. Also note: triple-net leases and properties used as the taxpayer's residence are excluded from the safe harbor entirely.",
           },
         ],
       },
