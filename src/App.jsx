@@ -1463,7 +1463,71 @@ const PHASES = [
     id: "week4", label: "Week 4", subtitle: "Sale, Recapture, 1031 & Entities", phase: "Days 1–30",
     items: [
       {
-        id: "d11", title: "Day 16 — Gain on Sale + §121 Home Exclusion",
+        id: "week4_main",
+        title: "Week 4 \u2014 Purchase + Sale Combined",
+        description: "This week you build the analytical and decision-making skills for the two highest-stakes events in a real estate engagement: acquisition and sale. You learn how basis is established at purchase, how financing structures flow through to tax treatment, then how a sale plays out across four real scenarios (as-sold, with \u00a71031 exchange, with prior cost seg, with both together) including state conformity layer. Then you take on an active client\u2019s entity decision and write a defensible S-Corp recommendation that cites the \u00a71402(a)(1) and \u00a7311(b) foundation for why rentals never go in S-Corps. By end of week you have three deliverables: a Wednesday Sale Scenario Matrix presentation on an assigned client\u2019s recent property sale; a Friday Entity/S-Corp Analysis presentation on an assigned active client\u2019s S-Corp question; and a 20-question end-of-week assessment covering \u00a7121, \u00a71031, \u00a71245/\u00a71250 recapture, \u00a7469(g) suspended loss release, \u00a71402(a)(1) rentals-not-in-S-Corp foundation, reasonable comp methodology, \u00a76654 estimated tax safe harbor, the \u00a7199A QBI rental safe harbor under Rev. Proc. 2019-38, and Hawaii state nonconformity issues (HARPTA, \u00a71031 limitations on out-of-state replacements).",
+        topicTags: [
+          "section_121", "section_1031", "recapture", "passive_loss",
+          "s_corp", "qbi", "reasonable_comp", "harpta",
+          "estimated_tax", "entity_election"
+        ],
+        weeklyRubric: {
+          title: "Week 4 Scorecard",
+          intro: "This rubric applies to BOTH your Wednesday Sale Scenario Matrix presentation AND your Friday Entity/S-Corp Analysis presentation. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "Technical Accuracy", desc: "Rules under \u00a7121, \u00a71031, \u00a71245, \u00a71250, \u00a7469(g), \u00a71361, \u00a71402(a)(1), \u00a7311(b), \u00a76654, and Rev. Proc. 2019-38 stated correctly. No doctrinal errors." },
+            { num: 2, name: "Authoritative Sourcing", desc: "Every claim tied to IRC / Reg / Rev. Proc. / IRS guidance with specific citations. State conformity sources cited (statute or DOR guidance). Binding authority distinguished from secondary." },
+            { num: 3, name: "Calculation Accuracy & Sensitivity", desc: "Sale math correct: amount realized, basis recomputation at exit, \u00a71245 vs \u00a71250 split, suspended PAL release timing, federal vs state. 1031 boot and basis carryover correct. S-Corp savings vs SE tax computation defensible. Sensitivity to scenario assumptions shown (what changes if cost seg %, sale price, or state assumption changes)." },
+            { num: 4, name: "Coverage & Risk Identification", desc: "All 4 sale scenarios covered. State layer covered (HARPTA flagged when Hawaii is involved). For entity work: rentals-never-in-S-Corp trap addressed explicitly where relevant. Reasonable comp methodology defended. Legacy issues from prior CPA identified. Risk flags raised on grey areas (deferred dispositions, lazy-1031 risk, mid-stream conversions)." },
+            { num: 5, name: "Communication & Defensibility", desc: "Peer can follow it from the deck alone. Holds up under Q&A. Substance could be delivered to a client with tone adjustment." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-week4.html",
+          fullDocLabel: "View Full Scorecard"
+        },
+        learningObjectives: [
+          "Apply IRC \u00a7121 home-sale exclusion mechanics including the ownership and use tests, the $250k/$500k limits, and the partial exclusion safe harbor under Reg \u00a71.121-3",
+          "Compute amount realized and gain or loss under IRC \u00a71001 on the sale of real property, including treatment of mortgage relief as amount realized",
+          "Apply IRC \u00a71031 like-kind exchange mechanics: 45-day identification window, 180-day exchange completion, boot recognition, basis carryover, depreciation continuation",
+          "Distinguish \u00a71245 ordinary recapture (on cost-seg components) from \u00a71250 unrecaptured gain (on real property, taxed at 25% maximum rate), and compute the splits correctly",
+          "Apply \u00a7469(g) suspended-passive-loss release on a fully taxable disposition to an unrelated party, and recognize that a \u00a71031 exchange does NOT trigger \u00a7469(g) release",
+          "Identify state conformity issues on real estate sales, especially HARPTA withholding for non-resident Hawaii sellers and Hawaii\u2019s historical non-conformity to \u00a71031 on out-of-state replacement property",
+          "Recognize lazy-1031 mechanics (acquiring depreciable replacement property in the same year as a sale to offset gain with bonus/cost seg deductions instead of running a formal exchange)",
+          "Apply check-the-box rules under Reg \u00a7301.7701 to identify when an entity is a disregarded entity, partnership, or corporation for federal tax purposes",
+          "Explain why rentals do not belong in an S-Corp: IRC \u00a71402(a)(1) (rental real estate excluded from SE earnings, eliminating the S-Corp SE-tax savings rationale) AND \u00a7311(b) (gain recognition on distribution of appreciated property out of corporate solution)",
+          "Apply reasonable compensation methodology for S-Corp officers using RCReports or BLS data \u2014 not arbitrary percentages \u2014 under the IRS Wage Compensation for S-Corp Officers guidance and Watson v. Commissioner",
+          "Apply the \u00a76654 estimated tax safe harbor: 100% of prior-year liability (110% if prior-year AGI > $150k) to avoid underpayment penalty, especially relevant on big-gain sale years",
+          "Apply the \u00a7199A QBI rental safe harbor under Rev. Proc. 2019-38: 250 hours of rental services, separate books and records per enterprise, contemporaneous records, exclusions for triple-net leases and personal-use property"
+        ],
+        realWorldApplication: "Your manager will share anonymized client packets for both presentations this week. The Wednesday packet is a recent property sale with full facts \u2014 closing statement, prior-year cost seg history, suspended PAL carryforward, state of property and state of residence. The Friday packet is an active S-Corp question with the related ISM recording and prior-year return. Refer to your manager for both packets and for state-conformity scaffolding (especially Hawaii if applicable to the assigned sale).",
+        clientExamples: [],
+        deliverables: [
+          {
+            id: "w4d_wed",
+            title: "Real-Client Sale Scenario Matrix Presentation",
+            dueDate: "Wed",
+            description: "Walk your Manager through 4 sale scenarios side-by-side on your assigned client\u2019s recent property sale: as-sold, with \u00a71031, with prior-year cost seg, and with \u00a71031 + cost seg. Include state conformity layer. Technical, grounded in primary authority. Add as task to ClickUp."
+          },
+          {
+            id: "w4d_fri",
+            title: "Real-Client Entity/S-Corp Analysis Presentation",
+            dueDate: "Fri",
+            description: "Walk your Manager through your S-Corp election analysis on your assigned active client. Reasonable comp methodology, legacy issue handling, rentals-never-in-S-Corp trap addressed where relevant. Technical, grounded in primary authority. Add as task to ClickUp."
+          },
+          {
+            id: "w4d_assess",
+            title: "Week 4 End-of-Week Assessment",
+            dueDate: "Fri",
+            description: "Assessment covering \u00a7121, \u00a71031 mechanics, \u00a71245/\u00a71250 recapture, \u00a7469(g) suspended loss release, S-Corp election mechanics, \u00a71402(a)(1) and \u00a7311(b), reasonable comp framework, the \u00a7199A QBI rental safe harbor under Rev. Proc. 2019-38, \u00a76654 estimated tax safe harbor, and Hawaii state non-conformity (HARPTA, \u00a71031 limitations). Honor system: do your best to answer without research. Anyone can look up these answers; what we\u2019re tracking is your understanding right now. Mid-week completion is fine."
+          }
+        ],
+        assessmentIntro: "Answer based on what you\u2019ve learned this week. Please don\u2019t research questions before answering. The goal of this check is to calibrate where your understanding is right now, so your manager can target the next sprint of learning. There\u2019s no penalty for getting things wrong.",
+        tasks: [],
+        resources: [],
+        assessment: [],
+      },
+      {
+        id: "d16", title: "Day 16 — Gain on Sale + §121 Home Exclusion",
         description: "Real estate clients sell properties. When they do, the tax math determines whether they net the gain or get blindsided. Today: capital gain calculation on rental sale, the §121 principal residence exclusion, and the trap where §121 doesn't shield depreciation recapture. Tomorrow we go deeper into the recapture mechanics.",
         topicTags: ["section_121", "basis", "recapture", "depreciation"],
         learningObjectives: [
@@ -1474,12 +1538,12 @@ const PHASES = [
           "Recognize the §121(d)(6) trap: depreciation recapture taken after May 6, 1997 is NOT excludable — it stays taxable",
         ],
         tasks: [
-          { id: "d11t1", text: "Read IRC §121 in full — focus on (a) general rule, (b) limitations, (c) reduced exclusion, (d)(6) recapture exception" },
-          { id: "d11t2", text: "Read Reg. §1.121-1 and §1.121-3 (Treasury implementation regs)" },
-          { id: "d11t3", text: "Read IRS Pub 523 (Selling Your Home)" },
-          { id: "d11t4", text: "Practice: Compute gain on sale for 3 sample property profiles (rental sold, primary residence sold, mixed-use sold)" },
-          { id: "d11t5", text: "Read Aiola's Sale of Property worksheet (TODO_NICK: link)" },
-          { id: "d11t6", text: "Watch: Aiola's §121 client conversation walkthrough (TODO_NICK: record)" },
+          { id: "d16t1", text: "Read IRC §121 in full — focus on (a) general rule, (b) limitations, (c) reduced exclusion, (d)(6) recapture exception" },
+          { id: "d16t2", text: "Read Reg. §1.121-1 and §1.121-3 (Treasury implementation regs)" },
+          { id: "d16t3", text: "Read IRS Pub 523 (Selling Your Home)" },
+          { id: "d16t4", text: "Practice: Compute gain on sale for 3 sample property profiles (rental sold, primary residence sold, mixed-use sold)" },
+          { id: "d16t5", text: "Read Aiola's Sale of Property worksheet (TODO_NICK: link)" },
+          { id: "d16t6", text: "Watch: Aiola's §121 client conversation walkthrough (TODO_NICK: record)" },
         ],
         resources: [
           { label: "IRC §121 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/121" },
@@ -1492,7 +1556,7 @@ const PHASES = [
         ],
         assessment: [
           {
-            type: "COMPUTATION", id: "d11_comp_gain_on_sale_rental",
+            type: "COMPUTATION", id: "d16_comp_gain_on_sale_rental",
             title: "Capital Gain on Sale of Rental",
             topicTags: ["basis", "depreciation", "recapture"],
             prompt: "Client purchased a rental property in 2014 for $400,000 (closing costs included). Allocated $80k to land, $320k to building. Took straight-line depreciation through 2024 of $116,000 (accumulated depreciation). Made capital improvements of $50,000 in 2018 (added 8 years of depreciation already in the $116k figure). Sells in 2025 for $750,000 net of selling expenses. Compute the realized GAIN.",
@@ -1517,7 +1581,7 @@ const PHASES = [
             ],
           },
           {
-            type: "COMPUTATION", id: "d11_comp_121_exclusion",
+            type: "COMPUTATION", id: "d16_comp_121_exclusion",
             title: "§121 Home Sale Exclusion Math",
             topicTags: ["section_121"],
             prompt: "MFJ couple bought home in 2015 for $400k. Lived in it as primary residence continuously. Made $50k improvements over the years. Sells in 2024 for $1,250,000 net. They've never used the §121 exclusion before. Compute the TAXABLE capital gain after applying §121.",
@@ -1540,7 +1604,7 @@ const PHASES = [
             ],
           },
           {
-            type: "SCENARIO_BRANCHING", id: "d11_scenario_121_trap",
+            type: "SCENARIO_BRANCHING", id: "d16_scenario_121_trap",
             title: "The §121 Recapture Trap",
             topicTags: ["section_121", "recapture", "depreciation"],
             context: "Client emails: 'Selling my house. Lived in it 2008-2024. From 2018-2022 I rented it out (5 years). Moved back in 2022. Sale price $850k, bought for $300k, took $40k of depreciation during the rental period. I read I get the $500k §121 exclusion since I lived in it 2 of last 5 years. Free money, right?' Walk the conversation.",
@@ -1572,7 +1636,7 @@ const PHASES = [
             ],
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d11_mcq_121_tests",
+            type: "CONFIDENCE_MCQ", id: "d16_mcq_121_tests",
             question: "To qualify for the full §121 exclusion, a taxpayer must satisfy:",
             options: [
               "Owned and used the home as principal residence for 5 consecutive years",
@@ -1586,7 +1650,7 @@ const PHASES = [
             explanation: "§121(a) requires both the ownership test (2 of 5 years owned) AND the use test (2 of 5 years used as principal residence). Importantly, the 2-year periods can overlap or not — they do not need to be the same 2 years. So someone who owned a property 2018-2024 (6 years owned) and used it as residence 2018-2020 (2 years), then rented it 2020-2023, then moved back 2023-2024 — they meet both tests in 2024. Common error: assuming the 2 years must be consecutive AND must be the same 2 years for both tests.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d11_mcq_unrecaptured_1250",
+            type: "CONFIDENCE_MCQ", id: "d16_mcq_unrecaptured_1250",
             question: "What is 'unrecaptured §1250 gain' and what's its federal tax rate?",
             options: [
               "Recapture of all depreciation on real property; taxed at ordinary rates up to 37%",
@@ -1602,7 +1666,7 @@ const PHASES = [
         ],
       },
       {
-        id: "d12", title: "Day 17 — Depreciation Recapture: §1245 vs §1250",
+        id: "d17", title: "Day 17 — Depreciation Recapture: §1245 vs §1250",
         description: "Recapture is where cost segregation comes back to bite — or doesn't, depending on planning. Today: §1245 ordinary recapture on personal property components, §1250 unrecaptured gain on real property, and the strategic implications for clients who've done cost seg studies.",
         topicTags: ["recapture", "depreciation", "cost_seg_basics", "basis"],
         learningObjectives: [
@@ -1613,11 +1677,11 @@ const PHASES = [
           "Recognize the recapture interaction with §121 (excluded gain doesn't shield recapture under §121(d)(6)) and 1031 (§1245 generally cannot be deferred)",
         ],
         tasks: [
-          { id: "d12t1", text: "Read IRC §1245 and §1250 in full" },
-          { id: "d12t2", text: "Read Reg. §1.1245-1 and §1.1250-1" },
-          { id: "d12t3", text: "Read Form 4797 Instructions — focus on Part III (Sale of Recapture Property)" },
-          { id: "d12t4", text: "Practice: For a property with cost seg components, compute §1245 vs §1250 recapture on sale" },
-          { id: "d12t5", text: "Read Aiola's Recapture worksheet (TODO_NICK: link to firm SOP)" },
+          { id: "d17t1", text: "Read IRC §1245 and §1250 in full" },
+          { id: "d17t2", text: "Read Reg. §1.1245-1 and §1.1250-1" },
+          { id: "d17t3", text: "Read Form 4797 Instructions — focus on Part III (Sale of Recapture Property)" },
+          { id: "d17t4", text: "Practice: For a property with cost seg components, compute §1245 vs §1250 recapture on sale" },
+          { id: "d17t5", text: "Read Aiola's Recapture worksheet (TODO_NICK: link to firm SOP)" },
         ],
         resources: [
           { label: "IRC §1245", url: "https://www.law.cornell.edu/uscode/text/26/1245" },
@@ -1628,7 +1692,7 @@ const PHASES = [
         ],
         assessment: [
           {
-            type: "DRAG_EXERCISE", id: "d12_match_recapture_property",
+            type: "DRAG_EXERCISE", id: "d17_match_recapture_property",
             title: "Property Type → Recapture Category",
             topicTags: ["recapture", "cost_seg_basics"],
             prompt: "Match each property component to its recapture treatment on sale.",
@@ -1643,7 +1707,7 @@ const PHASES = [
             explanation: "The recapture math is asymmetric. Cost seg accelerates depreciation upfront (good) but pushes more property into §1245 (which recaptures at ordinary rates up to 37%, not the 25% §1250 cap). At a high marginal rate, the §1245 recapture is more painful than §1250. This is why some clients who plan to hold long-term (or hold-til-death-then-step-up) benefit MORE from cost seg than clients who plan to sell in 5 years.",
           },
           {
-            type: "COMPUTATION", id: "d12_comp_recapture_split",
+            type: "COMPUTATION", id: "d17_comp_recapture_split",
             title: "Recapture Split on Cost-Segregated Property Sale",
             topicTags: ["recapture", "cost_seg_basics", "depreciation"],
             prompt: "Client bought rental in 2020 for $1,000,000 ($200k land, $800k building). Did cost seg in 2020: $640k stayed at 27.5-year, $80k as 15-year, $80k as 5-year. Year-1 bonus depreciation took $80k (5-yr) + $80k (15-yr) immediately. Total depreciation through 2024: $640k @ 27.5-yr SL × 4.5 years ≈ $105k, + the full $80k bonus on 5-yr, + the full $80k bonus on 15-yr = $265k accumulated depreciation. Sells in 2025 for $1,400,000 (net of selling costs). Compute the TOTAL realized gain.",
@@ -1669,7 +1733,7 @@ const PHASES = [
             ],
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d12_mcq_1245_rate",
+            type: "CONFIDENCE_MCQ", id: "d17_mcq_1245_rate",
             question: "§1245 depreciation recapture is taxed at:",
             options: [
               "20% maximum federal capital gains rate",
@@ -1683,7 +1747,7 @@ const PHASES = [
             explanation: "§1245 recapture is recharacterized as ORDINARY INCOME up to the lesser of (a) depreciation taken or (b) gain realized. There is no rate cap — at high income, this means the marginal rate (up to 37%) plus state. This is why §1245 (cost-segregated personal property components) is harder to plan around than §1250 (the underlying real property structural component, capped at 25%). The asymmetry between §1245 and §1250 is a core consideration in cost seg / 1031 planning.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d12_mcq_1031_recapture",
+            type: "CONFIDENCE_MCQ", id: "d17_mcq_1031_recapture",
             question: "A client did a cost seg study on their rental property in 2022. Now they want to do a 1031 exchange in 2025 to defer all gain. What's the issue?",
             options: [
               "No issue — 1031 defers all gain regardless of recapture type",
@@ -1697,7 +1761,7 @@ const PHASES = [
             explanation: "Post-TCJA (2018), §1031 like-kind exchange treatment is limited to REAL PROPERTY for real property only. The 5/7/15-year components reclassified by cost seg are §1245 personal property under the recapture rules — they cannot be exchanged tax-free for real property. So when the client 1031s the building, they recognize §1245 recapture on the cost-segregated personal property components. The §1250 (building structure) portion can defer. For a heavily cost-segregated property, this can mean meaningful current tax even with a 1031. Aiola needs to model this BEFORE the cost seg study is done — clients with planned 5-7 year holds may not benefit as much as expected.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d12_mcq_form_4797",
+            type: "CONFIDENCE_MCQ", id: "d17_mcq_form_4797",
             question: "Sale of business or rental real estate gets reported on which form?",
             options: [
               "Schedule D Form 8949",
@@ -1713,7 +1777,7 @@ const PHASES = [
         ],
       },
       {
-        id: "d13", title: "Day 18 — 1031 Like-Kind Exchange",
+        id: "d18", title: "Day 18 — 1031 Like-Kind Exchange",
         description: "1031 exchanges are how sophisticated real estate investors compound — defer gain, redeploy capital, repeat. Today: the 45/180-day mechanics, identification rules, qualified intermediary requirement, boot recognition, and the post-TCJA limitation to real property only.",
         topicTags: ["section_1031", "recapture"],
         learningObjectives: [
@@ -1725,12 +1789,12 @@ const PHASES = [
           "Apply post-TCJA limitation: like-kind = REAL property for real property only (personal property no longer qualifies)",
         ],
         tasks: [
-          { id: "d13t1", text: "Read IRC §1031 in full — focus on (a) general rule, (a)(3) identification timing, (b) gain recognized on receipt of other property" },
-          { id: "d13t2", text: "Read Reg. §1.1031(a)-1 and (b)-1 (Treasury implementation)" },
-          { id: "d13t3", text: "Read IRS Pub 544 (Sales and Other Dispositions), Chapter 1" },
-          { id: "d13t4", text: "Read about Qualified Intermediary requirements under Reg. §1.1031(k)-1(g)" },
-          { id: "d13t5", text: "Practice: Walk through a 4-step 1031 timeline (sale, identification, exchange completion) with appropriate documents" },
-          { id: "d13t6", text: "Read Aiola's 1031 client checklist (TODO_NICK: link)" },
+          { id: "d18t1", text: "Read IRC §1031 in full — focus on (a) general rule, (a)(3) identification timing, (b) gain recognized on receipt of other property" },
+          { id: "d18t2", text: "Read Reg. §1.1031(a)-1 and (b)-1 (Treasury implementation)" },
+          { id: "d18t3", text: "Read IRS Pub 544 (Sales and Other Dispositions), Chapter 1" },
+          { id: "d18t4", text: "Read about Qualified Intermediary requirements under Reg. §1.1031(k)-1(g)" },
+          { id: "d18t5", text: "Practice: Walk through a 4-step 1031 timeline (sale, identification, exchange completion) with appropriate documents" },
+          { id: "d18t6", text: "Read Aiola's 1031 client checklist (TODO_NICK: link)" },
         ],
         resources: [
           { label: "IRC §1031 (Cornell LII)", url: "https://www.law.cornell.edu/uscode/text/26/1031" },
@@ -1743,7 +1807,7 @@ const PHASES = [
         ],
         assessment: [
           {
-            type: "DRAG_EXERCISE", id: "d13_order_1031_timeline",
+            type: "DRAG_EXERCISE", id: "d18_order_1031_timeline",
             title: "1031 Exchange Timeline",
             topicTags: ["section_1031"],
             prompt: "Drag these milestones into the correct chronological order for a deferred 1031 like-kind exchange.",
@@ -1760,7 +1824,7 @@ const PHASES = [
             explanation: "The QI engagement BEFORE closing is non-negotiable — if the taxpayer 'constructively receives' the proceeds (e.g., a check made out to them), the exchange fails and the entire gain is recognized. The 45-day identification deadline is hard — no extensions. The 180-day exchange deadline is also hard — and is shortened to the due date of the return if the return is due first (so a Q4 sale needs special attention). Document everything; Form 8824 is the IRS reporting form.",
           },
           {
-            type: "COMPUTATION", id: "d13_comp_boot_recognition",
+            type: "COMPUTATION", id: "d18_comp_boot_recognition",
             title: "Boot Recognition in a 1031 Exchange",
             topicTags: ["section_1031"],
             prompt: "Client sells relinquished property for $800,000 net (basis $300k, $500k gain). Acquires replacement property worth $700,000 in a properly structured 1031. The QI returns $100,000 in cash to the client (didn't fully reinvest). How much gain must be RECOGNIZED currently?",
@@ -1783,7 +1847,7 @@ const PHASES = [
             ],
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d13_mcq_45_180",
+            type: "CONFIDENCE_MCQ", id: "d18_mcq_45_180",
             question: "The 45-day identification window and 180-day exchange window in a deferred 1031 both START from:",
             options: [
               "The date the replacement property is identified",
@@ -1797,7 +1861,7 @@ const PHASES = [
             explanation: "Both clocks start on the same day — the date of closing on the relinquished property (Day 0 in tax parlance). 45 days to IDENTIFY replacement property in writing to the QI. 180 days (or due date of return, whichever is EARLIER) to CLOSE on replacement. Both windows are hard deadlines under §1031(a)(3) — IRS does not grant extensions absent disaster relief proclamations. Critical for Q4 sales: a December sale has 45 days through mid-February, but the 180-day window is shortened to April 15 (return due date) if not extended — far less than 180 days. Always file an extension to preserve the full 180.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d13_mcq_id_methods",
+            type: "CONFIDENCE_MCQ", id: "d18_mcq_id_methods",
             question: "Under the 1031 identification rules within the 45-day window, a taxpayer can identify replacement properties using which methods?",
             options: [
               "Only the 3-property rule (up to 3 candidate properties)",
@@ -1811,7 +1875,7 @@ const PHASES = [
             explanation: "Per Reg. §1.1031(k)-1(c)(4): three identification methods. The 3-property rule is most common — identify up to 3 properties, no FMV cap, close on whichever you want. The 200% rule allows more candidates but caps total identified FMV at 200% of relinquished FMV. The 95% rule allows unlimited identification but requires actually closing on 95%+ of identified value (rare, used in delayed multi-property transactions). Aiola advisors should know all three but typically recommend the 3-property rule for simplicity.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d13_mcq_post_tcja",
+            type: "CONFIDENCE_MCQ", id: "d18_mcq_post_tcja",
             question: "Post-TCJA (2018), 1031 like-kind exchange treatment is limited to:",
             options: [
               "Both real and personal property, like before",
@@ -1827,7 +1891,7 @@ const PHASES = [
         ],
       },
       {
-        id: "d14", title: "Day 19 — Entity Structures for Real Estate",
+        id: "d19", title: "Day 19 — Entity Structures for Real Estate",
         description: "Now that we've covered gain on sale, recapture, and 1031, layer in the entity structure question. Building on this week's sale and recapture mechanics: rentals go in LLCs, not S-Corps. Today reinforces that with the §1402(a)(1) and §311(b) reasoning.",
         topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation", "rental_classification", "basis"],
         learningObjectives: [
@@ -1837,22 +1901,22 @@ const PHASES = [
           "Recognize when transferring appreciated property to an SMLLC is a non-event vs a taxable event",
         ],
         tasks: [
-          { id: "d14t1", text: "Read IRC §301.7701 and the check-the-box regulations" },
-          { id: "d14t2", text: "Read about S-Corp election restrictions under §1361 (one-class-of-stock rule, eligibility)" },
-          { id: "d14t3", text: "Review Aiola's Entity Decision Tree (TODO_NICK: link)" },
-          { id: "d14t4", text: "Review the Rivera return — Alex's S-Corp question (preview tomorrow's scenario)" },
-          { id: "d14t5", text: "Read about Wyoming and Delaware holding LLCs (TODO_NICK: firm preference)" },
+          { id: "d19t1", text: "Read IRC §301.7701 and the check-the-box regulations" },
+          { id: "d19t2", text: "Read about S-Corp election restrictions under §1361 (one-class-of-stock rule, eligibility)" },
+          { id: "d19t3", text: "Review Aiola's Entity Decision Tree (TODO_NICK: link)" },
+          { id: "d19t4", text: "Review your assigned client's return and S-Corp question (preview tomorrow's scenario)" },
+          { id: "d19t5", text: "Read about Wyoming and Delaware holding LLCs (TODO_NICK: firm preference)" },
         ],
         resources: [
           { label: "Reg. §301.7701 (Check-the-box)", url: "https://www.law.cornell.edu/cfr/text/26/301.7701-3" },
           { label: "IRC §1361 (S-Corp eligibility)", url: "https://www.law.cornell.edu/uscode/text/26/1361" },
           { label: "IRC §721 (Partnership contributions)", url: "https://www.law.cornell.edu/uscode/text/26/721" },
           { label: "Aiola Entity Decision Tree", url: null /* TODO_NICK */ },
-          { label: "Rivera 2024 Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
+          { label: "Sample 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
         ],
         assessment: [
           {
-            type: "DRAG_EXERCISE", id: "w3_match_entity_use",
+            type: "DRAG_EXERCISE", id: "w4_match_entity_use",
             title: "Entity Type → Best Real Estate Use Case",
             topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation"],
             prompt: "Match each entity structure to its most appropriate real estate use case.",
@@ -1867,7 +1931,7 @@ const PHASES = [
             explanation: "The cardinal rule: rental real estate goes in LLCs (single or multi-member), NOT S-Corps and NOT C-Corps. S-Corp is the right tool for ACTIVE service income above ~$80k stable. C-Corp is rarely right for real estate because of the appreciation-trap problem (gain on distribution under §311(b)) compounded with double taxation.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d14_mcq_smllc_default",
+            type: "CONFIDENCE_MCQ", id: "d19_mcq_smllc_default",
             question: "A solo investor forms a single-member LLC to hold a rental property. By default, how is this LLC treated for federal tax purposes?",
             options: [
               "As a separate corporation",
@@ -1881,7 +1945,7 @@ const PHASES = [
             explanation: "Per Reg. §301.7701-3 (the 'check-the-box' regs), a single-member LLC defaults to disregarded entity treatment. The LLC provides legal liability protection but has no separate federal tax existence — the owner reports rental on Schedule E directly. The LLC can elect S-Corp status via Form 2553 (rarely advisable for rentals — tomorrow covers this). Multi-member LLCs default to partnership treatment unless they elect otherwise.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "d14_mcq_llc_appreciation",
+            type: "CONFIDENCE_MCQ", id: "d19_mcq_llc_appreciation",
             question: "A client wants to transfer a $500k appreciated rental property (basis $200k) from personal name into a single-member LLC. What's the federal tax consequence?",
             options: [
               "Gain of $300k recognized on the transfer",
@@ -1897,8 +1961,8 @@ const PHASES = [
         ],
       },
       {
-        id: "d15", title: "Day 20 — The Alex Rivera S-Corp Decision + QBI + Week Wrap",
-        description: "Day 20 is the entity application day. The full Alex Rivera S-Corp scenario IS the centerpiece — engage with each branch carefully (30+ min). Then layer in §199A QBI fundamentals to round out the entity discussion.",
+        id: "d20", title: "Day 20 — S-Corp Advisory Decision + QBI + Week Wrap",
+        description: "Day 20 is the entity application day. The S-Corp advisory scenario IS the centerpiece — engage with each branch carefully (30+ min). Then layer in §199A QBI fundamentals to round out the entity discussion.",
         topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax", "pass_through", "qbi", "rental_classification"],
         learningObjectives: [
           "Walk through a complete S-Corp advisory conversation: scoping, reasonable comp, savings sizing, and the rental trap",
@@ -1907,11 +1971,11 @@ const PHASES = [
           "Synthesize entity structure, SE tax, and QBI concepts into a coherent advisory framework",
         ],
         tasks: [
-          { id: "d15t1", text: "Complete the Alex Rivera S-Corp scenario — engage with EACH terminal outcome carefully" },
-          { id: "d15t2", text: "Submit a written analysis of whether Alex should elect S-Corp for 2025 to your manager via ClickUp" },
-          { id: "d15t3", text: "Read the IRS Fact Sheet: Wage Compensation for S-Corp Officers" },
-          { id: "d15t4", text: "Read Rev. Proc. 2019-38 for the rental real estate QBI safe harbor" },
-          { id: "d15t5", text: "30-min Friday wrap-up call with your Manager to discuss the week" },
+          { id: "d20t1", text: "Complete the S-Corp advisory scenario for your assigned client — engage with EACH terminal outcome carefully" },
+          { id: "d20t2", text: "Submit a written analysis of whether your assigned client should elect S-Corp for 2025 to your manager via ClickUp" },
+          { id: "d20t3", text: "Read the IRS Fact Sheet: Wage Compensation for S-Corp Officers" },
+          { id: "d20t4", text: "Read Rev. Proc. 2019-38 for the rental real estate QBI safe harbor" },
+          { id: "d20t5", text: "30-min Friday wrap-up call with your Manager to discuss the week" },
         ],
         resources: [
           { label: "IRC §1402(a)(1) (Rents excluded from SE)", url: "https://www.law.cornell.edu/uscode/text/26/1402" },
@@ -1919,14 +1983,14 @@ const PHASES = [
           { label: "IRC §199A (QBI)", url: "https://www.law.cornell.edu/uscode/text/26/199A" },
           { label: "Rev. Proc. 2019-38 (Rental RE safe harbor)", url: "https://www.irs.gov/pub/irs-drop/rp-19-38.pdf" },
           { label: "IRS Wage Compensation for S-Corp Officers", url: "https://www.irs.gov/businesses/small-businesses-self-employed/wage-compensation-for-s-corporation-officers" },
-          { label: "Rivera 2024 Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
+          { label: "Sample 2024 Federal Return", url: "/docs/Rivera_2024_Federal_Return.pdf" },
         ],
         assessment: [
           {
-            type: "SCENARIO_BRANCHING", id: "w3_scenario_alex_scorp",
-            title: "Should Alex Rivera Elect S-Corp for 2025?",
+            type: "SCENARIO_BRANCHING", id: "w4_scenario_scorp_decision",
+            title: "Should the Client Elect S-Corp for 2025?",
             topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax"],
-            context: "Alex Rivera runs a consulting business currently filed on Schedule C. Per his 2024 return: net Schedule C income $145,000, ~30 hours/week worked on the business, residence in Florida (no state income tax), 3-year stable income trend. He emails on a Tuesday: 'My buddy said I should be doing an S-Corp to save on taxes. Can we set that up for 2025?' How do you handle this conversation?",
+            context: "Your assigned client runs a consulting business currently filed on Schedule C. Per the 2024 return: net Schedule C income $145,000, ~30 hours/week worked on the business, residence in Florida (no state income tax), 3-year stable income trend. The client emails on a Tuesday: 'My buddy said I should be doing an S-Corp to save on taxes. Can we set that up for 2025?' How do you handle this conversation?",
             decisions: [
               {
                 id: "dec1", prompt: "What's your FIRST move?",
@@ -1938,12 +2002,12 @@ const PHASES = [
                 ],
               },
               {
-                id: "dec2", prompt: "He confirms FL (no state tax), stable income last 3 years, willing to do payroll, no other entities, currently no retirement plan. What's your reasonable comp anchor?",
+                id: "dec2", prompt: "The client confirms FL (no state tax), stable income last 3 years, willing to do payroll, no other entities, currently no retirement plan. What's your reasonable comp anchor?",
                 options: [
                   { text: "50% of net income → $72,500 (rule of thumb)", weight: 1, correctness: "risky", nextId: null, terminalId: "t_arbitrary_comp" },
-                  { text: "Pull RCReports or BLS data for 'Management Consultants' in his region — likely $90k–$110k range", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
+                  { text: "Pull RCReports or BLS data for 'Management Consultants' in the client's region — likely $90k–$110k range", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
                   { text: "$50,000 to maximize distributions and SE savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_aggressive_comp" },
-                  { text: "Whatever Alex wants to pay himself", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_no_comp" },
+                  { text: "Whatever the client wants to pay himself", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_no_comp" },
                 ],
               },
               {
@@ -1956,7 +2020,7 @@ const PHASES = [
                 ],
               },
               {
-                id: "dec4", prompt: "Alex asks: 'Wait, my friend said his S-Corp also saved him on his rental properties. Can I put my rentals into the S-Corp too?'",
+                id: "dec4", prompt: "The client asks: 'Wait, my friend said his S-Corp also saved him on his rental properties. Can I put my rentals into the S-Corp too?'",
                 options: [
                   { text: "Yes, putting rentals in an S-Corp adds another layer of SE tax savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
                   { text: "No — rental income is NOT subject to SE tax to begin with under IRC §1402(a)(1), so there's no SE tax to save. Worse, putting appreciated real estate INTO an S-Corp can trigger gain on later distribution. Keep rentals in LLCs (or held directly), separate from the S-Corp.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
@@ -1967,12 +2031,12 @@ const PHASES = [
             ],
             terminals: [
               { id: "t_great", label: "Pro-Level Advisory", outcome: "great", coachingNote: "Textbook. You scoped the conversation, anchored reasonable comp on defensible data, sized the savings accurately, AND caught the rental trap. Three teaching points to remember: (1) Reasonable comp uses RCReports/BLS — never percentages. (2) SE tax savings are smaller than the napkin math suggests because of SS wage base interactions and the deduction for half of SE tax. (3) S-Corp does NOT help rentals — rental income isn't subject to SE tax under §1402(a)(1), and putting appreciated real estate into an S-Corp creates exit problems. The output of this conversation is a memo: 'Recommend S-Corp election effective 1/1/2025, reasonable comp ~$95k anchored on RCReports lookup, projected SE tax savings ~$4–7k, additional admin cost ~$1.5–2k/yr (payroll provider + 1120-S return). Rentals to remain in LLC structure, separate from S-Corp.'" },
-              { id: "t_premature", label: "Premature Recommendation", outcome: "risky", coachingNote: "Recommending S-Corp without scoping is a rookie move. State (FL = no state benefit, but in CA the franchise tax matters), income stability (S-Corp election locks you in for 5 years before re-election), willingness to run payroll, retirement plan strategy, and other entities all matter. The recommendation IS probably right for Alex — but you can't know that without asking." },
+              { id: "t_premature", label: "Premature Recommendation", outcome: "risky", coachingNote: "Recommending S-Corp without scoping is a rookie move. State (FL = no state benefit, but in CA the franchise tax matters), income stability (S-Corp election locks you in for 5 years before re-election), willingness to run payroll, retirement plan strategy, and other entities all matter. The recommendation IS probably right for this client — but you can't know that without asking." },
               { id: "t_undercoaching", label: "Undercoaching", outcome: "risky", coachingNote: "S-Corp does add complexity, but at $145k of stable consulting income in a no-state-tax state, the math very likely works. Defaulting to 'too complex' undersells the strategy. Aiola's job is to evaluate, not avoid." },
               { id: "t_deflect", label: "Pure Deflection", outcome: "risky", coachingNote: "Entity election is squarely a CPA conversation. An attorney would handle the LLC formation; the S-Corp election (Form 2553) and reasonable comp determination is your lane. Punting to an attorney suggests you don't know the play — and clients notice." },
               { id: "t_arbitrary_comp", label: "Arbitrary Percentage", outcome: "risky", coachingNote: "The IRS does not accept '50% rule of thumb.' Reasonable comp must be supportable based on what a third party would pay for the services rendered. RCReports and BLS Occupational Employment data are the defensible tools. Arbitrary percentages are how clients get reclassification challenges — and you get a hard conversation with the client about back wages and penalties." },
               { id: "t_aggressive_comp", label: "Aggressive Comp", outcome: "harmful", coachingNote: "Setting comp artificially low to maximize distributions is the textbook IRS reclassification risk. The Watson v. Commissioner case (2012) is the cautionary tale — court reclassified $24k of comp into $91k. Never anchor a comp recommendation on 'maximize savings.' Always anchor on 'what would a third party pay for this work.'" },
-              { id: "t_no_comp", label: "No Standard", outcome: "harmful", coachingNote: "'Whatever the client wants' is malpractice territory. The client engaged Aiola for the technical answer. Defer to Alex on lifestyle preferences (timing of distributions, etc.) but never on the technical reasonable comp determination." },
+              { id: "t_no_comp", label: "No Standard", outcome: "harmful", coachingNote: "'Whatever the client wants' is malpractice territory. The client engaged Aiola for the technical answer. Defer to the client on lifestyle preferences (timing of distributions, etc.) but never on the technical reasonable comp determination." },
               { id: "t_overstated", label: "Overstated Savings", outcome: "risky", coachingNote: "The napkin '15.3% × distribution' calc overstates savings. Two reasons: (1) Above the SS wage base ($168,600 in 2024), the wage portion only saves Medicare (2.9%), not full 15.3%. (2) Schedule C filers get a deduction for half of SE tax (§164(f)), which reduces the apparent savings comparing apples to apples. At $145k income with $95k comp, true SE tax savings are typically in the $4k–$7k range, not $15k+. Overstating savings to clients is how trust gets broken later." },
               { id: "t_understated", label: "Understated Savings", outcome: "risky", coachingNote: "There ARE real SE tax savings on the wage/distribution split, even after accounting for the half-SE-tax deduction and SS wage base. Saying 'zero savings' suggests you don't understand the mechanics. Walk through the math: SE tax is 15.3% on net SE earnings; S-Corp wages get FICA on the wage portion only; distributions are not subject to SE tax." },
               { id: "t_rental_scorp_bad", label: "Wrong on Rentals", outcome: "harmful", coachingNote: "This is a critical teaching moment. Rental income is excluded from net earnings from self-employment under IRC §1402(a)(1) — there's no SE tax to begin with, so there's no SE tax to save. Worse: putting appreciated real estate INTO an S-Corp is a one-way door. Distributing real estate OUT of an S-Corp is a taxable event at FMV (§311(b)) — meaning you lock the appreciation into a corporate structure and trigger gain when the client wants to refinance, gift, or sell. Real estate goes in LLCs (single-member or partnership), never S-Corp. Memorize this — it's one of the most common mistakes new advisors make." },
@@ -1980,7 +2044,7 @@ const PHASES = [
             ],
           },
           {
-            type: "COMPUTATION", id: "w3_comp_se_tax_schedC",
+            type: "COMPUTATION", id: "w4_comp_se_tax_schedC",
             title: "SE Tax on Schedule C Income",
             topicTags: ["se_tax", "pass_through"],
             prompt: "A self-employed consultant has Schedule C net profit of $145,000 (no W-2 wages). Compute their self-employment tax for 2024. (Reminder: 2024 SS wage base = $168,600. SE tax rate = 15.3% [12.4% SS + 2.9% Medicare]. Self-employment income is multiplied by 92.35% before applying SE tax — that's the §1402(a)(12) deduction for the employer-equivalent portion.)",
@@ -2004,7 +2068,7 @@ const PHASES = [
             ],
           },
           {
-            type: "COMPUTATION", id: "w3_comp_scorp_savings",
+            type: "COMPUTATION", id: "w4_comp_scorp_savings",
             title: "Approximate S-Corp Tax Savings",
             topicTags: ["s_corp", "se_tax", "reasonable_comp"],
             prompt: "Same consultant. If they elect S-Corp for 2025 with reasonable comp of $95,000 (and the remaining $50,000 as a distribution), compute the approximate FICA tax on the W-2 wage portion. (Use 2024 rates as a proxy: 15.3% combined employee+employer on wages up to $168,600 — split 7.65% each side.)",
@@ -2026,7 +2090,7 @@ const PHASES = [
             ],
           },
           {
-            type: "CONFIDENCE_MCQ", id: "w3_mcq_no_scorp_rental",
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_no_scorp_rental",
             question: "A client asks: 'Why can't I put my rental properties in an S-Corp to save on taxes like my consulting business?' What's the most accurate explanation?",
             options: [
               "You can put rentals in an S-Corp; it's actually a good idea for high-income clients",
@@ -2040,7 +2104,7 @@ const PHASES = [
             explanation: "Two-part answer matters. (1) IRC §1402(a)(1) excludes rents from real estate from net earnings from SE — meaning rental income isn't subject to SE tax to begin with, so there's no SE tax for an S-Corp wage/distribution split to save. (2) §311(b) treats distribution of appreciated property as a sale at FMV — putting real estate INTO an S-Corp creates a one-way door where the client pays tax on the gain just to take the property back out. Both reasons mean LLCs (single-member disregarded or multi-member partnership) are the right structure for real estate.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "w3_mcq_reasonable_comp",
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_reasonable_comp",
             question: "Which approach to determining S-Corp reasonable compensation is MOST defensible if the IRS challenges the wage/distribution split?",
             options: [
               "50% of net income — common rule of thumb",
@@ -2054,7 +2118,7 @@ const PHASES = [
             explanation: "The IRS standard is 'what would a third party pay for the services rendered' (see Watson v. Commissioner, 668 F.3d 1008 (8th Cir. 2012)). RCReports and BLS data are the defensible sources because they tie to actual wage data for comparable positions. Arbitrary percentages and 'maximize distributions' approaches lose in court. Aiola should document the methodology in workpapers — that's the difference between defending a reclassification challenge and losing one.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "w3_mcq_qbi_basics",
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_qbi_basics",
             question: "Under §199A (QBI), a non-SSTB pass-through business generates $100,000 of qualified business income. The owner is MFJ with taxable income of $250,000 (well below the 2024 phase-in threshold of $383,900). Without applying any wage or UBIA limitation, what's the QBI deduction?",
             options: [
               "$10,000 — 10% of QBI",
@@ -2068,7 +2132,7 @@ const PHASES = [
             explanation: "§199A allows a 20% deduction on qualified business income for pass-through entities (sole prop, partnership, S-Corp). Below the 2024 MFJ phase-in threshold of $383,900, no W-2 wage or UBIA limitations apply for non-SSTB businesses — straight 20% × QBI. So $100k QBI × 20% = $20k deduction. Above the threshold, the W-2 wage and UBIA limitations kick in, and SSTBs (specified service trades or businesses) phase out entirely above $483,900 MFJ in 2024.",
           },
           {
-            type: "CONFIDENCE_MCQ", id: "w3_mcq_rental_qbi_safe_harbor",
+            type: "CONFIDENCE_MCQ", id: "w4_mcq_rental_qbi_safe_harbor",
             question: "A client has $40,000 of net rental income from one residential rental. Does this qualify for the §199A QBI deduction?",
             options: [
               "Yes, automatically — all rental income qualifies for QBI",
