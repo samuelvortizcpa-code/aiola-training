@@ -8,11 +8,13 @@
  *   weeklyReviewMeta:${userId}   — { lastReviewedAt, lastReviewedBlocks }
  */
 
+import { storage } from './storage.js';
+
 // ─── Storage helpers ────────────────────────────────────────────────────────
 
 async function storageGet(key) {
   try {
-    const d = await window.storage?.get(key);
+    const d = await storage.get(key);
     if (d) return JSON.parse(d.value || d);
   } catch {}
   return null;
@@ -20,7 +22,7 @@ async function storageGet(key) {
 
 async function storageSet(key, value) {
   try {
-    await window.storage?.set(key, JSON.stringify(value));
+    await storage.set(key, JSON.stringify(value));
   } catch {}
 }
 

@@ -8,6 +8,7 @@ import Computation from "./Computation.jsx";
 import ConfidenceMcq from "./ConfidenceMcq.jsx";
 import ShortAnswer from "./ShortAnswer.jsx";
 import CaseLawResearch from "./CaseLawResearch.jsx";
+import { storage } from "../../lib/storage.js";
 import {
   addToPool, markMastered, recordTopicHit,
   getMissedItemsForSection,
@@ -85,7 +86,7 @@ export default function AssessmentModule({ blocks, sectionId, userId, onModuleCo
       completedAt: new Date().toISOString(),
     };
 
-    try { window.storage?.set(storageKey, JSON.stringify(result)); } catch {}
+    try { storage.set(storageKey, JSON.stringify(result)); } catch {}
     if (onModuleComplete) onModuleComplete(result);
   }, [allDone]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -250,7 +251,7 @@ function AssessmentAdminView({ blocks, sectionId, userId }) {
     (async () => {
       try {
         const key = `assessment:${userId}:${sectionId}`;
-        const d = await window.storage?.get(key);
+        const d = await storage.get(key);
         if (d) setStored(JSON.parse(d.value || d));
       } catch {}
     })();
