@@ -1411,284 +1411,7 @@ const PHASES = [
         tasks: [],
         resources: [],
         assessment: [
-          // ── d16 (Day 16) ──
-          {
-            type: "COMPUTATION", id: "d16_comp_gain_on_sale_rental",
-            title: "Capital Gain on Sale of Rental",
-            topicTags: ["basis", "depreciation", "recapture"],
-            prompt: "Client purchased a rental property in 2014 for $400,000 (closing costs included). Allocated $80k to land, $320k to building. Took straight-line depreciation through 2024 of $116,000 (accumulated depreciation). Made capital improvements of $50,000 in 2018 (added 8 years of depreciation already in the $116k figure). Sells in 2025 for $750,000 net of selling expenses. Compute the realized GAIN.",
-            expectedAnswer: 416000,
-            tolerance: 100,
-            unit: "dollars",
-            formLine: "Form 4797 Part III + Schedule D",
-            workedSolution: [
-              "Step 1: Original basis = $400,000",
-              "Step 2: Add capital improvements = +$50,000 → Adjusted basis before depreciation = $450,000",
-              "Step 3: Subtract accumulated depreciation = −$116,000 → Adjusted basis at sale = $334,000",
-              "Step 4: Amount realized = $750,000 (already net of selling expenses)",
-              "Step 5: Total gain = $750,000 − $334,000 = $416,000",
-              "Step 6: Of the $416k gain: $116,000 is unrecaptured §1250 gain (taxed at up to 25%); the remaining $300,000 is long-term capital gain (taxed at up to 20% federal + 3.8% NIIT if MAGI threshold met).",
-              "Note: Land basis is NEVER depreciated — but the land portion of the gain is still capital gain. Don't subtract land twice.",
-              "Important: Selling expenses (broker commission, title insurance, legal fees) reduce amount realized. The $750k in this problem is already net of those costs.",
-            ],
-            commonWrongAnswers: [
-              { value: 350000, indicates: "Subtracted accumulated depreciation but forgot capital improvements." },
-              { value: 466000, indicates: "Forgot to subtract accumulated depreciation — basis is REDUCED by depreciation taken (the depreciation deductions claimed must come back to the IRS as recapture)." },
-              { value: 300000, indicates: "Computed only the capital gain portion, missing the §1250 recapture component." },
-            ],
-          },
-          {
-            type: "COMPUTATION", id: "d16_comp_121_exclusion",
-            title: "§121 Home Sale Exclusion Math",
-            topicTags: ["section_121"],
-            prompt: "MFJ couple bought home in 2015 for $400k. Lived in it as primary residence continuously. Made $50k improvements over the years. Sells in 2024 for $1,250,000 net. They've never used the §121 exclusion before. Compute the TAXABLE capital gain after applying §121.",
-            expectedAnswer: 300000,
-            tolerance: 100,
-            unit: "dollars",
-            formLine: "Schedule D + Form 8949",
-            workedSolution: [
-              "Step 1: Adjusted basis = $400k purchase + $50k improvements = $450,000",
-              "Step 2: Total realized gain = $1,250,000 − $450,000 = $800,000",
-              "Step 3: Apply §121 exclusion. MFJ ownership test (owned 2 of 5 years — yes), use test (used as principal residence 2 of 5 years — yes). Both spouses qualify. Maximum exclusion = $500,000.",
-              "Step 4: Taxable gain after exclusion = $800,000 − $500,000 = $300,000 (long-term capital gain)",
-              "Step 5: At MFJ income at this level, taxed at 20% federal + 3.8% NIIT (if MAGI threshold met) = ~24% combined = ~$72k federal tax",
-              "Important: The exclusion is per-sale of principal residence, not per-year. Once used, generally not available again for 2 years. Single $250k / MFJ $500k cap is statutory and not indexed.",
-            ],
-            commonWrongAnswers: [
-              { value: 800000, indicates: "Forgot to apply §121 exclusion entirely." },
-              { value: 550000, indicates: "Used $250k single exclusion instead of $500k MFJ." },
-              { value: 750000, indicates: "Forgot to subtract improvements from basis." },
-            ],
-          },
-          {
-            type: "SCENARIO_BRANCHING", id: "d16_scenario_121_trap",
-            title: "The §121 Recapture Trap",
-            topicTags: ["section_121", "recapture", "depreciation"],
-            context: "Client emails: 'Selling my house. Lived in it 2008-2024. From 2018-2022 I rented it out (5 years). Moved back in 2022. Sale price $850k, bought for $300k, took $40k of depreciation during the rental period. I read I get the $500k §121 exclusion since I lived in it 2 of last 5 years. Free money, right?' Walk the conversation.",
-            decisions: [
-              {
-                id: "dec1", prompt: "What's the FIRST clarification you make?",
-                options: [
-                  { text: "Confirm: yes, you qualify for §121 — both ownership and use tests met, full $500k MFJ exclusion applies, you can exclude up to $500k of gain", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_overpromise" },
-                  { text: "Acknowledge §121 applies but flag the §121(d)(6) issue: depreciation recapture taken after May 6, 1997 is NOT excludable. The $40k of depreciation must be recognized as unrecaptured §1250 gain regardless of how long you lived there.", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
-                  { text: "Tell them to disclose only their cost basis since they don't have records of depreciation", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_dishonest" },
-                  { text: "Tell them they don't qualify because they rented it out", weight: 1, correctness: "risky", nextId: null, terminalId: "t_overcautious" },
-                ],
-              },
-              {
-                id: "dec2", prompt: "Client asks: 'OK so what's my actual tax?'",
-                options: [
-                  { text: "Realized gain = $850k − $300k − $0 (no improvements mentioned, but ASK to confirm) = $550k. Plus the $40k depreciation reduces basis (technically you should have already accounted for it). Total gain = ~$590k. §121 excludes $500k of capital gain. Remaining $50k of capital gain (above the cap) PLUS the $40k of unrecaptured §1250 gain = $90k taxable. Capital gain at 20% = $10k. Unrecaptured §1250 at 25% = $10k. Total federal ≈ $20k + state. Versus their assumption of $0 — significant misalignment.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
-                  { text: "Just the $40k of depreciation is taxable at 25%, total tax ~$10k", weight: 2, correctness: "acceptable", nextId: null, terminalId: "t_partial" },
-                  { text: "Zero — full §121 exclusion applies", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_overpromise" },
-                ],
-              },
-            ],
-            terminals: [
-              { id: "t_great", label: "Pro §121 Conversation", outcome: "great", coachingNote: "Three teaching points: (1) §121(d)(6) is the 'depreciation trap' — clients who rented their home out at any point between 1997-now will have depreciation that doesn't get excluded under §121, even if they qualify for the full exclusion. (2) Without good records, you're stuck with whatever depreciation WAS allowable (whether or not actually taken) — the IRS doesn't let clients off for poor recordkeeping. (3) The recapture ($40k @ 25%) is at a HIGHER rate than the long-term cap gain (20%), so the recapture portion is the more painful tax even though it sounds smaller." },
-              { id: "t_overpromise", label: "Overpromised Exclusion", outcome: "harmful", coachingNote: "§121(d)(6) explicitly says the exclusion 'shall not apply to so much of the gain... as does not exceed the depreciation adjustments... attributable to periods after May 6, 1997.' Telling a client they get full exclusion when they have prior depreciation is malpractice-territory. They'll get an IRS notice 18 months after filing." },
-              { id: "t_dishonest", label: "Dishonest Approach", outcome: "harmful", coachingNote: "Failing to recognize depreciation that should have been claimed is not optional under §1016(a)(2). Adjusted basis must be reduced by depreciation 'allowed or allowable' — meaning even depreciation NOT taken still reduces basis. You cannot simply omit it. Hard ethical line." },
-              { id: "t_overcautious", label: "Overcautious", outcome: "risky", coachingNote: "Renting out a property doesn't disqualify §121 outright — the test is 2 of 5 years owned AND 2 of 5 years used as principal residence. If they lived there 2008-2018 (10 years) and 2022-2024 (2 years) and rented 2018-2022 (5 years), they easily meet both tests in the 2024 sale year. The §121 exclusion applies; the recapture portion is the only carve-out." },
-              { id: "t_partial", label: "Partial Credit", outcome: "acceptable", coachingNote: "You caught the §121(d)(6) recapture issue — good. But you missed that the $550k realized gain exceeds the $500k exclusion cap by $50k. That excess is also taxable as long-term capital gain, separate from the recapture. Total = $50k cap gain + $40k unrecaptured §1250 = $90k taxable, not just $40k." },
-            ],
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d16_mcq_121_tests",
-            question: "To qualify for the full §121 exclusion, a taxpayer must satisfy:",
-            options: [
-              "Owned and used the home as principal residence for 5 consecutive years",
-              "Owned the home for at least 2 of the 5 years preceding sale (Ownership Test) AND used it as principal residence for at least 2 of the 5 years preceding sale (Use Test) — the 2 years need not be the same 2 years",
-              "Owned the home outright (no mortgage)",
-              "Used the home only as a primary residence with no rental activity ever",
-            ],
-            correct: 1,
-            topicTags: ["section_121"],
-            difficulty: 3,
-            explanation: "§121(a) requires both the ownership test (2 of 5 years owned) AND the use test (2 of 5 years used as principal residence). Importantly, the 2-year periods can overlap or not — they do not need to be the same 2 years. So someone who owned a property 2018-2024 (6 years owned) and used it as residence 2018-2020 (2 years), then rented it 2020-2023, then moved back 2023-2024 — they meet both tests in 2024. Common error: assuming the 2 years must be consecutive AND must be the same 2 years for both tests.",
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d16_mcq_unrecaptured_1250",
-            question: "What is 'unrecaptured §1250 gain' and what's its federal tax rate?",
-            options: [
-              "Recapture of all depreciation on real property; taxed at ordinary rates up to 37%",
-              "The portion of gain on sale of real property attributable to depreciation taken (not in excess of straight-line); taxed at a maximum federal rate of 25%",
-              "Depreciation taken in excess of straight-line on real property; taxed at ordinary rates",
-              "Gain on sale of real property held under 1 year; taxed at short-term rates",
-            ],
-            correct: 1,
-            topicTags: ["recapture", "depreciation"],
-            difficulty: 4,
-            explanation: "§1250 actually has TWO components: (1) §1250 recapture proper — applies to real property depreciated using methods FASTER than straight-line; the excess depreciation is recaptured at ordinary rates. For most modern real property (residential and nonresidential after 1986), this is zero because they're depreciated SL. (2) Unrecaptured §1250 gain — the SL depreciation portion of the gain. This is taxed at a maximum federal rate of 25% (per §1(h)(1)(D)), which is HIGHER than the typical 20% long-term capital gains rate. Critical: even though the property was depreciated SL, that depreciation still 'comes back' on sale at a 25% rate, not a 20% rate.",
-          },
-          // ── d17 (Day 17) ──
-          {
-            type: "DRAG_EXERCISE", id: "d17_match_recapture_property",
-            title: "Property Type → Recapture Category",
-            topicTags: ["recapture", "cost_seg_basics"],
-            prompt: "Match each property component to its recapture treatment on sale.",
-            mode: "match",
-            pairs: [
-              { a: { id: "p1", label: "5-year carpet from cost seg study" }, b: { id: "r_1245", label: "§1245 — ordinary income recapture up to depreciation taken" } },
-              { a: { id: "p2", label: "Building structure (residential rental, 27.5-year)" }, b: { id: "r_1250", label: "§1250 unrecaptured gain — max 25% federal rate" } },
-              { a: { id: "p3", label: "Land" }, b: { id: "r_cap", label: "Long-term capital gain — max 20% federal + NIIT" } },
-              { a: { id: "p4", label: "15-year land improvements (parking, fencing) from cost seg" }, b: { id: "r_1245_li", label: "§1245 — ordinary income recapture (yes, despite 'land improvements' being depreciable real-ish property, the 15-year cost-seg components are §1245 personal property for recapture purposes)" } },
-            ],
-            decoys: [],
-            explanation: "The recapture math is asymmetric. Cost seg accelerates depreciation upfront (good) but pushes more property into §1245 (which recaptures at ordinary rates up to 37%, not the 25% §1250 cap). At a high marginal rate, the §1245 recapture is more painful than §1250. This is why some clients who plan to hold long-term (or hold-til-death-then-step-up) benefit MORE from cost seg than clients who plan to sell in 5 years.",
-          },
-          {
-            type: "COMPUTATION", id: "d17_comp_recapture_split",
-            title: "Recapture Split on Cost-Segregated Property Sale",
-            topicTags: ["recapture", "cost_seg_basics", "depreciation"],
-            prompt: "Client bought rental in 2020 for $1,000,000 ($200k land, $800k building). Did cost seg in 2020: $640k stayed at 27.5-year, $80k as 15-year, $80k as 5-year. Year-1 bonus depreciation took $80k (5-yr) + $80k (15-yr) immediately. Total depreciation through 2024: $640k @ 27.5-yr SL × 4.5 years ≈ $105k, + the full $80k bonus on 5-yr, + the full $80k bonus on 15-yr = $265k accumulated depreciation. Sells in 2025 for $1,400,000 (net of selling costs). Compute the TOTAL realized gain.",
-            expectedAnswer: 665000,
-            tolerance: 200,
-            unit: "dollars",
-            formLine: "Form 4797",
-            workedSolution: [
-              "Step 1: Adjusted basis = $1,000,000 − $265,000 = $735,000",
-              "Step 2: Realized gain = $1,400,000 − $735,000 = $665,000 (this is the answer being asked)",
-              "Step 3: Allocate the $665k gain among the three categories:",
-              "Step 3a: §1245 recapture = depreciation on the §1245 components, capped at gain on those components. The 5-yr ($80k) and 15-yr cost-seg components ($80k) generated $160k of depreciation. If the sale price allocates $80k+$80k = $160k to those reclassified components and they have $0 remaining basis (fully depreciated via bonus), the recapture is $160k of ordinary income.",
-              "Step 3b: Unrecaptured §1250 gain = SL depreciation on the building portion = $105,000. Taxed at max 25% federal.",
-              "Step 3c: Remaining gain = $665,000 − $160,000 − $105,000 = $400,000 long-term capital gain. Taxed at max 20% + NIIT.",
-              "Tax impact at 37% / 25% / 20%: ($160k × 37%) + ($105k × 25%) + ($400k × 20%) = $59,200 + $26,250 + $80,000 = $165,450 federal.",
-              "If client hadn't done cost seg, the entire $265k depreciation would be unrecaptured §1250 ($105k + $160k that would have been SL on the same components had they been classified as 27.5-yr) — taxed at 25%, not split with §1245 at 37%. The cost seg upfront benefit (~$50k+ year-1 federal savings) is partly clawed back at exit.",
-              "STRATEGIC TAKEAWAY: Cost seg + sale within 5-7 years often nets out small. Cost seg + long hold + step-up at death = pure benefit. Cost seg + 1031 exchange = §1245 portion can't defer.",
-            ],
-            commonWrongAnswers: [
-              { value: 400000, indicates: "Computed only the long-term capital gain portion." },
-              { value: 265000, indicates: "Confused total depreciation with total gain." },
-              { value: 1135000, indicates: "Forgot to subtract basis from sale price." },
-            ],
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d17_mcq_1245_rate",
-            question: "§1245 depreciation recapture is taxed at:",
-            options: [
-              "20% maximum federal capital gains rate",
-              "25% maximum federal rate (same as unrecaptured §1250)",
-              "ORDINARY income rates — no preferential cap, can be up to 37% federal at high income brackets",
-              "0% — recapture is deferred until basis runs out",
-            ],
-            correct: 2,
-            topicTags: ["recapture"],
-            difficulty: 3,
-            explanation: "§1245 recapture is recharacterized as ORDINARY INCOME up to the lesser of (a) depreciation taken or (b) gain realized. There is no rate cap — at high income, this means the marginal rate (up to 37%) plus state. This is why §1245 (cost-segregated personal property components) is harder to plan around than §1250 (the underlying real property structural component, capped at 25%). The asymmetry between §1245 and §1250 is a core consideration in cost seg / 1031 planning.",
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d17_mcq_1031_recapture",
-            question: "A client did a cost seg study on their rental property in 2022. Now they want to do a 1031 exchange in 2025 to defer all gain. What's the issue?",
-            options: [
-              "No issue — 1031 defers all gain regardless of recapture type",
-              "1031 generally cannot defer §1245 recapture on the cost-segregated components (5/7/15-year property) — only the §1250 (real property structure) portion defers. The 5/7-year components are §1245 personal property, which post-TCJA is no longer like-kind to real property.",
-              "1031 only defers §1245 recapture; §1250 must be recognized",
-              "1031 doesn't apply to property over $1M",
-            ],
-            correct: 1,
-            topicTags: ["recapture", "cost_seg_basics", "section_1031"],
-            difficulty: 5,
-            explanation: "Post-TCJA (2018), §1031 like-kind exchange treatment is limited to REAL PROPERTY for real property only. The 5/7/15-year components reclassified by cost seg are §1245 personal property under the recapture rules — they cannot be exchanged tax-free for real property. So when the client 1031s the building, they recognize §1245 recapture on the cost-segregated personal property components. The §1250 (building structure) portion can defer. For a heavily cost-segregated property, this can mean meaningful current tax even with a 1031. Aiola needs to model this BEFORE the cost seg study is done — clients with planned 5-7 year holds may not benefit as much as expected.",
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d17_mcq_form_4797",
-            question: "Sale of business or rental real estate gets reported on which form?",
-            options: [
-              "Schedule D Form 8949",
-              "Form 4797 (Sales of Business Property), with capital gain portion flowing to Schedule D",
-              "Schedule E directly",
-              "Form 4562",
-            ],
-            correct: 1,
-            topicTags: ["recapture"],
-            difficulty: 2,
-            explanation: "Form 4797 is the primary vehicle for sale of business or rental property. Part I = §1231 long-term gains/losses. Part II = ordinary gains/losses. Part III = recapture computations under §1245, §1250, §1252, §1254, §1255. The net §1231 gain (after recapture is carved out as ordinary) flows to Schedule D as long-term capital gain. Schedule D / Form 8949 alone is for non-business capital assets (stocks, personal residence under §121, etc.). Always use 4797 for rental property sales.",
-          },
-          // ── d18 (Day 18) ──
-          {
-            type: "DRAG_EXERCISE", id: "d18_order_1031_timeline",
-            title: "1031 Exchange Timeline",
-            topicTags: ["section_1031"],
-            prompt: "Drag these milestones into the correct chronological order for a deferred 1031 like-kind exchange.",
-            mode: "order",
-            items: [
-              { id: "t1", label: "Engage Qualified Intermediary (QI) BEFORE closing on relinquished property" },
-              { id: "t2", label: "Close on sale of relinquished property — proceeds go to QI, not taxpayer" },
-              { id: "t3", label: "Day 0 begins: 45-day identification clock + 180-day exchange clock both start" },
-              { id: "t4", label: "Within 45 days: deliver written identification of replacement property to QI" },
-              { id: "t5", label: "Within 180 days (or due date of return, whichever is earlier): close on replacement property" },
-              { id: "t6", label: "QI delivers replacement property to taxpayer; report exchange on Form 8824" },
-            ],
-            correctSequence: ["t1", "t2", "t3", "t4", "t5", "t6"],
-            explanation: "The QI engagement BEFORE closing is non-negotiable — if the taxpayer 'constructively receives' the proceeds (e.g., a check made out to them), the exchange fails and the entire gain is recognized. The 45-day identification deadline is hard — no extensions. The 180-day exchange deadline is also hard — and is shortened to the due date of the return if the return is due first (so a Q4 sale needs special attention). Document everything; Form 8824 is the IRS reporting form.",
-          },
-          {
-            type: "COMPUTATION", id: "d18_comp_boot_recognition",
-            title: "Boot Recognition in a 1031 Exchange",
-            topicTags: ["section_1031"],
-            prompt: "Client sells relinquished property for $800,000 net (basis $300k, $500k gain). Acquires replacement property worth $700,000 in a properly structured 1031. The QI returns $100,000 in cash to the client (didn't fully reinvest). How much gain must be RECOGNIZED currently?",
-            expectedAnswer: 100000,
-            tolerance: 0,
-            unit: "dollars",
-            formLine: "Form 8824",
-            workedSolution: [
-              "Step 1: Total realized gain on relinquished property = $500,000",
-              "Step 2: Boot received = $100,000 (cash returned to taxpayer)",
-              "Step 3: Gain recognized = LESSER of (a) realized gain $500k, or (b) boot received $100k = $100,000",
-              "Step 4: Remaining $400k of realized gain is DEFERRED under §1031.",
-              "Step 5: Adjusted basis in replacement property = $300k (old basis) + $100k (gain recognized) − $0 (no boot given) − $100k (boot received) = $300k. The deferred $400k of gain is preserved as a low basis in the replacement property.",
-              "Strategic note: To fully defer all gain, replacement property must be of EQUAL OR GREATER value AND mortgage debt must be at least as much (debt relief on the relinquished side counts as boot received).",
-            ],
-            commonWrongAnswers: [
-              { value: 0, indicates: "Assumed full deferral — but boot received always triggers gain recognition up to amount of boot." },
-              { value: 500000, indicates: "Treated as a fully taxable sale — boot recognition is limited to amount of boot, not full gain." },
-              { value: 200000, indicates: "Doubled the boot — only the actual cash received is boot." },
-            ],
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d18_mcq_45_180",
-            question: "The 45-day identification window and 180-day exchange window in a deferred 1031 both START from:",
-            options: [
-              "The date the replacement property is identified",
-              "The date the relinquished property is sold/closed (Day 0)",
-              "The date the QI is engaged",
-              "January 1 of the year of the sale",
-            ],
-            correct: 1,
-            topicTags: ["section_1031"],
-            difficulty: 2,
-            explanation: "Both clocks start on the same day — the date of closing on the relinquished property (Day 0 in tax parlance). 45 days to IDENTIFY replacement property in writing to the QI. 180 days (or due date of return, whichever is EARLIER) to CLOSE on replacement. Both windows are hard deadlines under §1031(a)(3) — IRS does not grant extensions absent disaster relief proclamations. Critical for Q4 sales: a December sale has 45 days through mid-February, but the 180-day window is shortened to April 15 (return due date) if not extended — far less than 180 days. Always file an extension to preserve the full 180.",
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d18_mcq_id_methods",
-            question: "Under the 1031 identification rules within the 45-day window, a taxpayer can identify replacement properties using which methods?",
-            options: [
-              "Only the 3-property rule (up to 3 candidate properties)",
-              "Three methods: (1) 3-property rule (up to 3 properties of any value), (2) 200% rule (any number of properties as long as total FMV ≤ 200% of relinquished FMV), (3) 95% rule (any number of properties, but must close on 95%+ of identified value)",
-              "Unlimited identification with no FMV constraint",
-              "Only one property can be identified",
-            ],
-            correct: 1,
-            topicTags: ["section_1031"],
-            difficulty: 4,
-            explanation: "Per Reg. §1.1031(k)-1(c)(4): three identification methods. The 3-property rule is most common — identify up to 3 properties, no FMV cap, close on whichever you want. The 200% rule allows more candidates but caps total identified FMV at 200% of relinquished FMV. The 95% rule allows unlimited identification but requires actually closing on 95%+ of identified value (rare, used in delayed multi-property transactions). Aiola advisors should know all three but typically recommend the 3-property rule for simplicity.",
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "d18_mcq_post_tcja",
-            question: "Post-TCJA (2018), 1031 like-kind exchange treatment is limited to:",
-            options: [
-              "Both real and personal property, like before",
-              "REAL property exchanged for real property only — personal property (vehicles, equipment, art) no longer qualifies",
-              "Only residential real estate",
-              "Only commercial real estate",
-            ],
-            correct: 1,
-            topicTags: ["section_1031"],
-            difficulty: 3,
-            explanation: "TCJA (effective 1/1/2018) limited §1031 like-kind treatment to real property for real property only. Personal property (vehicles, art, equipment, livestock, collectibles) no longer qualifies. This affects: (1) cost seg interaction — the 5/7-year personal property components from a cost seg study cannot be 1031-deferred; only the real property structural component can. (2) Trade-ins of business equipment — used to qualify as 1031, now generate gain or loss on the trade-in side. Real estate investors are largely unaffected for the building-only side, but cost seg planning needs to account for the §1245 portion not deferring.",
-          },
-          // ── d19 (Day 19) ──
-          {
+{
             type: "DRAG_EXERCISE", id: "w4_match_entity_use",
             title: "Entity Type → Best Real Estate Use Case",
             topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation"],
@@ -1703,7 +1426,7 @@ const PHASES = [
             decoys: [],
             explanation: "The cardinal rule: rental real estate goes in LLCs (single or multi-member), NOT S-Corps and NOT C-Corps. S-Corp is the right tool for ACTIVE service income above ~$80k stable. C-Corp is rarely right for real estate because of the appreciation-trap problem (gain on distribution under §311(b)) compounded with double taxation.",
           },
-          {
+{
             type: "CONFIDENCE_MCQ", id: "d19_mcq_smllc_default",
             question: "A solo investor forms a single-member LLC to hold a rental property. By default, how is this LLC treated for federal tax purposes?",
             options: [
@@ -1717,7 +1440,7 @@ const PHASES = [
             difficulty: 2,
             explanation: "Per Reg. §301.7701-3 (the 'check-the-box' regs), a single-member LLC defaults to disregarded entity treatment. The LLC provides legal liability protection but has no separate federal tax existence — the owner reports rental on Schedule E directly. The LLC can elect S-Corp status via Form 2553 (rarely advisable for rentals — tomorrow covers this). Multi-member LLCs default to partnership treatment unless they elect otherwise.",
           },
-          {
+{
             type: "CONFIDENCE_MCQ", id: "d19_mcq_llc_appreciation",
             question: "A client wants to transfer a $500k appreciated rental property (basis $200k) from personal name into a single-member LLC. What's the federal tax consequence?",
             options: [
@@ -1731,8 +1454,7 @@ const PHASES = [
             difficulty: 3,
             explanation: "Transfer to an SMLLC owned 100% by the same taxpayer = no recognition event federally because the LLC is disregarded. Original basis carries over. Title moves; tax position doesn't. Important caveats: (1) Some states impose transfer taxes on the deed change. (2) Lender consent may be required if there's a mortgage (technically a transfer of title). (3) Multi-member LLC transfers ARE potentially recognition events — check Reg. §1.721-1 contributions to partnerships.",
           },
-          // ── d20 (Day 20) ──
-          {
+{
             type: "SCENARIO_BRANCHING", id: "w4_scenario_scorp_decision",
             title: "Should the Client Elect S-Corp for 2025?",
             topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax"],
@@ -1789,7 +1511,7 @@ const PHASES = [
               { id: "t_partial_credit", label: "Partial Credit", outcome: "risky", coachingNote: "STR vs LTR doesn't change the answer — the §1402(a)(1) exclusion for rents from real estate applies regardless of stay duration. (Substantial-services rentals reported on Schedule C are a different animal — they ARE subject to SE tax, but you'd never put those in an S-Corp either, for the same appreciation-trap reason.) Rentals stay out of S-Corps. Period." },
             ],
           },
-          {
+{
             type: "COMPUTATION", id: "w4_comp_se_tax_schedC",
             title: "SE Tax on Schedule C Income",
             topicTags: ["se_tax", "pass_through"],
@@ -1813,7 +1535,7 @@ const PHASES = [
               { value: 4205, indicates: "Used Medicare only (forgot SS)." },
             ],
           },
-          {
+{
             type: "COMPUTATION", id: "w4_comp_scorp_savings",
             title: "Approximate S-Corp Tax Savings",
             topicTags: ["s_corp", "se_tax", "reasonable_comp"],
@@ -1835,7 +1557,7 @@ const PHASES = [
               { value: 22185, indicates: "Computed SE tax on the original $145k — irrelevant to FICA on the wage portion." },
             ],
           },
-          {
+{
             type: "CONFIDENCE_MCQ", id: "w4_mcq_no_scorp_rental",
             question: "A client asks: 'Why can't I put my rental properties in an S-Corp to save on taxes like my consulting business?' What's the most accurate explanation?",
             options: [
@@ -1849,7 +1571,7 @@ const PHASES = [
             difficulty: 4,
             explanation: "Two-part answer matters. (1) IRC §1402(a)(1) excludes rents from real estate from net earnings from SE — meaning rental income isn't subject to SE tax to begin with, so there's no SE tax for an S-Corp wage/distribution split to save. (2) §311(b) treats distribution of appreciated property as a sale at FMV — putting real estate INTO an S-Corp creates a one-way door where the client pays tax on the gain just to take the property back out. Both reasons mean LLCs (single-member disregarded or multi-member partnership) are the right structure for real estate.",
           },
-          {
+{
             type: "CONFIDENCE_MCQ", id: "w4_mcq_reasonable_comp",
             question: "Which approach to determining S-Corp reasonable compensation is MOST defensible if the IRS challenges the wage/distribution split?",
             options: [
@@ -1863,7 +1585,7 @@ const PHASES = [
             difficulty: 2,
             explanation: "The IRS standard is 'what would a third party pay for the services rendered' (see Watson v. Commissioner, 668 F.3d 1008 (8th Cir. 2012)). RCReports and BLS data are the defensible sources because they tie to actual wage data for comparable positions. Arbitrary percentages and 'maximize distributions' approaches lose in court. Aiola should document the methodology in workpapers — that's the difference between defending a reclassification challenge and losing one.",
           },
-          {
+{
             type: "CONFIDENCE_MCQ", id: "w4_mcq_qbi_basics",
             question: "Under §199A (QBI), a non-SSTB pass-through business generates $100,000 of qualified business income. The owner is MFJ with taxable income of $250,000 (well below the 2024 phase-in threshold of $383,900). Without applying any wage or UBIA limitation, what's the QBI deduction?",
             options: [
@@ -1877,7 +1599,7 @@ const PHASES = [
             difficulty: 2,
             explanation: "§199A allows a 20% deduction on qualified business income for pass-through entities (sole prop, partnership, S-Corp). Below the 2024 MFJ phase-in threshold of $383,900, no W-2 wage or UBIA limitations apply for non-SSTB businesses — straight 20% × QBI. So $100k QBI × 20% = $20k deduction. Above the threshold, the W-2 wage and UBIA limitations kick in, and SSTBs (specified service trades or businesses) phase out entirely above $483,900 MFJ in 2024.",
           },
-          {
+{
             type: "CONFIDENCE_MCQ", id: "w4_mcq_rental_qbi_safe_harbor",
             question: "A client has $40,000 of net rental income from one residential rental. Does this qualify for the §199A QBI deduction?",
             options: [
@@ -1891,36 +1613,7 @@ const PHASES = [
             difficulty: 4,
             explanation: "Rental income qualifies for QBI only if the rental rises to a §162 trade or business OR meets the Rev. Proc. 2019-38 safe harbor. The safe harbor requires: (1) separate books and records for the rental enterprise, (2) 250+ hours of rental services per year (provided by owner, agents, or contractors), (3) contemporaneous time logs starting in 2020, (4) the safe harbor statement filed with the return. A single passive rental that the owner does little active work on usually does NOT qualify. This is a common missed deduction — and a real client conversation: 'are you tracking your hours? If yes, you might pick up a 20% deduction on the net rental income.' Note: REPS status is a §469 concept, separate from §199A — a real estate professional doesn't automatically get QBI on rentals.",
           },
-          // ── New blocks (coverage gaps) ──
-          {
-            type: "CONFIDENCE_MCQ", id: "w4_mcq_469g_release",
-            question: "A taxpayer has $42,000 of suspended passive losses on a rental property from prior years. In 2024 they engage in one of the following transactions. Which transaction RELEASES the suspended losses under IRC §469(g)?",
-            options: [
-              "Refinancing the property with a new lender",
-              "Transferring the property to their wholly-owned single-member LLC",
-              "Selling the property in a fully taxable transaction to an unrelated party",
-              "Exchanging the property in a §1031 like-kind exchange with an unrelated party"
-            ],
-            correct: 2,
-            topicTags: ["passive_loss", "section_469g", "disposition", "section_1031"],
-            difficulty: 4,
-            explanation: "Under §469(g)(1)(A), suspended passive losses release on a FULLY TAXABLE DISPOSITION of the ENTIRE INTEREST in the passive activity to an UNRELATED party. A §1031 exchange is NOT fully taxable (gain is deferred, not recognized), so suspended losses carry forward and attach to the replacement property — they do NOT release. Refinancing, SMLLC transfers (a non-event since SMLLC is disregarded for federal tax), and related-party dispositions all fail to release. This is a critical sale-year planning point: if a client has large suspended losses, a §1031 exchange may not be the best move because it forfeits the chance to release those losses against ordinary income on the sale year.",
-          },
-          {
-            type: "CONFIDENCE_MCQ", id: "w4_mcq_harpta_hawaii_nonconformity",
-            question: "A non-resident sells a Hawaii rental property for $800,000 and intends to defer the federal gain via §1031 into an Oregon replacement property. Which of the following state-tax considerations apply?",
-            options: [
-              "Hawaii fully conforms to §1031; the only state issue is filing a non-resident return showing zero state tax due",
-              "Hawaii imposes HARPTA withholding (currently 7.25%) on non-resident sellers AND has historically limited §1031 deferral when the replacement property is out-of-state — state gain may be currently taxable even though federal is deferred. Confirm current Hawaii DOR position before relying.",
-              "Hawaii does not tax capital gains on real estate",
-              "Hawaii defers federal AND state gain identically because Hawaii uses Internal Revenue Code conformity"
-            ],
-            correct: 1,
-            topicTags: ["harpta", "hawaii", "section_1031", "state_conformity"],
-            difficulty: 4,
-            explanation: "HARPTA (Hawaii Real Property Tax Act) imposes withholding on non-resident sellers at the time of closing — currently 7.25% of the sale price. This withholding is creditable against the actual Hawaii tax due, but it's a cash-flow event regardless. Separately, Hawaii has historically limited §1031 deferral when the replacement property is out-of-state, meaning the state gain may be currently taxable even though the federal gain is deferred. This position has shifted over time and should be confirmed against current Hawaii DOR guidance before relying. Always flag both issues for any Hawaii property sale on a 1031 — they are the two most common state-conformity traps in Aiola's practice.",
-          },
-          {
+{
             type: "COMPUTATION", id: "w4_comp_6654_safe_harbor",
             title: "§6654 Estimated Tax Safe Harbor",
             topicTags: ["estimated_tax", "section_6654", "safe_harbor"],
@@ -1942,7 +1635,7 @@ const PHASES = [
               { value: 4800, indicates: "10% of prior-year tax — not a real safe harbor calculation." },
             ],
           },
-          {
+{
             type: "CONFIDENCE_MCQ", id: "w4_mcq_rev_proc_2019_38_specifics",
             question: "Your client has 3 residential rental properties they want to treat as a single 'rental real estate enterprise' for the §199A QBI safe harbor under Rev. Proc. 2019-38. Which of the following is NOT a requirement of the safe harbor?",
             options: [
