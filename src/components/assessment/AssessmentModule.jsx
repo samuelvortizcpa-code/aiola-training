@@ -26,14 +26,34 @@ const COMPONENT_MAP = {
   CASE_LAW: CaseLawResearch,
 };
 
-export default function AssessmentModule({ blocks, sectionId, userId, onModuleComplete, isAdminView, sectionTopicTags }) {
+export default function AssessmentModule({ blocks, sectionId, userId, onModuleComplete, isAdminView, sectionTopicTags, onToggleLock }) {
   const [blockResults, setBlockResults] = useState({});
   const [currentIdx, setCurrentIdx] = useState(0);
   const [allBlocks, setAllBlocks] = useState(blocks);
+  const [lockLoading, setLockLoading] = useState(sectionId !== "weekly_review" && !isAdminView);
+  const [lockedRecord, setLockedRecord] = useState(null);
 
   useEffect(() => {
     setAllBlocks(blocks);
   }, [blocks]);
+
+  // Mount-time lock check — skip for weekly_review and admin view
+  useEffect(() => {
+    if (sectionId === "weekly_review" || isAdminView) return;
+    (async () => {
+      try {
+        const key = `assessment:${userId}:${sectionId}`;
+        const d = await storage.get(key);
+        if (d) {
+          const record = JSON.parse(d.value || d);
+          if (record.locked !== false) {
+            setLockedRecord(record);
+          }
+        }
+      } catch {}
+      setLockLoading(false);
+    })();
+  }, [userId, sectionId, isAdminView]);
 
   const completedCount = Object.keys(blockResults).length;
   const allDone = allBlocks.length > 0 && completedCount === allBlocks.length;
@@ -58,7 +78,11 @@ export default function AssessmentModule({ blocks, sectionId, userId, onModuleCo
     }
 
     const storageKey = `assessment:${userId}:${sectionId}`;
-    const result = {
+    const thisAttempt = {
+      moduleScore,
+      passed,
+      needsAdminReview,
+      completedAt: new Date().toISOString(),
       blocks: allBlocks.map(b => ({
         blockId: b.id,
         score: blockResults[b.id]?.score ?? 0,
@@ -66,14 +90,34 @@ export default function AssessmentModule({ blocks, sectionId, userId, onModuleCo
         payload: blockResults[b.id]?.payload,
         completedAt: blockResults[b.id]?.completedAt,
       })),
-      moduleScore,
-      passed,
-      needsAdminReview,
-      completedAt: new Date().toISOString(),
     };
 
-    try { storage.set(storageKey, JSON.stringify(result)); } catch {}
-    if (onModuleComplete) onModuleComplete(result);
+    (async () => {
+      let existingRecord = null;
+      try {
+        const d = await storage.get(storageKey);
+        if (d) existingRecord = JSON.parse(d.value || d);
+      } catch {}
+
+      let prevHistory = existingRecord?.attemptHistory || [];
+      if (existingRecord && prevHistory.length === 0) {
+        prevHistory = [{
+          moduleScore: existingRecord.moduleScore,
+          passed: existingRecord.passed,
+          needsAdminReview: existingRecord.needsAdminReview,
+          completedAt: existingRecord.completedAt,
+          blocks: existingRecord.blocks,
+        }];
+      }
+      const result = {
+        ...thisAttempt,
+        locked: true,
+        attemptHistory: [...prevHistory, thisAttempt],
+      };
+
+      try { await storage.set(storageKey, JSON.stringify(result)); } catch {}
+      if (onModuleComplete) onModuleComplete(result);
+    })();
   }, [allDone]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleBlockComplete = (block) => (score, payload, meta) => {
@@ -133,7 +177,48 @@ export default function AssessmentModule({ blocks, sectionId, userId, onModuleCo
   };
 
   if (isAdminView) {
-    return <AssessmentAdminView blocks={blocks} sectionId={sectionId} userId={userId} />;
+    return <AssessmentAdminView blocks={blocks} sectionId={sectionId} userId={userId} onToggleLock={onToggleLock} />;
+  }
+
+  // Loading lock state
+  if (lockLoading) {
+    return (
+      <div style={{ background: B.card, border: `1px solid ${B.bdr}`, borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,.06)", overflow: "hidden", marginBottom: 20, padding: "24px 18px", textAlign: "center" }}>
+        <div style={{ fontSize: 12, color: B.t3 }}>Loading assessment...</div>
+      </div>
+    );
+  }
+
+  // Locked state — trainee has already completed this assessment
+  if (lockedRecord) {
+    const passed = lockedRecord.passed;
+    return (
+      <div style={{ background: B.card, border: `1px solid ${passed ? B.ok : B.err}`, borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,.06)", overflow: "hidden", marginBottom: 20 }}>
+        <div style={{ padding: "12px 18px", borderBottom: `1px solid ${B.bdr}`, display: "flex", alignItems: "center", justifyContent: "space-between", background: passed ? B.okBg : "#fef2f2" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="2.5" width="13" height="11" rx="2" stroke={passed ? B.ok : B.err} strokeWidth="1.3" /><path d="M5 7l2 2 4-4" stroke={passed ? B.ok : B.err} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <span style={{ fontSize: 12, fontWeight: 700, color: passed ? B.ok : B.err, textTransform: "uppercase", letterSpacing: .8 }}>Assessment Submitted</span>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="4" y="7" width="8" height="7" rx="1.5" stroke={B.t3} strokeWidth="1.3" /><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke={B.t3} strokeWidth="1.3" strokeLinecap="round" /></svg>
+        </div>
+        <div style={{ padding: "20px 18px", textAlign: "center" }}>
+          <div style={{ fontSize: 24, fontWeight: 700, color: passed ? B.ok : B.err, marginBottom: 4 }}>
+            {Math.round((lockedRecord.moduleScore || 0) * 100)}%
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: passed ? B.ok : B.err, marginBottom: 4 }}>
+            {passed ? "Passed" : "Not Passed"} (75% required)
+          </div>
+          {lockedRecord.completedAt && (
+            <div style={{ fontSize: 11, color: B.t3, marginBottom: 12 }}>
+              Completed {new Date(lockedRecord.completedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            </div>
+          )}
+          <div style={{ fontSize: 12, color: B.t2, lineHeight: 1.5, padding: "10px 14px", background: "#f8fafc", borderRadius: 8 }}>
+            This assessment has been submitted. Contact your manager to request a retake.
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const currentBlock = allBlocks[currentIdx];
@@ -221,8 +306,9 @@ export default function AssessmentModule({ blocks, sectionId, userId, onModuleCo
   );
 }
 
-function AssessmentAdminView({ blocks, sectionId, userId }) {
+function AssessmentAdminView({ blocks, sectionId, userId, onToggleLock }) {
   const [stored, setStored] = useState(null);
+  const [confirmReopen, setConfirmReopen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -235,6 +321,20 @@ function AssessmentAdminView({ blocks, sectionId, userId }) {
   }, [userId, sectionId]);
 
   const hasResults = stored && stored.blocks?.length > 0;
+  const isLocked = stored && stored.locked !== false;
+  const isReopenPending = stored && stored.locked === false && stored.attemptHistory?.length > 0;
+
+  const handleToggleLock = async () => {
+    if (!onToggleLock) return;
+    await onToggleLock(sectionId, userId);
+    // Re-read to update local state
+    try {
+      const key = `assessment:${userId}:${sectionId}`;
+      const d = await storage.get(key);
+      if (d) setStored(JSON.parse(d.value || d));
+    } catch {}
+    setConfirmReopen(false);
+  };
 
   return (
     <div style={{ background: B.card, border: `1px solid ${hasResults ? B.ok : B.bdr}`, borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,.06)", overflow: "hidden", marginBottom: 20 }}>
@@ -284,6 +384,36 @@ function AssessmentAdminView({ blocks, sectionId, userId }) {
               );
             })}
           </div>
+
+          {/* Lock controls */}
+          {onToggleLock && (
+            <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${B.bdr}` }}>
+              {isReopenPending ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="4" y="7" width="8" height="7" rx="1.5" stroke={B.warn} strokeWidth="1.3" /><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke={B.warn} strokeWidth="1.3" strokeLinecap="round" /><circle cx="12" cy="5" r="3" fill={B.warn} /></svg>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: B.warn }}>Retake allowed — awaiting trainee submission</span>
+                  {stored.attemptHistory && <span style={{ fontSize: 10, color: B.t3, marginLeft: 4 }}>({stored.attemptHistory.length} attempt{stored.attemptHistory.length !== 1 ? "s" : ""} on record)</span>}
+                </div>
+              ) : isLocked && !confirmReopen ? (
+                <button onClick={() => setConfirmReopen(true)}
+                  style={{ padding: "6px 14px", border: `1px solid ${B.warn}`, borderRadius: 6, background: "#fffbeb", color: B.warn, fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                  Allow Retake
+                </button>
+              ) : isLocked && confirmReopen ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 11, color: B.t2 }}>This allows the trainee to retake. Their current grade is preserved in history.</span>
+                  <button onClick={handleToggleLock}
+                    style={{ padding: "5px 12px", border: "none", borderRadius: 6, background: B.warn, color: "#fff", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>
+                    Confirm
+                  </button>
+                  <button onClick={() => setConfirmReopen(false)}
+                    style={{ padding: "5px 12px", border: `1px solid ${B.bdr}`, borderRadius: 6, background: "#fff", color: B.t3, fontSize: 11, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>
+                    Cancel
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          )}
         </div>
       )}
     </div>

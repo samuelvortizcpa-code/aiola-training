@@ -4331,6 +4331,8 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
             <TopicMastery userId={user.id} />
             {/* Confident Misses — admin only */}
             {isAdminView && <ConfidentMisses userId={user.id} />}
+            {/* Assessment Scores — read-only card */}
+            <AssessmentScoresCard userId={user.id} />
             {/* Card 1: KPI Scores */}
             <div style={{background:B.card,border:`1px solid ${B.bdr}`,borderRadius:12,boxShadow:"0 1px 3px rgba(0,0,0,.06)",overflow:"hidden",marginBottom:20}}>
               <div style={{padding:"14px 18px",borderBottom:`1px solid ${B.bdr}`,display:"flex",alignItems:"center",gap:8}}><span style={{fontSize:16}}>📈</span><span style={{fontSize:13,fontWeight:700,color:B.navy,textTransform:"uppercase",letterSpacing:.8}}>KPI Scores</span></div>
@@ -5037,6 +5039,16 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
                   // Bridge to existing quiz result system for section completion gating
                   onPassQuiz(cIt.id, { passed: result.passed, questions: {}, moduleScore: result.moduleScore, needsAdminReview: result.needsAdminReview });
                 }}
+                onToggleLock={isAdminView ? async (secId, uid) => {
+                  const key = `assessment:${uid}:${secId}`;
+                  try {
+                    const d = await storage.get(key);
+                    if (!d) return;
+                    const record = JSON.parse(d.value || d);
+                    record.locked = false;
+                    await storage.set(key, JSON.stringify(record));
+                  } catch {}
+                } : undefined}
               />
             )}
             {/* Nav */}
@@ -5068,6 +5080,107 @@ function TraineePortal({ user, completedTasks, quizResults, onToggleTask, onPass
           totalQuizCount={totalQuizzes}
         />
       )}
+    </div>
+  );
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// ASSESSMENT SCORES CARD (Performance tab, read-only)
+// ═════════════════════════════════════════════════════════════════════════════
+
+function AssessmentScoresCard({ userId }) {
+  const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      const sections = PHASES.flatMap(p => p.items.filter(i => i.assessment?.length > 0).map(i => ({ id: i.id, title: i.title, assessment: i.assessment })));
+      const results = [];
+      for (const sec of sections) {
+        try {
+          const d = await storage.get(`assessment:${userId}:${sec.id}`);
+          results.push({ ...sec, record: d ? JSON.parse(d.value || d) : null });
+        } catch {
+          results.push({ ...sec, record: null });
+        }
+      }
+      setRecords(results);
+      setLoading(false);
+    })();
+  }, [userId]);
+
+  if (loading) return null;
+  if (records.length === 0) return null;
+
+  const attempted = records.filter(r => r.record);
+  const passed = attempted.filter(r => r.record?.passed);
+
+  return (
+    <div style={{ background: B.card, border: `1px solid ${B.bdr}`, borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,.06)", overflow: "hidden", marginBottom: 20 }}>
+      <div style={{ padding: "14px 18px", borderBottom: `1px solid ${B.bdr}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="2.5" width="13" height="11" rx="2" stroke={B.blue} strokeWidth="1.3" /><path d="M5 7l2 2 4-4" stroke={B.blue} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          <span style={{ fontSize: 13, fontWeight: 700, color: B.navy, textTransform: "uppercase", letterSpacing: .8 }}>Assessment Scores</span>
+        </div>
+        <span style={{ fontSize: 10, color: B.t3 }}>{passed.length}/{records.length} passed</span>
+      </div>
+      <div style={{ padding: "8px 0" }}>
+        {records.map(({ id, title, record, assessment }) => {
+          const isOpen = !!expanded[id];
+          const hasRecord = !!record;
+          const isLocked = hasRecord && record.locked !== false;
+          const score = hasRecord ? Math.round((record.moduleScore || 0) * 100) : null;
+          const didPass = record?.passed;
+          const date = record?.completedAt ? new Date(record.completedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : null;
+          const statusColor = !hasRecord ? B.t3 : didPass ? B.ok : B.err;
+          const statusText = !hasRecord ? "Not attempted" : !isLocked ? "Retake allowed" : didPass ? "Passed" : "Not Passed";
+          const statusBg = !hasRecord ? "#f1f5f9" : !isLocked ? "#fffbeb" : didPass ? B.okL : "#fee2e2";
+
+          const mcqBlocks = hasRecord && assessment ? record.blocks.filter(br => {
+            const def = assessment.find(b => b.id === br.blockId);
+            return def?.type === "CONFIDENCE_MCQ";
+          }) : [];
+
+          return (
+            <div key={id}>
+              <button onClick={() => { if (hasRecord && mcqBlocks.length > 0) setExpanded(p => ({ ...p, [id]: !p[id] })); }}
+                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 18px", border: "none", background: isOpen ? "#fafbfc" : "transparent", cursor: hasRecord && mcqBlocks.length > 0 ? "pointer" : "default", fontFamily: "'DM Sans',sans-serif", fontSize: 12, fontWeight: 500, color: B.t1, transition: "background .15s" }}>
+                <span style={{ fontWeight: 600 }}>{title}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {score !== null && <span style={{ fontSize: 12, fontWeight: 700, color: statusColor }}>{score}%</span>}
+                  <span style={{ fontSize: 9, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: statusBg, color: statusColor }}>{statusText}</span>
+                  {date && <span style={{ fontSize: 10, color: B.t3 }}>{date}</span>}
+                  {hasRecord && mcqBlocks.length > 0 && (
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ transition: "transform .15s", transform: isOpen ? "rotate(180deg)" : "none" }}><path d="M2 3.5l3 3 3-3" stroke={B.t3} strokeWidth="1.5" strokeLinecap="round" /></svg>
+                  )}
+                </div>
+              </button>
+              {isOpen && mcqBlocks.length > 0 && (
+                <div style={{ padding: "6px 18px 12px 30px" }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: B.t3, marginBottom: 6 }}>MCQ Breakdown</div>
+                  {mcqBlocks.map((br, i) => {
+                    const def = assessment?.find(b => b.id === br.blockId);
+                    const question = def?.question || def?.title || `MCQ ${i + 1}`;
+                    const truncQ = question.length > 80 ? question.slice(0, 80) + "..." : question;
+                    const correct = br.payload?.correct;
+                    const conf = br.payload?.confidence;
+                    return (
+                      <div key={br.blockId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "5px 8px", borderBottom: `1px solid #f1f5f9`, gap: 8 }}>
+                        <span style={{ fontSize: 11, color: B.t2, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{truncQ}</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                          {conf != null && <span style={{ fontSize: 9, color: B.t3, background: "#f1f5f9", padding: "1px 5px", borderRadius: 3 }}>Conf: {conf}</span>}
+                          <span style={{ fontSize: 10, fontWeight: 700, color: correct ? B.ok : B.err }}>{correct ? "Correct" : "Incorrect"}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
