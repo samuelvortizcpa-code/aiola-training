@@ -1704,241 +1704,590 @@ const PHASES = [
     ],
   },
   {
-    id: "week5_8", label: "Weeks 5–8", subtitle: "Applied Advisory", phase: "Days 31–60",
+    id: "module1", label: "Module 1", subtitle: "Asset Protection & Entity Structuring", phase: "Days 31–40",
     items: [
       {
-        id: "d20", title: "Day 21 — Quarterly Tax Estimates + Week 5 Kickoff",
-        description: "Quarterly tax estimates are the rhythm of advisory client work — every advisory client needs them computed, paid, and adjusted throughout the year. Today: the safe harbor rules, withholding interaction, the annualized income method for uneven-income clients, and how this all interacts with the §469 strategies we've covered. Plus week 4 synthesis tying everything together.",
-        topicTags: ["quarterly_estimates", "str_loophole", "schedule_e_vs_c", "substantial_services", "rental_classification", "reps_aggregation_election", "mp_aggregation"],
+        id: "module1_main",
+        title: "Module 1 — Asset Protection & Entity Structuring",
+        description: "The Aiola CPA standard recommendation: Wyoming holding LLC + sub-LLCs per property + management/operations LLC — and when to deviate. This module covers the full entity-structuring framework for real estate investors: disregarded entity vs. partnership treatment at the holding level, weighing asset protection, anonymity, and tax impact. Deed transfer mechanics and due-on-sale clauses. Umbrella insurance as a substitute or complement. S-Corp and C-Corp interaction with rentals (never for rentals). BOI/Corporate Transparency Act compliance. By end of module: presentation to management on your recommended entity structure with pros, cons, state considerations, and the balance between technical precision and practical client advice.",
+        topicTags: [
+          "llc", "wyoming_llc", "sub_llc", "management_llc", "disregarded_entity",
+          "partnership_taxation", "asset_protection", "anonymity", "charging_order",
+          "deed_transfer", "due_on_sale", "umbrella_insurance", "s_corp",
+          "entity_election", "boi_cta", "state_considerations"
+        ],
+        weeklyRubric: {
+          title: "Module 1 Scorecard",
+          intro: "This rubric applies to your end-of-module presentation to management. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "Structure Mastery", desc: "Standard Aiola structure (WY holding + sub-LLCs + mgmt LLC) articulated correctly. Knows when and why to deviate. Disregarded vs. partnership at holding level explained with tax and legal consequences." },
+            { num: 2, name: "Asset Protection & Anonymity Analysis", desc: "Charging order protections, anonymity features (WY, NM, NV), SMLLC weakness in single-member-LLC states (e.g., NY). Tradeoffs between anonymity and cost/complexity quantified." },
+            { num: 3, name: "Transfer Mechanics & Practical Risks", desc: "Deed transfer process, due-on-sale clause risk assessment, lender notification practices, title insurance implications. State-specific transfer tax awareness." },
+            { num: 4, name: "Insurance & Complementary Protections", desc: "Umbrella insurance role, when entities alone aren't enough, cost-benefit of umbrella vs. additional LLC layers. Practical client advice on coverage levels." },
+            { num: 5, name: "S-Corp/C-Corp Interaction & Entity Selection", desc: "Why rentals never go in S-Corp or C-Corp. S-Corp for active business income only. §1402(a)(1) exclusion and §311(b) appreciation trap explained accurately." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-module1.html",
+          fullDocLabel: "View Full Scorecard"
+        },
         learningObjectives: [
-          "Compute the §6654(d)(1)(B) safe harbor: 90% current year OR 100%/110% prior year",
-          "Apply the withholding interaction under §6654(g)(1) for Q4 course-correction",
-          "Identify when the §6654(d)(2) annualized income installment method is appropriate",
-          "Distinguish 'substantial services' (Schedule C test) from 'hotel-like services' — different tests at different thresholds",
-          "Explain the §469(c)(7)(A) aggregation election: when, how, and the binding effect",
-          "Synthesize the entire §469 framework into an advisory-ready decision tree",
+          "Diagram the Aiola standard entity structure (Wyoming holding LLC \u2192 sub-LLCs per property \u2192 management/operations LLC) and explain the purpose of each layer",
+          "Distinguish disregarded entity vs. partnership treatment at the holding-LLC level and identify the tax, legal, and BOI consequences of each",
+          "Evaluate Wyoming\u2019s charging order protection, anonymity statutes, and low-fee structure against alternative formation states (NM, NV, home state) and recommend the right fit for a given client",
+          "Walk through the deed transfer process from personal name to LLC, identify due-on-sale clause risk under the Garn-St Germain Act, and explain Aiola\u2019s lender-notification best practice",
+          "Assess when umbrella insurance substitutes for additional entity layers vs. when both are needed, and articulate the cost-benefit to a client",
+          "Explain why rental real estate must never be held in an S-Corp or C-Corp, citing \u00a71402(a)(1) and \u00a7311(b)",
+          "Identify BOI/Corporate Transparency Act filing requirements for LLCs formed after January 1, 2024 and the deadlines and penalties for non-compliance"
         ],
-        tasks: [
-          { id: "d20t1", text: "Read IRC §6654 — focus on (d)(1)(B) safe harbor rules and (d)(2) annualized income method" },
-          { id: "d20t2", text: "Read Form 1040-ES Instructions" },
-          { id: "d20t3", text: "Read Form 2210 Instructions including Schedule AI for annualized income" },
-          { id: "d20t4", text: "Practice: Compute Q1 estimate for 5 sample client profiles (different AGI, different prior year facts)" },
-          { id: "d20t5", text: "Read about state quarterly variations — specifically Florida (no income tax — N/A) and California (different schedule)" },
-          { id: "d20t6", text: "Complete the Day 21 capstone: tie quarterly planning to STR strategy from Week 2 (Days 6-9)" },
-          { id: "d20t7", text: "Schedule a 60-min red-team review with your Manager to kick off Weeks 5-8 (TODO_NICK)" },
+        realWorldApplication: "Your manager will assign you a real client\u2019s entity structure to analyze. Prepare a presentation covering the recommended structure (or restructure), pros and cons of each option considered, state-specific considerations, and the balance between technical precision and practical client advice. Refer to your manager for the client assignment and the Aiola entity structure template.",
+        clientExamples: [],
+        deliverables: [
+          {
+            id: "m1d_mid",
+            title: "Day 35 Mid-Module Checkpoint",
+            dueDate: "Day 35",
+            description: "Walk your manager through the Aiola standard entity structure diagram. Cover: WY holding LLC purpose, sub-LLC per property rationale, management LLC role, disregarded vs. partnership at holding level, and one state-comparison example (e.g., WY vs. client\u2019s home state)."
+          },
+          {
+            id: "m1d_final",
+            title: "Entity Structure Presentation to Management",
+            dueDate: "Day 40",
+            description: "Presentation to management on recommended asset protection/entity structure for assigned client. Must cover: pros and cons of each option considered, balancing technical and practical advice, state considerations, deed transfer plan, insurance recommendation, and S-Corp/C-Corp exclusion rationale."
+          },
+          {
+            id: "m1d_assess",
+            title: "Module 1 End-of-Module Assessment",
+            dueDate: "Day 40",
+            description: "20-question assessment covering entity structuring, asset protection, deed transfer, umbrella insurance, S-Corp interaction, BOI compliance, and the Aiola standard recommendation. Honor system: answer from understanding, not research."
+          }
         ],
-        resources: [
-          { label: "IRC §6654 (Estimated tax payments)", url: "https://www.law.cornell.edu/uscode/text/26/6654" },
-          { label: "Form 1040-ES Instructions", url: "https://www.irs.gov/pub/irs-pdf/f1040es.pdf" },
-          { label: "Form 2210 (Underpayment Penalty) Instructions", url: "https://www.irs.gov/pub/irs-pdf/i2210.pdf" },
-          { label: "Form 2210 (blank)", url: "https://www.irs.gov/pub/irs-pdf/f2210.pdf" },
-          { label: "IRS — Pay As You Go FAQ", url: "https://www.irs.gov/businesses/small-businesses-self-employed/pay-as-you-go-so-you-wont-owe-a-guide-to-withholding-estimated-taxes-and-ways-to-avoid-the-estimated-tax-penalty" },
-          { label: "Aiola Quarterly Estimates Process", url: null /* TODO_NICK */ },
-          { label: "Aiola Q4 Withholding Adjustment Template", url: null /* TODO_NICK */ },
-        ],
+        assessmentIntro: "Answer based on what you\u2019ve learned this module. Please don\u2019t research questions before answering. The goal is to calibrate where your understanding is right now, so your manager can target the next sprint of learning. There\u2019s no penalty for getting things wrong.",
+        tasks: [],
+        resources: [],
         assessment: [
+          // ── Parked block: Entity type matching (re-namespaced from w4_match_entity_use) ──
           {
-            type: "CONFIDENCE_MCQ", id: "w4_mcq_substantial_vs_hotel",
-            question: "A client has an Airbnb with avg guest stay of 5 nights. They provide WiFi, basic cleaning between guests, and a welcome basket. They materially participate. How is the activity treated?",
-            options: [
-              "Schedule C, with SE tax — because 'substantial services' makes it an active business",
-              "Schedule E, nonpassive — because avg stay ≤ 7 days excludes from rental activity classification, MP makes loss nonpassive; substantial services for SCHEDULE PURPOSES (Reg. §1.1402(a)-4) requires a higher threshold (daily housekeeping, meals, concierge) that this client does NOT meet",
-              "Schedule E, passive — short-term rentals are still rentals",
-              "Form 4835 — farm rental income",
+            type: "DRAG_EXERCISE", id: "m1_match_entity_use",
+            title: "Entity Type \u2192 Best Real Estate Use Case",
+            topicTags: ["llc", "s_corp", "entity_election", "partnership_taxation"],
+            prompt: "Match each entity structure to its most appropriate real estate use case.",
+            mode: "match",
+            pairs: [
+              { a: { id: "single_llc", label: "Single-Member LLC (disregarded)" }, b: { id: "use_solo_rental", label: "Solo investor\u2019s rental property \u2014 keeps Schedule E reporting, adds liability protection" } },
+              { a: { id: "multi_llc", label: "Multi-Member LLC (partnership)" }, b: { id: "use_partnership", label: "Two or more investors holding rental real estate together" } },
+              { a: { id: "scorp", label: "S-Corp election (on an LLC or corp)" }, b: { id: "use_active_biz", label: "Active service business with stable profit > ~$80k (consulting, brokerage, flipping operation)" } },
+              { a: { id: "ccorp", label: "C-Corp" }, b: { id: "use_ccorp", label: "Generally NOT recommended for real estate \u2014 double taxation, distribution gain on real estate" } },
             ],
-            correct: 1,
-            topicTags: ["str_loophole", "schedule_e_vs_c", "substantial_services", "rental_classification"],
-            difficulty: 5,
-            explanation: "TWO DIFFERENT TESTS at TWO DIFFERENT THRESHOLDS — this is the most common conceptual error. (1) The §469 'rental activity' exclusion (Reg. §1.469-1T(e)(3)(ii)(A)) uses a 7-day average customer use threshold to determine passive classification. (2) The Schedule C / SE tax test (Reg. §1.1402(a)-4 + Pub 527) uses a 'substantial services' standard — services 'similar to those rendered by a hotel' (daily maid service, meals, concierge). Most STRs meet the 7-day test (so they escape passive treatment) but DO NOT meet the substantial services test (so they stay on Schedule E, no SE tax). WiFi + turnover cleaning + welcome basket is NOT substantial services. The activity is correctly: Schedule E + nonpassive (because of MP) + no SE tax. Memorize this distinction — many CPAs (and online articles) conflate these.",
+            decoys: [],
+            explanation: "The cardinal rule: rental real estate goes in LLCs (single or multi-member), NOT S-Corps and NOT C-Corps. S-Corp is the right tool for ACTIVE service income above ~$80k stable. C-Corp is rarely right for real estate because of the appreciation-trap problem (gain on distribution under \u00a7311(b)) compounded with double taxation.",
           },
+          // ── Parked block: SMLLC default treatment (re-namespaced from d19_mcq_smllc_default) ──
           {
-            type: "CONFIDENCE_MCQ", id: "w4_mcq_aggregation",
-            question: "A real estate professional client wants to make the §469(c)(7)(A) aggregation election. Which statement is most accurate?",
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_smllc_default",
+            question: "A solo investor forms a single-member LLC to hold a rental property. By default, how is this LLC treated for federal tax purposes?",
             options: [
-              "It's an annual election — file each year you want it to apply",
-              "It's filed by attaching a statement to a timely-filed return; once made, it's binding for all future years until revoked with IRS consent (per Reg. §1.469-9(g)(3))",
-              "It's automatic for any taxpayer who qualifies as REPS",
-              "It can only be made in the first year of ownership",
+              "As a separate corporation",
+              "As a disregarded entity \u2014 the LLC is ignored for federal tax purposes; rental income/loss flows directly to the owner\u2019s Schedule E",
+              "As a partnership",
+              "As an S-Corporation",
             ],
             correct: 1,
-            topicTags: ["reps_aggregation_election", "mp_aggregation"],
-            difficulty: 4,
-            explanation: "The aggregation election under §469(c)(7)(A) is made by attaching a statement to the timely-filed (including extensions) original return for the year of the election. It's NOT automatic. Once made, it's binding for that year and ALL FUTURE YEARS until revoked — and revocation requires IRS consent except in narrow cases (material change in facts, per Reg. §1.469-9(g)(3)). This is why Aiola's process is: don't recommend aggregation lightly. Run the math both ways before electing. For some clients, aggregating helps THIS year but hurts in a future year (e.g., a future property sold at a loss where you'd want it treated as a separate activity for §469(g) suspended-loss release). The decision is irreversible without IRS pain.",
+            topicTags: ["llc", "pass_through", "disregarded_entity"],
+            difficulty: 2,
+            explanation: "Per Reg. \u00a7301.7701-3 (the \u2018check-the-box\u2019 regs), a single-member LLC defaults to disregarded entity treatment. The LLC provides legal liability protection but has no separate federal tax existence \u2014 the owner reports rental on Schedule E directly. The LLC can elect S-Corp status via Form 2553 (rarely advisable for rentals). Multi-member LLCs default to partnership treatment unless they elect otherwise.",
           },
+          // ── Parked block: LLC appreciation transfer (re-namespaced from d19_mcq_llc_appreciation) ──
           {
-            type: "CONFIDENCE_MCQ", id: "d20_mcq_safe_harbor_high_income",
-            question: "Under §6654(d)(1)(B), an MFJ taxpayer with 2024 AGI of $300,000 wants to safe-harbor against 2025 underpayment penalty. They want to use prior-year-based safe harbor. Total payments throughout 2025 must be at least:",
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_llc_appreciation",
+            question: "A client wants to transfer a $500k appreciated rental property (basis $200k) from personal name into a single-member LLC. What\u2019s the federal tax consequence?",
             options: [
-              "100% of 2024 tax liability",
-              "110% of 2024 tax liability — the higher threshold applies because 2024 AGI exceeded $150,000 for MFJ",
-              "90% of 2025 tax liability",
-              "Either 100% of prior year OR 90% of current year — taxpayer chooses",
+              "Gain of $300k recognized on the transfer",
+              "No federal tax consequence \u2014 transfer to a disregarded SMLLC is not a recognition event because the LLC is not a separate entity for federal tax purposes",
+              "Step-up in basis to FMV",
+              "Triggers depreciation recapture",
             ],
             correct: 1,
-            topicTags: ["quarterly_estimates"],
+            topicTags: ["llc", "basis", "deed_transfer"],
             difficulty: 3,
-            explanation: "§6654(d)(1)(B) safe harbor: pay LESSER of (i) 90% of current year tax OR (ii) 100% of prior year tax. BUT if prior year AGI > $150,000 (MFJ/single, $75k MFS), the prior-year requirement bumps to 110%. At $300k 2024 AGI, the high-income threshold is met — 110% of 2024 liability is the safe harbor floor. This affects most Aiola advisory clients (real estate income + W-2 spouse often pushes AGI past $150k). Critical Q1 conversation: 'last year we owed $X; you need to pay 110% of that across 2025 to avoid penalty, regardless of what 2025 actually looks like.'",
+            explanation: "Transfer to an SMLLC owned 100% by the same taxpayer = no recognition event federally because the LLC is disregarded. Original basis carries over. Title moves; tax position doesn\u2019t. Important caveats: (1) Some states impose transfer taxes on the deed change. (2) Lender consent may be required if there\u2019s a mortgage (technically a transfer of title). (3) Multi-member LLC transfers ARE potentially recognition events \u2014 check Reg. \u00a71.721-1 contributions to partnerships.",
           },
+          // ── Parked block: S-Corp decision scenario (re-namespaced from w4_scenario_scorp_decision) ──
           {
-            type: "COMPUTATION", id: "d20_comp_q1_estimate",
-            title: "Q1 Estimated Payment Calculation",
-            topicTags: ["quarterly_estimates"],
-            prompt: "Client 2024: AGI $250k, total federal tax $46k, total withholding $32k. For 2025, they want safe harbor on the prior year basis (since 2025 income is uncertain). Compute the TOTAL annual estimated payments needed across 2025 (assuming 2025 withholding stays the same at $32k).",
-            expectedAnswer: 18600,
-            tolerance: 50,
-            unit: "dollars",
-            formLine: "Form 1040-ES",
-            workedSolution: [
-              "Step 1: 2024 AGI = $250k > $150k → high-income; safe harbor = 110% of 2024 tax",
-              "Step 2: Required 2025 total payments (safe harbor) = 110% × $46,000 = $50,600",
-              "Step 3: Expected 2025 withholding = $32,000",
-              "Step 4: Estimated payments needed = $50,600 − $32,000 = $18,600 across the four quarters",
-              "Step 5: Per-quarter estimated payment = $18,600 / 4 = $4,650 paid by 4/15, 6/15, 9/15, and 1/15/2026 (subject to weekend/holiday adjustments)",
-              "IMPORTANT: Withholding is treated as paid evenly throughout the year per §6654(g)(1) regardless of when actually withheld. So a client who under-withholds early in year and over-withholds late in year (W-2 spouse adjusts withholding in December) can effectively backfill earlier underpayment.",
-              "PLANNING LEVER: Have W-2 spouse over-withhold late in year to fix Q1-Q3 underpayment for the rental side of the household.",
-            ],
-            commonWrongAnswers: [
-              { value: 14000, indicates: "Used 100% of prior year (regular safe harbor) — but high-income threshold requires 110%." },
-              { value: 50600, indicates: "Computed total safe harbor amount but didn't subtract expected withholding." },
-              { value: 4650, indicates: "Computed per-quarter amount but the question asked for total annual." },
-            ],
-          },
-          {
-            type: "SCENARIO_BRANCHING", id: "d20_scenario_quarterly_planning",
-            title: "Q3 Estimate Conversation with an STR Client",
-            topicTags: ["quarterly_estimates", "str_loophole"],
-            context: "Client (advisory, MFJ, $400k W-2 husband + $0 wife) closed on first STR in May 2024. Cost seg study yielded $200k year-1 depreciation. Wife will materially participate. They're asking about Q3 estimated payments due September 16. Their accountant from last year (you replaced) had set them up with $4,000/quarter estimated payments based on 2023 (no rental). Walk the conversation.",
+            type: "SCENARIO_BRANCHING", id: "m1_scenario_scorp_decision",
+            title: "Should the Client Elect S-Corp for 2025?",
+            topicTags: ["s_corp", "reasonable_comp", "entity_election", "se_tax"],
+            context: "Your assigned client runs a consulting business currently filed on Schedule C. Per the 2024 return: net Schedule C income $145,000, ~30 hours/week worked on the business, residence in Florida (no state income tax), 3-year stable income trend. The client emails on a Tuesday: \u2018My buddy said I should be doing an S-Corp to save on taxes. Can we set that up for 2025?\u2019 How do you handle this conversation?",
             decisions: [
               {
-                id: "dec1", prompt: "First analytical step?",
+                id: "dec1", prompt: "What\u2019s your FIRST move?",
                 options: [
-                  { text: "Continue last year's $4k/quarter — it's safe harbor", weight: 1, correctness: "risky", nextId: null, terminalId: "t_blind_continuation" },
-                  { text: "Project 2024 actual tax: $400k W-2 income MINUS ~$200k STR loss (assuming MP qualifies and STR exception applies) = ~$200k taxable. Actual 2024 tax ~$32k. They've already paid Q1+Q2 = $8k + $80k+ withholding running rate = significant overpayment. Reduce Q3 to $0 and consider adjusting withholding.", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
-                  { text: "Recommend pausing Q3 entirely and waiting for year-end", weight: 2, correctness: "acceptable", nextId: null, terminalId: "t_partial" },
-                  { text: "Just keep the same payment schedule — safer", weight: 1, correctness: "risky", nextId: null, terminalId: "t_blind_continuation" },
+                  { text: "Recommend S-Corp election immediately \u2014 at $145k net he\u2019s leaving SE tax savings on the table", weight: 1, correctness: "risky", nextId: null, terminalId: "t_premature" },
+                  { text: "Ask follow-up questions: state of residence, projected stability of income, willingness to run payroll, other entities, retirement plan goals", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
+                  { text: "Recommend against because S-Corp adds compliance complexity", weight: 1, correctness: "risky", nextId: null, terminalId: "t_undercoaching" },
+                  { text: "Tell him to talk to a business attorney first", weight: 1, correctness: "risky", nextId: null, terminalId: "t_deflect" },
                 ],
               },
               {
-                id: "dec2", prompt: "Important check: how do you confirm MP and STR exception qualify before recommending the aggressive strategy?",
+                id: "dec2", prompt: "The client confirms FL (no state tax), stable income last 3 years, willing to do payroll, no other entities, currently no retirement plan. What\u2019s your reasonable comp anchor?",
                 options: [
-                  { text: "Ask for: (1) avg stay computation YTD (must be ≤7 days), (2) wife's contemporaneous time logs YTD, (3) clear documentation that nobody else (cleaner, agent) has more hours than wife. Without these, the strategy fails on audit and the projection is wrong.", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
-                  { text: "Just trust the client's word", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_blind_trust" },
-                  { text: "Don't worry about it for the estimate calculation — it's just an estimate", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_audit_blind" },
+                  { text: "50% of net income \u2192 $72,500 (rule of thumb)", weight: 1, correctness: "risky", nextId: null, terminalId: "t_arbitrary_comp" },
+                  { text: "Pull RCReports or BLS data for \u2018Management Consultants\u2019 in the client\u2019s region \u2014 likely $90k\u2013$110k range", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
+                  { text: "$50,000 to maximize distributions and SE savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_aggressive_comp" },
+                  { text: "Whatever the client wants to pay himself", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_no_comp" },
                 ],
               },
               {
-                id: "dec3", prompt: "Client confirms documentation. Final recommendation for Q3?",
+                id: "dec3", prompt: "Anchoring at $95,000 reasonable comp on $145,000 net income, what\u2019s the approximate SE tax savings vs Schedule C? (Rough order of magnitude.)",
                 options: [
-                  { text: "Skip Q3 entirely. Project ~$32k 2024 tax. They've likely already overpaid via withholding. Send them an updated 2024 projection showing expected refund. CRITICAL: also have them adjust 2024 W-4 with employer to lower withholding for the rest of 2024 (or at least Q4) since they're getting a giant refund.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
-                  { text: "Pay Q3 anyway as a buffer", weight: 1, correctness: "risky", nextId: null, terminalId: "t_overpayment" },
+                  { text: "About $15,000 \u2014 15.3% \u00d7 $50k diff with no offset", weight: 1, correctness: "risky", nextId: null, terminalId: "t_overstated" },
+                  { text: "About $4,000\u2013$7,000 \u2014 savings on the SE-tax portion of the $50k diff, accounting for SS wage base interactions and the deduction for half of SE tax", weight: 3, correctness: "great", nextId: "dec4", terminalId: null },
+                  { text: "About $22,000 \u2014 full 15.3% \u00d7 full $145k", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_overstated" },
+                  { text: "Zero \u2014 there\u2019s no SE tax savings", weight: 1, correctness: "risky", nextId: null, terminalId: "t_understated" },
+                ],
+              },
+              {
+                id: "dec4", prompt: "The client asks: \u2018Wait, my friend said his S-Corp also saved him on his rental properties. Can I put my rentals into the S-Corp too?\u2019",
+                options: [
+                  { text: "Yes, putting rentals in an S-Corp adds another layer of SE tax savings", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
+                  { text: "No \u2014 rental income is NOT subject to SE tax to begin with under IRC \u00a71402(a)(1), so there\u2019s no SE tax to save. Worse, putting appreciated real estate INTO an S-Corp can trigger gain on later distribution. Keep rentals in LLCs (or held directly), separate from the S-Corp.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
+                  { text: "It depends on whether the rental is short-term or long-term", weight: 1, correctness: "risky", nextId: null, terminalId: "t_partial_credit" },
+                  { text: "Yes, but only for short-term rentals", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_rental_scorp_bad" },
                 ],
               },
             ],
             terminals: [
-              { id: "t_great", label: "Pro Quarterly Planning", outcome: "great", coachingNote: "This is the kind of mid-year intervention that defines Aiola's value. The previous CPA mechanically continued $4k/quarter without re-projecting after the STR purchase — leaving $20k+ of cash sitting at the IRS earning 0%. Three teaching points: (1) Quarterly estimates must be RE-PROJECTED any time material facts change (new property, big sale, entity change). (2) Always check withholding interaction — withholding is the cleanest lever for course-correction. (3) Don't 'over-buffer' on estimates; an overpayment is just an interest-free loan to the IRS." },
-              { id: "t_blind_continuation", label: "Blind Continuation", outcome: "risky", coachingNote: "Continuing last year's estimate when the client's tax situation has materially changed is exactly the kind of mechanical accountant work Aiola is supposed to replace. The whole point of advisory is proactive re-projection — that's the value." },
-              { id: "t_partial", label: "Partial Credit", outcome: "acceptable", coachingNote: "Pausing is OK in concept but doesn't solve the actual question — what about Q1+Q2 already paid? You should also be advising on a 2024 W-4 adjustment to reduce withholding for the rest of the year. Don't stop at the immediate question; think about the full picture." },
-              { id: "t_blind_trust", label: "Blind Trust", outcome: "harmful", coachingNote: "The penalty for trusting a client's verbal claim of MP without documentation is: 18 months later, IRS notice, no documentation = strategy unwinds = $50k+ in additional tax + penalties. Trust but verify is the standard." },
-              { id: "t_audit_blind", label: "Audit Blind", outcome: "harmful", coachingNote: "STR strategy is a high-audit-risk claim. Estimating tax based on facts that won't survive an audit is mismanagement of client expectations. Always project tax based on the FACTS THAT WILL SURVIVE AUDIT." },
-              { id: "t_overpayment", label: "Unnecessary Overpayment", outcome: "risky", coachingNote: "An overpayment to the IRS is just an interest-free loan. With confirmed documentation supporting the strategy, there's no reason to pay Q3. The client is better off having that $4k in their checking account." },
+              { id: "t_great", label: "Pro-Level Advisory", outcome: "great", coachingNote: "Textbook. You scoped the conversation, anchored reasonable comp on defensible data, sized the savings accurately, AND caught the rental trap. Three teaching points to remember: (1) Reasonable comp uses RCReports/BLS \u2014 never percentages. (2) SE tax savings are smaller than the napkin math suggests because of SS wage base interactions and the deduction for half of SE tax. (3) S-Corp does NOT help rentals \u2014 rental income isn\u2019t subject to SE tax under \u00a71402(a)(1), and putting appreciated real estate into an S-Corp creates exit problems." },
+              { id: "t_premature", label: "Premature Recommendation", outcome: "risky", coachingNote: "Recommending S-Corp without scoping is a rookie move. State, income stability, willingness to run payroll, retirement plan strategy, and other entities all matter." },
+              { id: "t_undercoaching", label: "Undercoaching", outcome: "risky", coachingNote: "S-Corp does add complexity, but at $145k of stable consulting income in a no-state-tax state, the math very likely works. Defaulting to \u2018too complex\u2019 undersells the strategy." },
+              { id: "t_deflect", label: "Pure Deflection", outcome: "risky", coachingNote: "Entity election is squarely a CPA conversation. An attorney handles LLC formation; the S-Corp election (Form 2553) and reasonable comp determination is your lane." },
+              { id: "t_arbitrary_comp", label: "Arbitrary Percentage", outcome: "risky", coachingNote: "The IRS does not accept \u201850% rule of thumb.\u2019 Reasonable comp must be supportable based on what a third party would pay for the services rendered." },
+              { id: "t_aggressive_comp", label: "Aggressive Comp", outcome: "harmful", coachingNote: "Setting comp artificially low to maximize distributions is the textbook IRS reclassification risk. Watson v. Commissioner (2012) is the cautionary tale." },
+              { id: "t_no_comp", label: "No Standard", outcome: "harmful", coachingNote: "\u2018Whatever the client wants\u2019 is malpractice territory. The client engaged Aiola for the technical answer." },
+              { id: "t_overstated", label: "Overstated Savings", outcome: "risky", coachingNote: "The napkin \u201815.3% \u00d7 distribution\u2019 calc overstates savings due to SS wage base interactions and the half-SE-tax deduction." },
+              { id: "t_understated", label: "Understated Savings", outcome: "risky", coachingNote: "There ARE real SE tax savings on the wage/distribution split. Walk through the math." },
+              { id: "t_rental_scorp_bad", label: "Wrong on Rentals", outcome: "harmful", coachingNote: "Rental income is excluded from SE under \u00a71402(a)(1). Distributing RE out of an S-Corp triggers gain at FMV under \u00a7311(b). Real estate goes in LLCs, never S-Corp." },
+              { id: "t_partial_credit", label: "Partial Credit", outcome: "risky", coachingNote: "STR vs LTR doesn\u2019t change the answer \u2014 \u00a71402(a)(1) exclusion applies regardless of stay duration. Rentals stay out of S-Corps. Period." },
             ],
           },
+          // ── Parked block: SE tax computation (re-namespaced from w4_comp_se_tax_schedC) ──
           {
-            type: "CONFIDENCE_MCQ", id: "d20_mcq_withholding_timing",
-            question: "Per §6654(g)(1), how is W-2 withholding treated for purposes of computing quarterly underpayment penalty?",
+            type: "COMPUTATION", id: "m1_comp_se_tax_schedC",
+            title: "SE Tax on Schedule C Income",
+            topicTags: ["se_tax", "pass_through"],
+            prompt: "A self-employed consultant has Schedule C net profit of $145,000 (no W-2 wages). Compute their self-employment tax for 2024. (Reminder: 2024 SS wage base = $168,600. SE tax rate = 15.3% [12.4% SS + 2.9% Medicare]. Self-employment income is multiplied by 92.35% before applying SE tax \u2014 that\u2019s the \u00a71402(a)(12) deduction for the employer-equivalent portion.)",
+            expectedAnswer: 20492,
+            tolerance: 25,
+            unit: "dollars",
+            formLine: "Schedule SE",
+            workedSolution: [
+              "Step 1: Net SE earnings = $145,000 \u00d7 92.35% = $133,907.50",
+              "Step 2: Both SS portion ($133,907.50 \u00d7 12.4%) and Medicare ($133,907.50 \u00d7 2.9%) apply since $133,907.50 < $168,600 SS wage base",
+              "Step 3: SS portion = $133,907.50 \u00d7 0.124 = $16,604.53",
+              "Step 4: Medicare portion = $133,907.50 \u00d7 0.029 = $3,883.32",
+              "Step 5: Total SE tax = $16,604.53 + $3,883.32 = $20,487.85 (\u2248 $20,488)",
+              "Note: Half of SE tax ($10,244) is deductible above the line under \u00a7164(f).",
+              "Note: Additional Medicare Tax (0.9%) doesn\u2019t apply here since income is under $200k single.",
+            ],
+            commonWrongAnswers: [
+              { value: 22185, indicates: "Forgot the 92.35% adjustment under \u00a71402(a)(12)." },
+              { value: 17980, indicates: "Used 12.4% only (forgot Medicare)." },
+              { value: 4205, indicates: "Used Medicare only (forgot SS)." },
+            ],
+          },
+          // ── Parked block: S-Corp FICA savings (re-namespaced from w4_comp_scorp_savings) ──
+          {
+            type: "COMPUTATION", id: "m1_comp_scorp_savings",
+            title: "Approximate S-Corp Tax Savings",
+            topicTags: ["s_corp", "se_tax", "reasonable_comp"],
+            prompt: "Same consultant. If they elect S-Corp for 2025 with reasonable comp of $95,000 (and the remaining $50,000 as a distribution), compute the approximate FICA tax on the W-2 wage portion. (Use 2024 rates as a proxy: 15.3% combined employee+employer on wages up to $168,600 \u2014 split 7.65% each side.)",
+            expectedAnswer: 14535,
+            tolerance: 25,
+            unit: "dollars",
+            formLine: "Form 941 + W-2",
+            workedSolution: [
+              "Step 1: Wage portion = $95,000.",
+              "Step 2: Combined FICA (employee + employer) = $95,000 \u00d7 15.3% = $14,535.",
+              "Step 3: Distribution of $50,000 has no FICA \u2014 that\u2019s the savings vs Schedule C.",
+              "Step 4: Approximate SE tax savings: Schedule C SE tax (~$20,488 from prior block) \u2212 S-Corp FICA on wages ($14,535) = ~$5,953.",
+              "Caveats: The actual comparison should also account for: (a) deduction of half of SE tax on Schedule C (\u00a7164(f)); (b) deduction of employer-paid FICA as an S-Corp expense; (c) 1120-S compliance cost (~$1,500\u2013$2,500/yr); (d) \u00a7199A QBI: S-Corp wages count toward W-2 wages limitation. Net-net: typically $4k\u2013$7k at this income level.",
+              "Important: This is the math. The conversation with the client is whether $5k of net savings justifies the compliance overhead. At $145k income \u2014 yes. At $80k \u2014 usually not worth it.",
+            ],
+            commonWrongAnswers: [
+              { value: 7268, indicates: "Used only employee-side 7.65% \u2014 but the S-Corp pays both halves." },
+              { value: 22185, indicates: "Computed SE tax on the original $145k \u2014 irrelevant to FICA on the wage portion." },
+            ],
+          },
+          // ── Parked block: No S-Corp for rentals (re-namespaced from w4_mcq_no_scorp_rental) ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_no_scorp_rental",
+            question: "A client asks: \u2018Why can\u2019t I put my rental properties in an S-Corp to save on taxes like my consulting business?\u2019 What\u2019s the most accurate explanation?",
             options: [
-              "Allocated by the actual date of each paycheck",
-              "Treated as paid evenly throughout the year regardless of when actually withheld (default rule), unless taxpayer ELECTS to use actual dates",
-              "Allocated entirely to Q1",
-              "Allocated entirely to Q4",
+              "You can put rentals in an S-Corp; it\u2019s actually a good idea for high-income clients",
+              "Rental income is excluded from self-employment tax under \u00a71402(a)(1) \u2014 there\u2019s no SE tax to save. Plus, distributing real estate OUT of an S-Corp triggers gain at FMV, locking appreciation into the structure",
+              "S-Corps can\u2019t legally own real estate",
+              "It depends on whether the rentals are short-term or long-term",
             ],
             correct: 1,
-            topicTags: ["quarterly_estimates"],
+            topicTags: ["s_corp", "se_tax", "rental_classification"],
             difficulty: 4,
-            explanation: "§6654(g)(1) treats withholding as paid evenly throughout the year — unless the taxpayer elects to use actual withholding dates (rarely advantageous). This is a HUGE planning lever for advisory clients. Example: client under-withheld through Q3, has a big rental loss to apply, expects under-payment penalty exposure on Q1-Q3. Solution: have W-2 spouse increase Q4 withholding via amended W-4 — that increase is treated as paid evenly throughout the year, retroactively curing earlier underpayment. This is one of the most useful Q4 planning techniques.",
+            explanation: "Two-part answer matters. (1) IRC \u00a71402(a)(1) excludes rents from real estate from net earnings from SE \u2014 meaning rental income isn\u2019t subject to SE tax to begin with, so there\u2019s no SE tax for an S-Corp wage/distribution split to save. (2) \u00a7311(b) treats distribution of appreciated property as a sale at FMV \u2014 putting real estate INTO an S-Corp creates a one-way door where the client pays tax on the gain just to take the property back out. Both reasons mean LLCs (single-member disregarded or multi-member partnership) are the right structure for real estate.",
           },
+          // ── Parked block: Reasonable comp (re-namespaced from w4_mcq_reasonable_comp) ──
           {
-            type: "CONFIDENCE_MCQ", id: "d20_mcq_annualized_income",
-            question: "When is the §6654(d)(2) annualized income installment method (Schedule AI) most useful?",
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_reasonable_comp",
+            question: "Which approach to determining S-Corp reasonable compensation is MOST defensible if the IRS challenges the wage/distribution split?",
             options: [
-              "For all advisory clients, every year",
-              "When client income is highly UNEVEN — e.g., a large Q4 capital gain, seasonal STR income concentrated in summer, or a one-time bonus. Schedule AI annualizes income period-by-period so the safe-harbor calc reflects when income was actually earned.",
-              "For clients with steady W-2 income only",
-              "Only for clients in their first year of operation",
+              "50% of net income \u2014 common rule of thumb",
+              "Whatever the prior CPA recommended",
+              "RCReports or BLS Occupational Employment Statistics data for the role/region, documented in the workpapers",
+              "Whatever leaves the most cash for distributions",
+            ],
+            correct: 2,
+            topicTags: ["reasonable_comp", "s_corp"],
+            difficulty: 2,
+            explanation: "The IRS standard is \u2018what would a third party pay for the services rendered\u2019 (see Watson v. Commissioner, 668 F.3d 1008 (8th Cir. 2012)). RCReports and BLS data are the defensible sources because they tie to actual wage data for comparable positions. Arbitrary percentages and \u2018maximize distributions\u2019 approaches lose in court.",
+          },
+          // ── Parked block: QBI basics (re-namespaced from w4_mcq_qbi_basics) ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_qbi_basics",
+            question: "Under \u00a7199A (QBI), a non-SSTB pass-through business generates $100,000 of qualified business income. The owner is MFJ with taxable income of $250,000 (well below the 2024 phase-in threshold of $383,900). Without applying any wage or UBIA limitation, what\u2019s the QBI deduction?",
+            options: [
+              "$10,000 \u2014 10% of QBI",
+              "$20,000 \u2014 20% of QBI",
+              "$25,000 \u2014 25% of QBI",
+              "$0 \u2014 QBI doesn\u2019t apply at this income level",
             ],
             correct: 1,
-            topicTags: ["quarterly_estimates"],
+            topicTags: ["qbi", "pass_through"],
+            difficulty: 2,
+            explanation: "\u00a7199A allows a 20% deduction on qualified business income for pass-through entities (sole prop, partnership, S-Corp). Below the 2024 MFJ phase-in threshold of $383,900, no W-2 wage or UBIA limitations apply for non-SSTB businesses \u2014 straight 20% \u00d7 QBI. So $100k QBI \u00d7 20% = $20k deduction.",
+          },
+          // ── Parked block: Rental QBI safe harbor (re-namespaced from w4_mcq_rental_qbi_safe_harbor) ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_rental_qbi_safe_harbor",
+            question: "A client has $40,000 of net rental income from one residential rental. Does this qualify for the \u00a7199A QBI deduction?",
+            options: [
+              "Yes, automatically \u2014 all rental income qualifies for QBI",
+              "It depends \u2014 rental qualifies as a \u00a7162 trade or business OR if the Rev. Proc. 2019-38 safe harbor is met (250+ hours of rental services, separate books, contemporaneous logs)",
+              "No, never \u2014 rental income is passive and excluded from QBI",
+              "Only if the client is a real estate professional",
+            ],
+            correct: 1,
+            topicTags: ["qbi", "rental_classification"],
             difficulty: 4,
-            explanation: "Schedule AI of Form 2210 implements the §6654(d)(2) annualized income installment method. It's an alternative to the standard quarterly safe harbor that recomputes the safe harbor based on income actually earned through each quarter. Most useful when income is uneven: a client with $50k Q1 income but $200k Q4 income (e.g., year-end stock sale or bonus) might fail standard safe harbor on Q1 but pass under annualized method since they hadn't earned the big Q4 income yet at Q1. Aiola's STR clients with seasonal income (summer-heavy) often benefit. The downside: requires more tracking and recomputation throughout the year.",
+            explanation: "Rental income qualifies for QBI only if the rental rises to a \u00a7162 trade or business OR meets the Rev. Proc. 2019-38 safe harbor. The safe harbor requires: (1) separate books and records, (2) 250+ hours of rental services per year, (3) contemporaneous time logs starting in 2020, (4) safe harbor statement filed with the return. REPS status is a \u00a7469 concept, separate from \u00a7199A \u2014 a real estate professional doesn\u2019t automatically get QBI on rentals.",
           },
+          // ── Parked block: Rev. Proc. 2019-38 specifics (re-namespaced from w4_mcq_rev_proc_2019_38_specifics) ──
           {
-            type: "CONFIDENCE_MCQ", id: "d20_mcq_due_dates",
-            question: "What are the federal quarterly estimated tax due dates in a typical year?",
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_rev_proc_2019_38",
+            question: "Your client has 3 residential rental properties they want to treat as a single \u2018rental real estate enterprise\u2019 for the \u00a7199A QBI safe harbor under Rev. Proc. 2019-38. Which of the following is NOT a requirement of the safe harbor?",
             options: [
-              "March 31, June 30, September 30, December 31",
-              "April 15, June 15, September 15, January 15 of the following year (subject to weekend/holiday adjustments)",
-              "January 15, April 15, July 15, October 15",
-              "Only April 15 with a year-end true-up",
+              "Separate books and records for the rental real estate enterprise",
+              "250 or more hours of rental services performed per year by the taxpayer, employees, agents, or independent contractors",
+              "Contemporaneous records (time, services performed, who performed them) for tax years beginning after 2019",
+              "The taxpayer must materially participate in the rental activity under \u00a7469",
+            ],
+            correct: 3,
+            topicTags: ["qbi", "section_199A", "rev_proc_2019_38", "safe_harbor", "rental_classification"],
+            difficulty: 4,
+            explanation: "Rev. Proc. 2019-38 establishes a SAFE HARBOR for treating rental real estate as a \u00a7162 trade or business eligible for the \u00a7199A QBI deduction. Material participation under \u00a7469 is NOT a safe-harbor requirement \u2014 \u00a7469 governs whether losses are passive or non-passive; \u00a7199A safe harbor governs whether the rental is a \u00a7162 trade or business. These are independent tests. Triple-net leases and properties used as the taxpayer\u2019s residence are excluded from the safe harbor entirely.",
+          },
+          // ── NEW BLOCK 1: Wyoming holding LLC ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_why_wyoming",
+            question: "Aiola CPA\u2019s standard entity structure uses a Wyoming holding LLC as the top-level entity. Which combination of features makes Wyoming the preferred formation state?",
+            options: [
+              "No state income tax and proximity to most clients",
+              "Strong charging order protection (sole remedy for creditors of LLC members), statutory anonymity (no public member/manager disclosure), low formation and annual fees (~$100/yr), and no state income tax on the LLC\u2019s pass-through income",
+              "Wyoming offers series LLC statutes that eliminate the need for sub-LLCs",
+              "Wyoming LLCs are exempt from the Corporate Transparency Act",
             ],
             correct: 1,
-            topicTags: ["quarterly_estimates"],
-            difficulty: 1,
-            explanation: "Federal quarterly estimated tax due dates: 4/15 (Q1), 6/15 (Q2), 9/15 (Q3), 1/15 of following year (Q4). When the date falls on weekend or holiday, it shifts to the next business day. Example 2024: 4/15, 6/17 (June 15 was Saturday), 9/16 (Sept 15 was Sunday), 1/15/2025. State quarterlies often follow same dates but each state varies. Always confirm state due dates separately — California, for example, uses 4/15, 6/15, 9/15, 1/15 but front-loads with 30%/40%/0%/30% (not even quarters) — a common trap for clients moving from another state.",
+            topicTags: ["wyoming_llc", "asset_protection", "anonymity", "charging_order"],
+            difficulty: 3,
+            explanation: "Wyoming\u2019s combination is uniquely strong: (1) Charging order is the SOLE AND EXCLUSIVE remedy for judgment creditors \u2014 a creditor cannot force a membership-interest sale or seize LLC assets (WY Stat. \u00a717-29-503). (2) No public disclosure of members or managers in formation docs \u2014 only a registered agent is listed. (3) Annual report fee is ~$60, no franchise tax, no state income tax. (4) Wyoming does NOT have a series LLC statute (that\u2019s Delaware), so sub-LLCs are formed individually. Wyoming LLCs are NOT exempt from BOI/CTA \u2014 all LLCs formed in the US must comply. The charging order protection is the anchor reason; anonymity and low cost are the supporting reasons.",
+          },
+          // ── NEW BLOCK 2: Sub-LLC strategy ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_sub_llc_strategy",
+            question: "In the Aiola standard structure, each rental property is held in its own sub-LLC underneath the Wyoming holding LLC. What is the PRIMARY reason for separate sub-LLCs rather than holding all properties in a single LLC?",
+            options: [
+              "Each property gets its own EIN for banking purposes",
+              "Liability isolation \u2014 a lawsuit or judgment against one property cannot reach the equity or assets of another property because each is in a separate legal entity",
+              "It reduces the total number of tax returns filed",
+              "Sub-LLCs automatically qualify for \u00a7199A QBI treatment",
+            ],
+            correct: 1,
+            topicTags: ["sub_llc", "asset_protection", "llc"],
+            difficulty: 2,
+            explanation: "The sub-LLC-per-property model creates liability compartmentalization. If a tenant sues over Property A and wins a judgment, only Property A\u2019s LLC assets are reachable \u2014 Properties B and C sit in separate LLCs and are shielded. Without this separation, a single LLC holding all three properties exposes the entire portfolio to one claim. Tax-wise: if each sub-LLC is disregarded (SMLLC owned by the holding LLC), there\u2019s no additional return \u2014 all flow through the holding entity\u2019s return. The tradeoff is formation cost (~$100\u2013$300 per sub-LLC per state) and administrative overhead, but for most portfolios the protection justifies the cost.",
+          },
+          // ── NEW BLOCK 3: Management LLC purpose ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_management_llc",
+            question: "The Aiola standard structure includes a separate management/operations LLC that holds no real estate assets. What is the purpose of this entity?",
+            options: [
+              "To hold the client\u2019s personal residence",
+              "To serve as the operating entity that receives management fees, holds bank accounts for operations, employs staff, and signs vendor contracts \u2014 keeping operational liability separate from asset-holding LLCs",
+              "To elect S-Corp status and run payroll for the rental properties",
+              "To qualify for the \u00a7199A QBI deduction on management income",
+            ],
+            correct: 1,
+            topicTags: ["management_llc", "asset_protection", "llc"],
+            difficulty: 3,
+            explanation: "The management LLC is the \u2018operating company\u2019 in the structure. It holds no appreciating assets \u2014 no real estate. It receives management fees from the property sub-LLCs (at arm\u2019s-length rates), signs vendor contracts, may employ staff, and holds operating bank accounts. If an operational liability arises (e.g., a vendor sues over a contract dispute), only the management LLC\u2019s assets are exposed \u2014 the real estate in the sub-LLCs is untouched. For clients with active service income (consulting, brokerage), the management LLC may elect S-Corp status for SE tax savings. But the S-Corp election is on the management LLC only \u2014 never on the property-holding LLCs.",
+          },
+          // ── NEW BLOCK 4: Disregarded vs. partnership at holding level ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_holding_level_treatment",
+            question: "A married couple (MFJ) forms a Wyoming holding LLC. Both spouses are members. By default, how is this holding LLC treated for federal tax purposes, and what is the key implication?",
+            options: [
+              "Disregarded entity \u2014 no separate return needed",
+              "Partnership \u2014 must file Form 1065 annually; each sub-LLC underneath is now owned by a partnership (not disregarded); BUT in community property states, a spouse-only LLC may elect disregarded treatment",
+              "S-Corporation \u2014 automatic election for married couples",
+              "The treatment is whatever the couple checks on the box",
+            ],
+            correct: 1,
+            topicTags: ["partnership_taxation", "disregarded_entity", "llc"],
+            difficulty: 4,
+            explanation: "A two-member LLC defaults to partnership treatment under Reg. \u00a7301.7701-3 \u2014 requiring a Form 1065 return. This is the most common trap in entity structuring for married couples: the client assumes it\u2019s \u2018just an LLC\u2019 but now owes a $235/partner/month late-filing penalty if the 1065 is late (\u00a76698). Exception: in community property states (AZ, CA, ID, LA, NV, NM, TX, WA, WI), a husband-wife LLC can elect disregarded treatment under Rev. Proc. 2002-69. In non-community-property states (e.g., NY, FL), no such election exists \u2014 two-member = partnership, period. This is why Aiola\u2019s default is usually single-member at the holding level (one spouse owns, other spouse has no membership interest) unless there\u2019s a specific reason for partnership treatment.",
+          },
+          // ── NEW BLOCK 5: Deed transfer + due-on-sale ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_deed_transfer_dos",
+            question: "A client wants to transfer a mortgaged rental property from personal name into their new sub-LLC. They\u2019re worried about the due-on-sale clause. What is Aiola\u2019s position?",
+            options: [
+              "Never transfer a mortgaged property \u2014 the bank will always call the loan",
+              "The Garn-St Germain Act (\u00a71701j-3) provides a federal safe harbor for transfers to an inter vivos trust, but transfers to an LLC are technically NOT protected by the statute. In practice, most lenders don\u2019t call loans on performing mortgages, but Aiola\u2019s best practice is to notify the lender, request consent in writing, and maintain insurance naming the LLC as the insured party",
+              "The due-on-sale clause was repealed in 2020 and no longer applies",
+              "Transfer the property and don\u2019t tell the bank \u2014 they\u2019ll never notice",
+            ],
+            correct: 1,
+            topicTags: ["deed_transfer", "due_on_sale", "llc"],
+            difficulty: 4,
+            explanation: "The Garn-St Germain Depository Institutions Act of 1982 (\u00a71701j-3) protects certain transfers from triggering a due-on-sale clause \u2014 including transfers to an inter vivos (living) trust where the borrower remains a beneficiary. However, transfers to an LLC are NOT explicitly listed in the Garn-St Germain safe harbor categories. This means the lender technically CAN call the loan. In practice, lenders rarely exercise this right on performing loans (they want the payments, not the headache of foreclosure on a paying borrower). Aiola\u2019s approach: (1) notify the lender before transfer, (2) request written consent or a \u2018no-objection\u2019 letter, (3) update hazard insurance to name the LLC, (4) document everything. Never advise a client to hide the transfer \u2014 that creates a trust issue with the lender and a malpractice issue for you.",
+          },
+          // ── NEW BLOCK 6: BOI / Corporate Transparency Act ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_boi_cta",
+            question: "Under the Corporate Transparency Act (CTA), which became effective January 1, 2024, which statement about Beneficial Ownership Information (BOI) reporting is correct?",
+            options: [
+              "Only C-Corporations must file BOI reports; LLCs are exempt",
+              "LLCs formed on or after January 1, 2024 must file a BOI report within 90 days of formation (2024) or 30 days (2025+); existing LLCs formed before 2024 must file by January 1, 2025; penalties for non-filing include $500/day civil penalties and criminal penalties up to $10,000",
+              "BOI filing is optional and only required if the LLC has more than $5 million in revenue",
+              "The CTA was struck down by the courts and is no longer enforceable",
+            ],
+            correct: 1,
+            topicTags: ["boi_cta", "llc", "compliance"],
+            difficulty: 3,
+            explanation: "The CTA requires \u2018reporting companies\u2019 (including most LLCs and corporations) to file BOI reports with FinCEN disclosing beneficial owners (individuals who own 25%+ or exercise substantial control). New entities formed in 2024 have 90 days; entities formed in 2025+ have 30 days; pre-2024 entities had until January 1, 2025. Penalties are steep: $500/day civil fines and up to $10,000 + 2 years criminal. Note: the CTA has faced legal challenges (Texas Top Cop Shop v. Garland), and enforcement status has fluctuated \u2014 always verify current status. For Aiola\u2019s multi-LLC structures, EACH LLC is a separate reporting company requiring its own BOI filing. This is a real compliance cost that must be disclosed to clients when recommending multi-entity structures.",
+          },
+          // ── NEW BLOCK 7: Umbrella insurance vs. entities ──
+          {
+            type: "CONFIDENCE_MCQ", id: "m1_mcq_umbrella_insurance",
+            question: "A client with a $2M net worth and 4 rental properties asks whether they need umbrella insurance if they already have each property in its own LLC. What\u2019s the best advice?",
+            options: [
+              "No \u2014 the LLC structure provides complete protection; umbrella insurance is redundant",
+              "Yes \u2014 umbrella insurance covers gaps that LLCs cannot: personal liability outside the properties (auto accidents, dog bites), claims that pierce the corporate veil, and claims that exceed property-level insurance limits. A $2M umbrella policy typically costs $300\u2013$600/year and is the most cost-effective additional layer of protection",
+              "Only if the properties are in states with weak LLC protections",
+              "Umbrella insurance replaces the need for LLCs entirely",
+            ],
+            correct: 1,
+            topicTags: ["umbrella_insurance", "asset_protection", "llc"],
+            difficulty: 2,
+            explanation: "LLCs and umbrella insurance are complementary, not substitutes. LLCs isolate liability at the entity level \u2014 but they don\u2019t protect against: (1) personal liability claims unrelated to the properties, (2) successful veil-piercing arguments (commingled funds, failure to observe formalities), (3) claims that exceed property-level insurance policy limits. An umbrella policy sits on top of underlying homeowners/landlord policies and provides excess coverage \u2014 typically $1\u2013$5M for a few hundred dollars per year. For a client with a $2M net worth, the cost-benefit is overwhelming. Aiola\u2019s recommendation: entities AND umbrella insurance. Neither alone is sufficient for a client with meaningful assets.",
+          },
+          // ── NEW BLOCK 8: Aiola standard structure end-to-end (drag exercise) ──
+          {
+            type: "DRAG_EXERCISE", id: "m1_order_standard_structure",
+            title: "Aiola Standard Entity Structure \u2014 Layer Order",
+            topicTags: ["wyoming_llc", "sub_llc", "management_llc", "asset_protection"],
+            prompt: "Arrange the layers of the Aiola standard entity structure from top (parent) to bottom (asset level).",
+            mode: "order",
+            items: [
+              { id: "l1", label: "Wyoming Holding LLC (parent entity \u2014 holds membership interests in all sub-LLCs)" },
+              { id: "l2", label: "Sub-LLC per property (each holds title to one rental property)" },
+              { id: "l3", label: "Management/Operations LLC (separate entity \u2014 receives management fees, holds no real estate)" },
+            ],
+            correctSequence: ["l1", "l2", "l3"],
+            explanation: "The Aiola standard structure has three layers: (1) Wyoming Holding LLC at the top \u2014 this is the parent entity owned by the individual(s). It holds membership interests in all property sub-LLCs. Wyoming provides charging order protection and anonymity. (2) Sub-LLCs per property underneath \u2014 each holds title to one rental. If the sub-LLC is a SMLLC owned by the WY holding LLC, it\u2019s disregarded for tax purposes (no additional return). This creates liability isolation between properties. (3) Management/Operations LLC \u2014 a separate entity (not underneath the holding LLC) that handles operations, collects management fees, signs vendor contracts, and may elect S-Corp for active income. It holds no real estate assets. The management LLC sits alongside (not underneath) the holding structure to keep operational liability separate from asset protection.",
+          },
+          // ── NEW BLOCK 10: Capstone scenario \u2014 entity structure recommendation ──
+          {
+            type: "SCENARIO_BRANCHING", id: "m1_scenario_entity_recommendation",
+            title: "New Client Entity Structure Recommendation",
+            topicTags: ["wyoming_llc", "sub_llc", "management_llc", "asset_protection", "deed_transfer", "umbrella_insurance", "state_considerations"],
+            context: "New advisory client, MFJ, lives in New York. Owns 3 rental properties (all in NY, all mortgaged, all in personal name). Net worth ~$1.5M. No existing LLCs. W-2 income from husband\u2019s job ($180k). Wife manages the rentals and has a small property management side business (Schedule C, $40k net). They ask: \u2018We keep hearing we should put our rentals in LLCs. What do you recommend?\u2019",
+            decisions: [
+              {
+                id: "dec1", prompt: "What structure do you recommend for the three rental properties?",
+                options: [
+                  { text: "Put all three properties in one NY LLC to keep it simple", weight: 1, correctness: "risky", nextId: null, terminalId: "t_single_llc" },
+                  { text: "Wyoming holding LLC as parent, with three separate sub-LLCs (one per property) underneath. Each sub-LLC holds title to one NY rental. The WY holding LLC provides charging order protection and anonymity that NY SMLLCs lack.", weight: 3, correctness: "great", nextId: "dec2", terminalId: null },
+                  { text: "Three separate NY LLCs with no holding company", weight: 2, correctness: "acceptable", nextId: null, terminalId: "t_no_holding" },
+                  { text: "A Wyoming Series LLC to save on formation costs", weight: 1, correctness: "risky", nextId: null, terminalId: "t_series_llc" },
+                ],
+              },
+              {
+                id: "dec2", prompt: "The wife\u2019s property management business ($40k Schedule C) \u2014 how should this be structured relative to the rental LLCs?",
+                options: [
+                  { text: "Include it in the Wyoming holding LLC", weight: 1, correctness: "risky", nextId: null, terminalId: "t_mgmt_in_holding" },
+                  { text: "Separate management LLC for the PM business. At $40k net, S-Corp election is NOT cost-justified yet (compliance overhead exceeds SE tax savings). Keep as disregarded SMLLC or Schedule C for now. Revisit S-Corp if income exceeds ~$80k stable.", weight: 3, correctness: "great", nextId: "dec3", terminalId: null },
+                  { text: "Elect S-Corp on the management LLC immediately for SE tax savings", weight: 1, correctness: "risky", nextId: null, terminalId: "t_premature_scorp" },
+                ],
+              },
+              {
+                id: "dec3", prompt: "The client asks about transferring the three mortgaged NY properties into the new sub-LLCs. What\u2019s your advice on the due-on-sale risk?",
+                options: [
+                  { text: "Transfer immediately and don\u2019t notify the banks", weight: 1, correctness: "harmful", nextId: null, terminalId: "t_hide_transfer" },
+                  { text: "Notify each lender, request written consent or no-objection letter before transferring. Explain that in practice lenders rarely call performing loans, but proper disclosure protects the client and eliminates malpractice risk for us. Update insurance to name the LLC. Budget 2\u20134 weeks per lender for the consent process.", weight: 3, correctness: "great", nextId: null, terminalId: "t_great" },
+                  { text: "Wait until the mortgages are paid off before forming any entities", weight: 1, correctness: "risky", nextId: null, terminalId: "t_wait_payoff" },
+                ],
+              },
+            ],
+            terminals: [
+              { id: "t_great", label: "Complete Advisory", outcome: "great", coachingNote: "This is the full Aiola playbook: WY holding for charging order protection (critical in NY where SMLLC protection is weak), sub-LLCs for property isolation, separate management LLC for the PM business (sized correctly \u2014 no premature S-Corp at $40k), and proper lender notification for deed transfers. The output is a memo: recommended structure diagram, formation cost estimate, annual compliance cost, BOI filing requirements for each entity, lender consent timeline, and umbrella insurance recommendation ($1\u2013$2M policy)." },
+              { id: "t_single_llc", label: "Single LLC", outcome: "risky", coachingNote: "One LLC for three properties = zero liability isolation between properties. A judgment against Property A reaches B and C. Plus, an NY SMLLC has weak charging order protection. This exposes the entire portfolio to a single claim." },
+              { id: "t_no_holding", label: "No Holding Company", outcome: "acceptable", coachingNote: "Three separate NY LLCs does provide property isolation, but misses the WY holding layer. In NY, SMLLCs have weak charging order protection \u2014 a creditor may be able to force turnover of the membership interest itself. The WY holding adds the asset protection layer that NY lacks." },
+              { id: "t_series_llc", label: "Series LLC", outcome: "risky", coachingNote: "Wyoming does NOT have a series LLC statute. Delaware does, but series LLCs have uncertain recognition across state lines (NY does not have enabling legislation for series LLCs). The liability isolation of series LLCs has not been tested in most states\u2019 courts. Aiola\u2019s position: use separate sub-LLCs, not series." },
+              { id: "t_mgmt_in_holding", label: "Management in Holding", outcome: "risky", coachingNote: "Putting the PM business inside the holding LLC defeats the purpose of liability separation. Operational liability (vendor disputes, employee claims) would sit in the same entity that holds the real estate assets. Keep the management LLC separate." },
+              { id: "t_premature_scorp", label: "Premature S-Corp", outcome: "risky", coachingNote: "At $40k net Schedule C income, S-Corp compliance costs ($1.5\u2013$2.5k/yr for 1120-S + payroll) eat most or all of the SE tax savings. The break-even for S-Corp is typically ~$80k stable net income. Revisit when the PM business grows." },
+              { id: "t_hide_transfer", label: "Hidden Transfer", outcome: "harmful", coachingNote: "Advising a client to hide a deed transfer from their lender creates malpractice exposure for the firm and trust risk for the client. Always disclose, always get consent in writing." },
+              { id: "t_wait_payoff", label: "Wait for Payoff", outcome: "risky", coachingNote: "Most mortgages won\u2019t be paid off for 15\u201330 years. Waiting means the client\u2019s $1.5M net worth sits unprotected the entire time. The due-on-sale risk is manageable with proper lender notification; it\u2019s not a reason to defer the entire structure." },
+            ],
           },
         ],
       },
+    ],
+  },
+  {
+    id: "module2", label: "Module 2", subtitle: "Accounting & Banking System", phase: "Days 41–50",
+    items: [
       {
-        id: "w5", title: "Week 5 — Mock ISM Preparation",
-        description: "Prepare for and complete your first mock Initial Strategy Meeting.",
-        tasks: [
-          { id: "w5t1", text: "Review the ISM meeting structure: intro → expectations → return review → strategy → close" },
-          { id: "w5t2", text: "Study the Advisory Onboarding Questionnaire template and what to look for" },
-          { id: "w5t3", text: "Practice explaining cost segregation in plain language (record yourself)" },
-          { id: "w5t4", text: "Complete the AI-powered Mock ISM simulation (Client Strategy Meeting tool)" },
-          { id: "w5t5", text: "Review your mock ISM scorecard with your manager" },
+        id: "module2_main",
+        title: "Module 2 \u2014 Accounting & Banking System",
+        description: "The accounting and banking infrastructure that supports every advisory client relationship. This module covers QuickBooks Online setup and configuration for real estate investors: chart of accounts, classes and locations for multi-property tracking, bank and credit card account separation strategies per entity. Learn how to review books, read financials for advisory insights, and identify common bookkeeping errors that create tax-time problems. Understand the handoff boundary: what advisory handles (strategy, projections, client communication) vs. what passes to tax prep and accounting (return preparation, journal entries, reconciliation). By end of module: YTD review of books for a real client with a drafted memo of action items and corrections.",
+        topicTags: [
+          "qbo", "chart_of_accounts", "classes_locations", "bank_separation",
+          "credit_card_strategy", "financial_review", "bookkeeping_errors",
+          "advisory_vs_prep", "property_tracker", "reconciliation"
         ],
-        resources: [{ label: "ISM Meeting Framework", url: null }, { label: "Mock ISM Tool (Link)", url: null }, { label: "Scoring Rubric", url: null }],
-        videos: [{ label: "Sample ISM Recording — How a Great Meeting Looks", embedId: "dQw4w9WgXcQ" }],
-        quiz: { question: "What is the FIRST thing a strong advisor does at the beginning of an ISM?", options: ["Jump straight into the tax return review", "Build rapport with small talk and set expectations for the meeting structure", "Ask the client to list all their tax questions", "Present the fee schedule"], correct: 1 },
+        weeklyRubric: {
+          title: "Module 2 Scorecard",
+          intro: "This rubric applies to your end-of-module YTD book review memo. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "QBO Configuration Mastery", desc: "Chart of accounts structured correctly for RE investors. Classes/locations map to properties and entities. Knows when to use each and why." },
+            { num: 2, name: "Bank & Credit Card Strategy", desc: "Separate accounts per entity recommended and explained. Commingling risks identified. Account naming conventions and reconciliation workflow understood." },
+            { num: 3, name: "Financial Review & Issue Identification", desc: "P&L and balance sheet reviewed for anomalies. Common bookkeeping errors flagged (misclassified expenses, missing depreciation entries, unreconciled accounts, personal expenses in business accounts)." },
+            { num: 4, name: "Action Item Quality", desc: "Memo contains specific, actionable corrections with priority ranking. Each item tied to the financial impact or compliance risk it addresses." },
+            { num: 5, name: "Advisory vs. Prep Boundary", desc: "Correctly identifies which items are advisory scope (strategy, client communication) and which pass to tax prep/accounting. Handoff memo is clear enough for the prep team to act on without follow-up questions." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-module2.html",
+          fullDocLabel: "View Full Scorecard"
+        },
+        learningObjectives: [
+          "Configure a QBO company file for a multi-property real estate investor: chart of accounts, classes per property, locations per entity, and explain the reporting purpose of each",
+          "Recommend a bank and credit card account separation strategy per entity and explain the commingling risks that arise when accounts are shared",
+          "Review a client\u2019s YTD P&L and balance sheet, flag common bookkeeping errors (misclassified expenses, missing depreciation, unreconciled accounts, personal expenses in business accounts), and prioritize corrections by financial impact",
+          "Read financial statements for advisory insights: identify trends, anomalies, and planning opportunities that inform the next client conversation",
+          "Articulate the boundary between advisory scope and tax prep/accounting scope, and draft a handoff memo that the prep team can act on without follow-up questions",
+          "Explain the role of the property tracker in organizing income, expenses, depreciation, and cost-seg data per property for advisory and prep use"
+        ],
+        realWorldApplication: "Your manager will assign a real client\u2019s QBO file for the YTD book review. Review the books, draft a memo of action items and corrections, and present your findings. Refer to your manager for the client assignment and the Aiola book review checklist.",
+        clientExamples: [],
+        deliverables: [
+          {
+            id: "m2d_mid",
+            title: "Day 45 Mid-Module Checkpoint",
+            dueDate: "Day 45",
+            description: "Walk your manager through a QBO setup for a hypothetical 3-property investor: chart of accounts, classes, locations, bank account mapping. Explain your reasoning for each configuration choice."
+          },
+          {
+            id: "m2d_final",
+            title: "YTD Book Review Memo",
+            dueDate: "Day 50",
+            description: "YTD review of books for a real client \u2014 draft a memo of action items and corrections for review. Include: issues found, priority ranking, financial impact, which items are advisory scope vs. prep handoff, and recommended next steps for the client conversation."
+          },
+          {
+            id: "m2d_assess",
+            title: "Module 2 End-of-Module Assessment",
+            dueDate: "Day 50",
+            description: "20-question assessment covering QBO configuration, bank/credit separation, financial review, bookkeeping error identification, and the advisory vs. prep boundary. Honor system: answer from understanding, not research."
+          }
+        ],
+        assessmentIntro: "Answer based on what you\u2019ve learned this module. Please don\u2019t research questions before answering. The goal is to calibrate where your understanding is right now, so your manager can target the next sprint of learning. There\u2019s no penalty for getting things wrong.",
+        tasks: [],
+        resources: [],
+        assessment: [
+          // TODO Module 2 — 20 blocks pending Prompt 3
+        ],
       },
+    ],
+  },
+  {
+    id: "module3", label: "Module 3", subtitle: "STR Tax Strategy Deep Dive", phase: "Days 51–60",
+    items: [
       {
-        id: "w6", title: "Week 6 — Tax Strategy Roadmap (TSR) Training",
-        description: "Learn to build and present a Tax Strategy Roadmap deliverable.",
-        tasks: [
-          { id: "w6t1", text: "Review 3 sample TSR documents from past advisory engagements" },
-          { id: "w6t2", text: "Understand each section: executive summary, findings, recommendations, timeline" },
-          { id: "w6t3", text: "Draft a practice TSR based on the Rivera mock client scenario" },
-          { id: "w6t4", text: "Present your draft TSR to your manager (mock delivery)" },
-          { id: "w6t5", text: "Incorporate feedback and finalize your practice TSR" },
+        id: "module3_main",
+        title: "Module 3 \u2014 STR Tax Strategy Deep Dive",
+        description: "The STR tax strategy is Aiola CPA\u2019s signature advisory offering and the most technically demanding area of the practice. This module goes far deeper than Week 2\u2019s introduction: you will commit the qualifications to memory, master the black-and-white rules AND the gray areas (and Aiola\u2019s position on each), read and cite regulations, tax court cases, and other authoritative guidance, and build the judgment to advise real clients on this strategy with confidence. By end of module: create and deliver to management a tax savings analysis report for five separate clients who are targeting an STR, quantifying the real amount of tax savings and benefit of the strategy in each case. You need to be an expert on this.",
+        topicTags: [
+          "str_loophole", "avg_stay_test", "rental_classification", "passive_loss",
+          "material_participation_tests", "cost_segregation", "bonus_depreciation",
+          "tax_court_cases", "gray_areas", "regulations", "str_savings_analysis",
+          "schedule_e_vs_c", "substantial_services"
         ],
-        resources: [{ label: "Sample TSR #1", url: null }, { label: "Sample TSR #2", url: null }, { label: "TSR Template", url: null }],
-        quiz: { question: "What is the primary purpose of the Tax Strategy Roadmap (TSR)?", options: ["To file the client's tax return", "To give the client a clear, actionable plan with prioritized strategies and a timeline", "To upsell the client on additional services", "To document the firm's internal notes"], correct: 1 },
-      },
-      {
-        id: "w7", title: "Week 7 — Client Communication & Checkups",
-        description: "Master the ongoing client relationship: checkup calls, time log reviews, and proactive outreach.",
-        tasks: [
-          { id: "w7t1", text: "Study the checkup meeting framework: what to cover and when" },
-          { id: "w7t2", text: "Learn the time log review process for material participation tracking" },
-          { id: "w7t3", text: "Practice a mock checkup call scenario with a peer" },
-          { id: "w7t4", text: "Draft 3 proactive client outreach emails (year-end planning, estimated payments, entity deadline)" },
-          { id: "w7t5", text: "Review the client escalation matrix: when to involve your Manager" },
+        weeklyRubric: {
+          title: "Module 3 Scorecard",
+          intro: "This rubric applies to your five-client STR tax savings analysis report. Pressure-test your own work against it before delivering.",
+          categories: [
+            { num: 1, name: "STR Qualification Mastery", desc: "All qualification requirements stated from memory: \u22647-day avg stay, material participation test selection, STR exception mechanics under Reg. \u00a71.469-1T(e)(3)(ii)(A). No doctrinal errors." },
+            { num: 2, name: "Black-and-White vs. Gray Areas", desc: "Clearly distinguishes settled law from positions that carry audit risk. Aiola\u2019s position on each gray area articulated. Risk level communicated accurately to the client." },
+            { num: 3, name: "Authoritative Sourcing & Case Law", desc: "Regulations, tax court cases, and IRS guidance cited with specificity. Research trail reconstructable. Binding authority distinguished from secondary sources." },
+            { num: 4, name: "Tax Savings Quantification", desc: "Each of the five client analyses includes: projected loss, tax bracket, actual dollar savings, cost-seg interaction, and assumptions stated. Math is correct and defensible." },
+            { num: 5, name: "Advisory Judgment & Communication", desc: "Analysis presented in a way that could be delivered to a client with tone adjustment. Risks, assumptions, and documentation requirements clearly communicated." }
+          ],
+          banding: "Each category scored 1\u20134. Total: 20. 17\u201320 Mastery (pass) \u00b7 14\u201316 Proficient (pass) \u00b7 11\u201313 Developing (conditional pass with re-work) \u00b7 \u226410 Below Bar.",
+          fullDocLink: "/scorecard-module3.html",
+          fullDocLabel: "View Full Scorecard"
+        },
+        learningObjectives: [
+          "State from memory the complete STR tax strategy qualification chain: \u22647-day average customer use period, material participation requirement, and the \u00a7469 rental-activity exception under Reg. \u00a71.469-1T(e)(3)(ii)(A)",
+          "Distinguish black-and-white rules (statutory thresholds, regulatory safe harbors) from gray areas (contemporaneous documentation standards, \u2018hotel-like services\u2019 vs. \u2018substantial services\u2019 boundary, grouping elections) and state Aiola\u2019s position on each",
+          "Read, cite, and explain the holdings of key Tax Court cases relevant to STR strategy (e.g., Hardy v. Commissioner, Eger v. Commissioner) and their implications for client advising",
+          "Compute a complete STR tax savings analysis: projected depreciation (including cost-seg acceleration), applicable tax bracket, actual dollar savings, and net benefit after cost-seg fees and compliance costs",
+          "Identify the documentation requirements that must be in place BEFORE filing a return claiming the STR exception: contemporaneous time logs, average-stay computation, cost-seg study, and Schedule E classification support",
+          "Explain why Aiola requires advisors to be experts on this strategy \u2014 the stakes (six-figure tax positions), audit risk profile, and the firm\u2019s reputation standard"
         ],
-        resources: [{ label: "Checkup Meeting Template", url: null }, { label: "Time Log Template", url: null }, { label: "Email Outreach Templates", url: null }],
-        quiz: { question: "How often should advisory clients ideally have a checkup call?", options: ["Only at year-end", "Quarterly, with flexibility based on complexity", "Monthly without exception", "Only when the client requests one"], correct: 1 },
-      },
-      {
-        id: "w8", title: "Week 8 — Days 31–60 Checkpoint",
-        description: "Formal mid-point review and self-assessment.",
-        tasks: [
-          { id: "w8t1", text: "Complete the 60-Day self-assessment questionnaire" },
-          { id: "w8t2", text: "Prepare a summary of key learnings and areas for growth" },
-          { id: "w8t3", text: "Schedule and complete your 60-Day review with your Manager" },
-          { id: "w8t4", text: "Set goals for Days 61–90 based on review feedback" },
-          { id: "w8t5", text: "Begin shadowing live advisory meetings (observe + take notes)" },
+        realWorldApplication: "Your manager will assign five real or representative client profiles targeting the STR strategy. For each, produce a complete tax savings analysis: qualification assessment, projected depreciation, tax savings quantification, risk factors, and documentation checklist. Present the full report to management.",
+        clientExamples: [],
+        deliverables: [
+          {
+            id: "m3d_mid",
+            title: "Day 55 Mid-Module Checkpoint",
+            dueDate: "Day 55",
+            description: "Walk your manager through the STR qualification chain from memory. Cover: \u22647-day test, MP test options, the \u00a7469 exception, Schedule E vs. C classification, gray areas and Aiola\u2019s positions. No notes allowed for the qualification chain portion."
+          },
+          {
+            id: "m3d_final",
+            title: "Five-Client STR Tax Savings Analysis Report",
+            dueDate: "Day 60",
+            description: "Create and deliver to management a tax savings analysis report for five separate clients who are targeting an STR. Quantify the real amount of tax savings and benefit of the strategy in each case. Include: qualification assessment, projected depreciation, cost-seg interaction, tax savings math, risk factors, and documentation requirements."
+          },
+          {
+            id: "m3d_assess",
+            title: "Module 3 End-of-Module Assessment",
+            dueDate: "Day 60",
+            description: "20-question assessment covering STR qualification mechanics, black-and-white vs. gray areas, regulations, tax court cases, savings quantification, and advisory judgment. Honor system: answer from understanding, not research."
+          }
         ],
-        resources: [{ label: "60-Day Self-Assessment", url: null }, { label: "Performance Review Template", url: null }],
-        quiz: { question: "By Day 60, which of the following should you have completed?", options: ["Led 5+ real client ISMs independently", "A mock ISM, a practice TSR, mock checkup call, and begun shadowing live meetings", "Closed your first advisory client sale", "Built your own tax strategy playbook"], correct: 1 },
+        assessmentIntro: "Answer based on what you\u2019ve learned this module. Please don\u2019t research questions before answering. The goal is to calibrate where your understanding is right now, so your manager can target the next sprint of learning. There\u2019s no penalty for getting things wrong.",
+        tasks: [],
+        resources: [],
+        assessment: [
+          // TODO Module 3 — 20 blocks pending Prompt 4
+        ],
       },
     ],
   },
@@ -2598,7 +2947,7 @@ const BADGE_ICONS = {
 
 const MILESTONES = [
   { id: "day30", label: "30-Day Milestone", color: "#CD7F32", phaseIds: ["week1","week2","week3","week4"] },
-  { id: "day60", label: "60-Day Milestone", color: "#C0C0C0", phaseIds: ["week5_8"] },
+  { id: "day60", label: "60-Day Milestone", color: "#C0C0C0", phaseIds: ["module1","module2","module3"] },
   { id: "day90", label: "90-Day Graduation", color: "#FFD700", phaseIds: ["week9_12"] },
 ];
 
@@ -2650,7 +2999,7 @@ const computeScorecard = (scores) => {
   else if (ones === 1 && band !== "Below Bar") band = "Developing";
   return { total, band };
 };
-const pMeta = [{ids:["week1","week2","week3","week4"],label:"Days 1–30",color:B.blue},{ids:["week5_8"],label:"Days 31–60",color:B.purple},{ids:["week9_12"],label:"Days 61–90",color:B.ok}];
+const pMeta = [{ids:["week1","week2","week3","week4"],label:"Days 1–30",color:B.blue},{ids:["module1","module2","module3"],label:"Days 31–60",color:B.purple},{ids:["week9_12"],label:"Days 61–90",color:B.ok}];
 
 // ═════════════════════════════════════════════════════════════════════════════
 // LOGIN SCREEN
@@ -3404,7 +3753,7 @@ function AdminClientList() {
 // ═════════════════════════════════════════════════════════════════════════════
 
 // Phase deadlines: how many days into the 90-day program each phase should be complete
-const PHASE_DEADLINES = { week1: 7, week2: 14, week3: 21, week4: 30, week5_8: 60, week9_12: 90 };
+const PHASE_DEADLINES = { week1: 7, week2: 14, week3: 21, week4: 30, module1: 40, module2: 50, module3: 60, week9_12: 90 };
 
 // Get overdue tasks for a trainee: tasks in phases whose deadline has passed but aren't completed
 const getOverdueTasks = (trainee, taskData) => {
